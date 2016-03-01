@@ -11,8 +11,12 @@
         # of this Ruby code will be an array containing the compile-times for
         # compiling the `std_tuple.cpp` file with different values of `n`.
         measure_compile_time("std_tuple.cpp", (0...50).step(5),
-            cxx: 'clang++',
-            cxxflags: '-std=c++14 -I /Users/ldionne/code/metabench/example/include',
+
+            # This file is also passed through CMake `configure_file`, so
+            # variables defined in the CMake file that calls `add_benchmark`
+            # can also be used here.
+            cxx: '@CMAKE_CXX_COMPILER@',
+            cxxflags: '-std=c++14 -I @CMAKE_SOURCE_DIR@/include',
             env: {variable: "foo"}
         )
       %>

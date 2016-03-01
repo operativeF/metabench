@@ -29,10 +29,13 @@ endif()
 # Given a directory with relative path from CMake's current source directory
 # (let's say `path/to/dir`), `add_benchmark("path/to/dir")` creates a new
 # target named `path.to.dir`. When this target is run, a `path/to/dir.json`
-# file is created in CMake's curent binary directory. This file contains ?????.
+# file is created in CMake's curent binary directory. This file is the result
+# of evaluating `path/to/dir/chart.json` as an ERB template. In addition, note
+# that `path/to/dir/chart.json` is passed through CMake `configure_file` prior
+# to being evaluated as an ERB template. This can be used to include platform-
+# dependent informations in the `chart.json` file.
 
-# TODO: allow configuring the chart.json file through CMake
-# TODO: allow support.rb to be included seemlessly by the user.
+# TODO: allow support.rb to be included seamlessly by the user.
 #       support.rb shouldn't have to be placed at some specific place.
 # TODO: how to pass CXX and CXXFLAGS to the script that runs the compiler?
 # TODO: For some reason, the File.open call below fails on the Makefile
@@ -45,10 +48,14 @@ function(add_benchmark path_to_dir)
                            ${path_to_dir}/*.cpp
                            ${path_to_dir}/*.hpp)
 
+    # We first pass the chart.json file through CMake's `configure_file`.
+    set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json")
+    configure_file("${path_to_dir}/chart.json" ${configured_chart_json} @ONLY)
+
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r ${CMAKE_SOURCE_DIR}/../metabench.rb
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
-            -e "chart = Tilt::ERBTemplate.new('chart.json').render(binding)"
+            -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
             -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', 'w') { |f| f.write(chart) }"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
         DEPENDS ${dependencies}
