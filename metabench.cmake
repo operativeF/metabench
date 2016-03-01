@@ -37,10 +37,12 @@ endif()
 
 # TODO: allow support.rb to be included seamlessly by the user.
 #       support.rb shouldn't have to be placed at some specific place.
-# TODO: how to pass CXX and CXXFLAGS to the script that runs the compiler?
 # TODO: For some reason, the File.open call below fails on the Makefile
 #       generator, because the directory can't be found. It works on Ninja,
 #       though.
+# TODO: instead of pre-configuring the chart.json file, perhaps it would be
+#       possible to configure it's content using CMake string, and then pass
+#       that directly to Tilt::ERBTemplate.
 function(add_benchmark path_to_dir)
     # Dependencies of the benchmark; the benchmark will be considered
     # outdated when any of these is changed.
