@@ -1,0 +1,21 @@
+{
+  "title": {
+    "text": "Creating a heterogeneous container with n elements"
+  },
+  "series": [
+    {
+      "name": "std::tuple",
+      "data": <%=
+        # Here, you can write arbitrary Ruby code. The result of this Ruby code
+        # will be replaced in the resulting JSON file. In this case, the result
+        # of this Ruby code will be an array containing the compile-times for
+        # compiling the `std_tuple.cpp` file with different values of `n`.
+        measure_compile_time("std_tuple.cpp", (0...50).step(5),
+            cxx: 'clang++',
+            cxxflags: '-std=c++14 -I /Users/ldionne/code/metabench/example/include',
+            env: {variable: "foo"}
+        )
+      %>
+    }
+  ]
+}
