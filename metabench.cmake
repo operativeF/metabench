@@ -37,12 +37,6 @@ endif()
 
 # TODO: allow support.rb to be included seamlessly by the user.
 #       support.rb shouldn't have to be placed at some specific place.
-# TODO: For some reason, the File.open call below fails on the Makefile
-#       generator, because the directory can't be found. It works on Ninja,
-#       though.
-# TODO: instead of pre-configuring the chart.json file, perhaps it would be
-#       possible to configure it's content using CMake string, and then pass
-#       that directly to Tilt::ERBTemplate.
 function(add_benchmark path_to_dir)
     # Dependencies of the benchmark; the benchmark will be considered
     # outdated when any of these is changed.
@@ -55,9 +49,10 @@ function(add_benchmark path_to_dir)
     configure_file("${path_to_dir}/chart.json" ${configured_chart_json} @ONLY)
 
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
-        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r ${CMAKE_SOURCE_DIR}/../metabench.rb
+        COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${CMAKE_SOURCE_DIR}/../metabench.rb
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
             -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
+            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))"
             -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', 'w') { |f| f.write(chart) }"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
         DEPENDS ${dependencies}
