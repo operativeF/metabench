@@ -2,6 +2,8 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
+cmake_minimum_required(VERSION 3.0)
+
 find_package(Ruby 2.1)
 if(NOT ${RUBY_FOUND})
     message(WARNING "Ruby >= 2.1 was not found; the metabench.cmake module can't be used.")
