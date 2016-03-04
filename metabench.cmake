@@ -29,7 +29,7 @@ endif()
 #   fileN.cpp
 #
 # Given a target name and a directory with relative path from CMake's current
-# source directory (let's say `path/to/dir`), `add_benchmark(target "path/to/dir")`
+# source directory (let's say `path/to/dir`), or an absolute path, `add_benchmark(target "path/to/dir")`
 # creates a new target with the specified name, which, when run, creates a
 # `path/to/dir.json` file in CMake's curent binary directory. This file is the
 # result of evaluating `path/to/dir/chart.json` as an ERB template. In addition,
@@ -37,6 +37,7 @@ endif()
 # prior to being evaluated as an ERB template. This can be used to include
 # platform-dependent informations in the `chart.json` file.
 function(add_benchmark target path_to_dir)
+    # Transform any absolute path to a relative path from the current source directory.
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
 
     # Dependencies of the benchmark; the benchmark will be considered

@@ -29,9 +29,13 @@ install:
   - rvm use 2.1 --install --binary --fuzzy
   - gem install ruby-progressbar tilt
 
-before_script:
-  - cd ${TRAVIS_BUILD_DIR}
-  - (mkdir build && cd build && cmake ../example -G"${CMAKE_GENERATOR}")
-
 script:
-  - cmake --build build --target path.to.benchmark
+  - cd ${TRAVIS_BUILD_DIR}
+
+  # Example
+  - (mkdir example/build && cd example/build && cmake .. -G"${CMAKE_GENERATOR}")
+  - cmake --build example/build --target path.to.benchmark
+
+  # Unit tests
+  - (mkdir test/build && cd test/build && cmake .. -G"${CMAKE_GENERATOR}")
+  - cmake --build test/build --target check
