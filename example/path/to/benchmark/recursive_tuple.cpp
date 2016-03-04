@@ -1,0 +1,28 @@
+#include <type_traits>
+#include <utility>
+
+
+template <typename ...T>
+struct tuple;
+
+template <>
+struct tuple<> { };
+
+template <typename T, typename ...Ts>
+struct tuple<T, Ts...> {
+    T value;
+    tuple<Ts...> rest_;
+
+    explicit tuple(T const& t, Ts const& ...ts)
+        : value{t}, rest_{ts...}
+    { }
+};
+
+template <typename ...T>
+tuple<typename std::decay<T>::type...> make_tuple(T&& ...t) {
+    return tuple<typename std::decay<T>::type...>{std::forward<T>(t)...};
+}
+
+int main() {
+    auto tuple= make_tuple(<%= (1..n).to_a.join(', ') %>);
+}
