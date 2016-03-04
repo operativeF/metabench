@@ -28,15 +28,15 @@ endif()
 #   ...
 #   fileN.cpp
 #
-# Given a directory with relative path from CMake's current source directory
-# (let's say `path/to/dir`), `add_benchmark("path/to/dir")` creates a new
-# target named `path.to.dir`. When this target is run, a `path/to/dir.json`
-# file is created in CMake's curent binary directory. This file is the result
-# of evaluating `path/to/dir/chart.json` as an ERB template. In addition, note
-# that `path/to/dir/chart.json` is passed through CMake `configure_file` prior
-# to being evaluated as an ERB template. This can be used to include platform-
-# dependent informations in the `chart.json` file.
-function(add_benchmark path_to_dir)
+# Given a target name and a directory with relative path from CMake's current
+# source directory (let's say `path/to/dir`), `add_benchmark(target "path/to/dir")`
+# creates a new target with the specified name, which, when run, creates a
+# `path/to/dir.json` file in CMake's curent binary directory. This file is the
+# result of evaluating `path/to/dir/chart.json` as an ERB template. In addition,
+# note that `path/to/dir/chart.json` is passed through CMake `configure_file`
+# prior to being evaluated as an ERB template. This can be used to include
+# platform-dependent informations in the `chart.json` file.
+function(add_benchmark target path_to_dir)
     # Dependencies of the benchmark; the benchmark will be considered
     # outdated when any of these is changed.
     file(GLOB dependencies ${path_to_dir}/chart.json
@@ -58,8 +58,7 @@ function(add_benchmark path_to_dir)
         VERBATIM USES_TERMINAL
         COMMENT "Generating benchmark for ${path_to_dir}")
 
-    string(REGEX REPLACE "/" "." target_name ${path_to_dir})
-    add_custom_target(${target_name}
+    add_custom_target(${target}
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json")
 endfunction()
 
