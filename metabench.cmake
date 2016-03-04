@@ -40,6 +40,15 @@ function(add_benchmark target path_to_dir)
     # Transform any absolute path to a relative path from the current source directory.
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
 
+    # Sanity checks on the arguments
+    if (NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir})
+        message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) is not a valid directory.")
+    endif()
+
+    if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json)
+        message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) does not contain a chart.json file.")
+    endif()
+
     # Dependencies of the benchmark; the benchmark will be considered
     # outdated when any of these is changed.
     file(GLOB dependencies
