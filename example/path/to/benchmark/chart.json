@@ -1,6 +1,13 @@
 {
-  "title": {
-    "text": "Creating a heterogeneous container with n elements"
+  "title"   : { "text": "Creating a heterogeneous container with n elements" },
+  "subtitle": { "text": "(smaller is better)" },
+  "xAxis": {
+    "title": { "text": "Number of elements" },
+    "minTickInterval": 1
+  },
+  "yAxis": {
+    "title": { "text": "Time (s)" },
+    "floor": 0
   },
   "series": [
     {
@@ -16,8 +23,18 @@
             # variables defined in the CMake file that calls `add_benchmark`
             # can also be used here.
             cxx: '@CMAKE_CXX_COMPILER@',
-            cxxflags: '-std=c++11 -I @CMAKE_SOURCE_DIR@/include',
+            cxxflags: '-std=c++14 -I @CMAKE_SOURCE_DIR@/include',
             env: {variable: "foo"}
+        )
+      %>
+    }
+
+    , {
+      "name": "lambda tuple",
+      "data": <%=
+        measure_compile_time("lambda_tuple.cpp", (0...50).step(5),
+            cxx: '@CMAKE_CXX_COMPILER@',
+            cxxflags: '-std=c++14'
         )
       %>
     }
