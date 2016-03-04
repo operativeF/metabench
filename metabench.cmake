@@ -22,20 +22,31 @@ if(${__MISSING_GEMS})
 endif()
 
 
-# The base unit of this CMake module is a directory with the following layout:
-#   chart.json
-#   file1.cpp
-#   ...
-#   fileN.cpp
+# add_benchmark(target path_to_dir)
 #
-# Given a target name and a directory with relative path from CMake's current
-# source directory (let's say `path/to/dir`), or an absolute path, `add_benchmark(target "path/to/dir")`
-# creates a new target with the specified name, which, when run, creates a
-# `path/to/dir/chart.json` file in CMake's curent binary directory. This file is the
-# result of evaluating `path/to/dir/chart.json` as an ERB template. In addition,
-# note that `path/to/dir/chart.json` is passed through CMake `configure_file`
-# prior to being evaluated as an ERB template. This can be used to include
-# platform-dependent informations in the `chart.json` file.
+#   Creates a target for running a compile-time benchmark. After issuing this
+#   command, running the target named `target` will cause the benchmark in the
+#   `path_to_dir` directory to be executed. For simplicity, let's denote by
+#   `path/to/dir` the value of `path_to_dir` as a relative path from the
+#   current source directory. Then, running the `target` target will create a
+#   file named `path/to/dir/chart.json` in CMake's current binary directory,
+#   containing the result of rendering the original `chart.json` file as an
+#   ERB template.
+#
+#   In addition, prior to being rendered as an ERB template, the `chart.json`
+#   file will be passed through CMake's `configure_file` function. This can be
+#   used to include platform-dependent informations in the `chart.json` file.
+#
+#   Parameters
+#   ----------
+#   target:
+#       The name of the target associated to this benchmark.
+#
+#   path_to_dir:
+#       The path of the benchmark to run. This may be either an absolute path
+#       or a path relative to the current source directory. The exact structure
+#       expected for this directory is documented in the official documentation
+#       of this module at https://github.com/ldionne/metabench.
 function(add_benchmark target path_to_dir)
     # Transform any absolute path to a relative path from the current source directory.
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
