@@ -37,11 +37,14 @@ endif()
 # prior to being evaluated as an ERB template. This can be used to include
 # platform-dependent informations in the `chart.json` file.
 function(add_benchmark target path_to_dir)
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
+
     # Dependencies of the benchmark; the benchmark will be considered
     # outdated when any of these is changed.
-    file(GLOB dependencies ${path_to_dir}/chart.json
-                           ${path_to_dir}/*.cpp
-                           ${path_to_dir}/*.hpp)
+    file(GLOB dependencies
+        "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*.hpp")
 
     # We first pass the chart.json file through CMake's `configure_file`.
     set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json")
