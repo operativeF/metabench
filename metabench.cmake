@@ -31,7 +31,7 @@ endif()
 # Given a target name and a directory with relative path from CMake's current
 # source directory (let's say `path/to/dir`), or an absolute path, `add_benchmark(target "path/to/dir")`
 # creates a new target with the specified name, which, when run, creates a
-# `path/to/dir.json` file in CMake's curent binary directory. This file is the
+# `path/to/dir/chart.json` file in CMake's curent binary directory. This file is the
 # result of evaluating `path/to/dir/chart.json` as an ERB template. In addition,
 # note that `path/to/dir/chart.json` is passed through CMake `configure_file`
 # prior to being evaluated as an ERB template. This can be used to include
@@ -60,19 +60,19 @@ function(add_benchmark target path_to_dir)
     set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json")
     configure_file("${path_to_dir}/chart.json" ${configured_chart_json} @ONLY)
 
-    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
+    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json"
         COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${CMAKE_CURRENT_BINARY_DIR}/metabench.rb
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
             -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
-            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))"
-            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', 'w') { |f| f.write(chart) }"
+            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json'))"
+            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json', 'w') { |f| f.write(chart) }"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
         DEPENDS ${dependencies}
         VERBATIM USES_TERMINAL
-        COMMENT "Generating benchmark for ${path_to_dir}")
+        COMMENT "Generating benchmark located at ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}")
 
     add_custom_target(${target}
-        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json")
+        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json")
 endfunction()
 
 
