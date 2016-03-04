@@ -61,7 +61,7 @@ function(add_benchmark target path_to_dir)
     configure_file("${path_to_dir}/chart.json" ${configured_chart_json} @ONLY)
 
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json"
-        COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${CMAKE_CURRENT_BINARY_DIR}/metabench.rb
+        COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${METABENCH_RB_PATH}
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
             -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
             -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json'))"
@@ -83,7 +83,9 @@ endfunction()
 # copy the `metabench.cmake` module to their project, without worrying
 # about implementation details.
 
-set(METABENCH_RB
+set(METABENCH_RB_PATH ${CMAKE_CURRENT_BINARY_DIR}/metabench.rb)
+
+file(WRITE ${METABENCH_RB_PATH}
 "require 'benchmark'                                                                               \n"
 "require 'open3'                                                                                   \n"
 "require 'pathname'                                                                                \n"
@@ -174,5 +176,3 @@ set(METABENCH_RB
 "  return result                                                                                   \n"
 "end                                                                                               \n"
 )
-
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/metabench.rb ${METABENCH_RB})
