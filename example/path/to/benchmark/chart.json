@@ -16,7 +16,7 @@
             # variables defined in the CMake file that calls `add_benchmark`
             # can also be used here.
             cxx: '@CMAKE_CXX_COMPILER@',
-            cxxflags: '-std=c++14 -I @CMAKE_SOURCE_DIR@/include',
+            cxxflags: '-std=c++11 -I @CMAKE_SOURCE_DIR@/include',
             env: {variable: "foo"}
         )
       %>

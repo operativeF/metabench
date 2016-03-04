@@ -1,0 +1,37 @@
+# Copyright Louis Dionne 2016
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+language: c++
+os: linux
+sudo: false
+compiler: clang
+
+addons:
+  apt:
+    packages: ninja-build
+
+env:
+  - CMAKE_GENERATOR="Ninja"
+  - CMAKE_GENERATOR="Unix Makefiles"
+
+install:
+  # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
+
+  # Install a recent CMake
+  - CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
+  - mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+  - export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+
+  # Install and use a more recent Ruby and install the gems for the benchmarks
+  - rvm use 2.1 --install --binary --fuzzy
+  - gem install ruby-progressbar tilt
+
+before_script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - (mkdir build && cd build && cmake ../example -G"${CMAKE_GENERATOR}")
+
+script:
+  - cmake --build build --target path.to.benchmark
