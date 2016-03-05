@@ -2,12 +2,22 @@
   "title"   : { "text": "Creating a heterogeneous container with n elements" },
   "subtitle": { "text": "(smaller is better)" },
   "xAxis": {
-    "title": { "text": "Number of elements" },
-    "minTickInterval": 1
+    "title": { "text": "Number of elements" }
   },
   "yAxis": {
     "title": { "text": "Time (s)" },
     "floor": 0
+  },
+  "chart": { "zoomType": "xy" },
+  "plotOptions": {
+    "series": { "marker": { "enabled": false } }
+  },
+  "tooltip": { "valueSuffix": "s" },
+  "legend": {
+    "layout": "vertical",
+    "align": "right",
+    "verticalAlign": "middle",
+    "borderWidth": 0
   },
   "series": [
     {
