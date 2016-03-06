@@ -39,6 +39,12 @@ endif()
 #   file will be passed through CMake's `configure_file` function. This can be
 #   used to include platform-dependent informations in the `chart.json` file.
 #
+#   Finally, a CTest target with the same name is also created. When run, this
+#   CTest target will run the benchmark for only a subset of the possible input
+#   values, and won't gather any benchmarking data. This is very useful to make
+#   sure that benchmarks stay sane as part of continuous integration scripts,
+#   for example.
+#
 #   Parameters
 #   ----------
 #   target:
