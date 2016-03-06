@@ -29,11 +29,11 @@ endif()
 #   `path_to_dir` directory to be executed. For simplicity, let's denote by
 #   `path/to/dir` the value of `path_to_dir` as a relative path from the current
 #   source directory. Then, running the `target` target will create two files
-#   in CMake's current binary directory, one named `path/to/dir/chart.json`
-#   and the other named `path/to/dir/index.html`. `chart.json` will contain
-#   the result of rendering the original `chart.json` file in `path/to/dir`
-#   as an ERB template, while `index.html` will contain the minimal code for
-#   visualizing the content of `chart.json` as a [Highchart][1] chart.
+#   in CMake's current binary directory, one named `path/to/dir.json` and the
+#   other named `path/to/dir.html`. `path/to/dir.json` will contain the result
+#   of rendering the `chart.json` file in the original benchmark folder as an
+#   ERB template, while `path/to/dir.html` will contain the minimal code for
+#   visualizing the content of the JSON file as a [Highchart][1] chart.
 #
 #   In addition, prior to being rendered as an ERB template, the `chart.json`
 #   file will be passed through CMake's `configure_file` function. This can be
@@ -66,38 +66,37 @@ function(add_benchmark target path_to_dir)
 
     # Dependencies of the benchmark; the benchmark will be considered
     # outdated when any of these is changed.
-    file(GLOB dependencies
-        "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*.hpp")
+    file(GLOB dependencies "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*.hpp")
 
     # We pass the chart.json file through CMake's `configure_file`.
     set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json")
     configure_file("${path_to_dir}/chart.json" ${configured_chart_json} @ONLY)
 
     # Setup the command to generate `path/to/dir/chart.json`.
-    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json"
+    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${METABENCH_RB_PATH}
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
             -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
-            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json'))"
-            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json', 'w') { |f| f.write(chart) }"
+            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))"
+            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', 'w') { |f| f.write(chart) }"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
         DEPENDS ${dependencies}
         VERBATIM USES_TERMINAL)
 
     # Setup the command to generate `path/to/dir/index.html`.
-    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/index.html"
+    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html"
         COMMAND ${RUBY_EXECUTABLE} -r tilt/erb
-            -e "chart = IO.read('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json')"
-            -e "index = Tilt::ERBTemplate.new('${INDEX_HTML_PATH}').render(nil, {data: chart})"
-            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/index.html', 'w') { |f| f.write(index) }"
-        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json"
+            -e "chart = IO.read('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json')"
+            -e "index = Tilt::ERBTemplate.new('${CHART_TEMPLATE_HTML_PATH}').render(nil, {data: chart})"
+            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', 'w') { |f| f.write(index) }"
+        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         VERBATIM)
 
     add_custom_target(${target}
-        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/chart.json"
-                "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}/index.html")
+        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
+                "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html")
 endfunction()
 
 
@@ -208,22 +207,22 @@ file(WRITE ${METABENCH_RB_PATH}
 ##############################################################################
 
 ##############################################################################
-# index.html template
+# path/to/dir.html template
 #
-# The following is a template for the `index.html` files used to visualize the
-# benchmarks. The template is completed by filling it with the contents of the
-# corresponding `chart.json` file. This is hardcoded here so that users only
-# have to copy the `metabench.cmake` module to their project, without worrying
-# about implementation details.
+# The following is a template for the HTML files used to visualize the
+# benchmarks. The template is completed by filling it with the contents
+# of the corresponding JSON file. This is hardcoded here so that users
+# only have to copy the `metabench.cmake` module to their project,
+# without worrying about implementation details.
 #
-# We also pre-download the `highcharts.js` library so that connectivity is only
-# required when running the CMake configuration step, but not for visualizing
-# the benchmarks thereafter.
+# We also pre-download the `highcharts.js` library so that connectivity
+# is only required when running the CMake configuration step, but not
+# for visualizing the benchmarks thereafter.
 ##############################################################################
-set(INDEX_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/index.html)
+set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html)
 set(HIGHCHARTS_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/highcharts.js)
 file(DOWNLOAD "https://code.highcharts.com/highcharts.js" ${HIGHCHARTS_JS_PATH})
-file(WRITE ${INDEX_HTML_PATH}
+file(WRITE ${CHART_TEMPLATE_HTML_PATH}
 "<!DOCTYPE html>                                                                                   \n"
 "<html>                                                                                            \n"
 "<head>                                                                                            \n"
