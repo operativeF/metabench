@@ -229,16 +229,19 @@ file(WRITE ${METABENCH_RB_PATH}
 #
 # We also pre-download the `highcharts.js` library so that connectivity
 # is only required when running the CMake configuration step, but not
-# for visualizing the benchmarks thereafter.
+# for visualizing the benchmarks thereafter. We hardcode the content of
+# `highcharts.js` in the file so that the generated HTML file is self-
+# standing, which can be useful for sharing benchmarks with others.
 ##############################################################################
 set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html)
 set(HIGHCHARTS_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/highcharts.js)
 file(DOWNLOAD "https://code.highcharts.com/highcharts.js" ${HIGHCHARTS_JS_PATH})
+file(READ ${HIGHCHARTS_JS_PATH} HIGHCHARTS_JS)
 file(WRITE ${CHART_TEMPLATE_HTML_PATH}
 "<!DOCTYPE html>                                                                                   \n"
 "<html>                                                                                            \n"
 "<head>                                                                                            \n"
-"  <script type='text/javascript' src='${HIGHCHARTS_JS_PATH}'></script>                            \n"
+"  <script type='text/javascript'>${HIGHCHARTS_JS}</script>                                        \n"
 "</head>                                                                                           \n"
 "<body>                                                                                            \n"
 "  <div id='container'><%= data %></div>                                                           \n"
