@@ -5,6 +5,9 @@
 # This test makes sure that Metabench sets up a Ctest target for testing the
 # benchmark when testing is enabled.
 
+cmake_minimum_required(VERSION 3.0)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+
 enable_testing()
-add_benchmark(test.ctest_target "benchmark")
-add_dependencies(check test.ctest_target)
+include(metabench)
+add_benchmark(check "benchmark")

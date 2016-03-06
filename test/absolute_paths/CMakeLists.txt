@@ -2,5 +2,9 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-add_benchmark(test.absolute_paths "${CMAKE_CURRENT_SOURCE_DIR}/benchmark")
-add_dependencies(check test.absolute_paths)
+# This test makes sure that we can use absolute paths with add_benchmark.
+
+cmake_minimum_required(VERSION 3.0)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+include(metabench)
+add_benchmark(check "${CMAKE_CURRENT_SOURCE_DIR}/benchmark")
