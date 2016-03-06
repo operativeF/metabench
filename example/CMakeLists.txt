@@ -7,4 +7,4 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 include(metabench)
 
-add_benchmark(path.to.benchmark "path/to/benchmark")
+metabench_add_benchmark(path.to.benchmark "path/to/benchmark")

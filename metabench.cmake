@@ -22,7 +22,7 @@ if(${__MISSING_GEMS})
 endif()
 
 
-# add_benchmark(target path_to_dir)
+# metabench_add_benchmark(target path_to_dir)
 #
 #   Creates a target for running a compile-time benchmark. After issuing this
 #   command, running the target named `target` will cause the benchmark in the
@@ -51,7 +51,7 @@ endif()
 #       of this module at https://github.com/ldionne/metabench.
 #
 # [1]: http://www.highcharts.com
-function(add_benchmark target path_to_dir)
+function(metabench_add_benchmark target path_to_dir)
     # Transform any absolute path to a relative path from the current source directory.
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
 

@@ -10,4 +10,4 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 
 enable_testing()
 include(metabench)
-add_benchmark(check "benchmark")
+metabench_add_benchmark(check "benchmark")
