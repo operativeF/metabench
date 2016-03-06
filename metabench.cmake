@@ -94,6 +94,13 @@ function(add_benchmark target path_to_dir)
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         VERBATIM)
 
+    # Setup the command to test the benchmark.
+    add_test(NAME ${target}
+        COMMAND ${CMAKE_COMMAND} -E env METABENCH_TEST_ONLY=true
+                ${RUBY_EXECUTABLE} -r tilt/erb -r ${METABENCH_RB_PATH}
+                -e "Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir})
+
     add_custom_target(${target}
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
                 "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html")
@@ -126,10 +133,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "def measure(erb_template, range, cxx: ENV['CXX'], cxxflags: ENV['CXXFLAGS'], env: {})             \n"
 "  raise \"invalid `cxx` parameter (#{cxx})\" if not cxx                                           \n"
 "  range = range.to_a                                                                              \n"
-"                                                                                                  \n"
-"  # if ENV['BOOST_HANA_JUST_CHECK_BENCHMARKS'] && range.length >= 2                               \n"
-"  #   range = [range[0], range[-1]]                                                               \n"
-"  # end                                                                                           \n"
+"  range = [range[0], range[-1]] if ENV['METABENCH_TEST_ONLY'] && range.length >= 2                \n"
 "                                                                                                  \n"
 "  progress = ProgressBar.create(format: '%p%% %t | %B |', title: erb_template,                    \n"
 "                                total: range.size,        output: STDERR)                         \n"

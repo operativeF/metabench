@@ -11,3 +11,4 @@ add_custom_target(check)
 
 # Each subdirectory is a unit test
 add_subdirectory(absolute_paths)
+add_subdirectory(ctest_target)
