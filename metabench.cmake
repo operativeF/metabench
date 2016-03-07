@@ -239,6 +239,10 @@ set(HIGHCHARTS_JS_URL "https://code.highcharts.com/highcharts.js")
 file(DOWNLOAD ${HIGHCHARTS_JS_URL} ${HIGHCHARTS_JS_PATH})
 file(READ ${HIGHCHARTS_JS_PATH} HIGHCHARTS_JS)
 if ("${HIGHCHARTS_JS}" STREQUAL "")
+    message(WARNING
+        "metabench.cmake: The download of a JavaScript library for chart "
+        "visualization failed. The library will be required by each HTML "
+        "chart instead, so connectivity will be required to view these.")
     set(HIGHCHARTS_JS "<script src='${HIGHCHARTS_JS_URL}'></script>")
 else()
     set(HIGHCHARTS_JS "<script type='text/javascript'>${HIGHCHARTS_JS}</script>")
