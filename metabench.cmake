@@ -227,7 +227,7 @@ file(WRITE ${METABENCH_RB_PATH}
 # only have to copy the `metabench.cmake` module to their project,
 # without worrying about implementation details.
 #
-# We also pre-download the `highcharts.js` library so that connectivity
+# We also try to pre-download the `highcharts.js` library so that connectivity
 # is only required when running the CMake configuration step, but not
 # for visualizing the benchmarks thereafter. We hardcode the content of
 # `highcharts.js` in the file so that the generated HTML file is self-
@@ -235,13 +235,19 @@ file(WRITE ${METABENCH_RB_PATH}
 ##############################################################################
 set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html)
 set(HIGHCHARTS_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/highcharts.js)
-file(DOWNLOAD "https://code.highcharts.com/highcharts.js" ${HIGHCHARTS_JS_PATH})
+set(HIGHCHARTS_JS_URL "https://code.highcharts.com/highcharts.js")
+file(DOWNLOAD ${HIGHCHARTS_JS_URL} ${HIGHCHARTS_JS_PATH})
 file(READ ${HIGHCHARTS_JS_PATH} HIGHCHARTS_JS)
+if ("${HIGHCHARTS_JS}" STREQUAL "")
+    set(HIGHCHARTS_JS "<script src='${HIGHCHARTS_JS_URL}'></script>")
+else()
+    set(HIGHCHARTS_JS "<script type='text/javascript'>${HIGHCHARTS_JS}</script>")
+endif()
 file(WRITE ${CHART_TEMPLATE_HTML_PATH}
 "<!DOCTYPE html>                                                                                   \n"
 "<html>                                                                                            \n"
 "<head>                                                                                            \n"
-"  <script type='text/javascript'>${HIGHCHARTS_JS}</script>                                        \n"
+"  ${HIGHCHARTS_JS}                                                                                \n"
 "</head>                                                                                           \n"
 "<body>                                                                                            \n"
 "  <div id='container'><%= data %></div>                                                           \n"
