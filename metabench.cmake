@@ -91,7 +91,7 @@ function(metabench_add_benchmark target path_to_dir)
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
             -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
             -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))"
-            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', 'w') { |f| f.write(chart) }"
+            -e "IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', chart)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
         DEPENDS ${dependencies}
         VERBATIM USES_TERMINAL)
@@ -101,7 +101,7 @@ function(metabench_add_benchmark target path_to_dir)
         COMMAND ${RUBY_EXECUTABLE} -r tilt/erb
             -e "chart = IO.read('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json')"
             -e "index = Tilt::ERBTemplate.new('${CHART_TEMPLATE_HTML_PATH}').render(nil, {data: chart})"
-            -e "File.open('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', 'w') { |f| f.write(index) }"
+            -e "IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', index)"
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         VERBATIM)
 
