@@ -1,18 +1,15 @@
 {
-  "title"   : { "text": "Creating a heterogeneous container with n elements" },
-  "subtitle": { "text": "(smaller is better)" },
-  "xAxis": {
-    "title": { "text": "Number of elements" }
+  xAxis: {
+    axisLabel: 'Number of Elements',
   },
-  "yAxis": {
-    "title": { "text": "Time (s)" },
-    "floor": 0
+  yAxis: {
+    axisLabel: 'Time',
+    suffix: 's'
   },
-  "tooltip": { "valueSuffix": "s" },
-  "series": [
+  data: [
     {
-      "name": "std::tuple",
-      "data": <%=
+      key: "std::tuple",
+      values: <%=
         # Here, you can write arbitrary Ruby code. The result of this Ruby code
         # will be replaced in the resulting JSON file. In this case, the result
         # of this Ruby code will be an array containing the compile-times for
@@ -26,11 +23,10 @@
             env: {variable: "foo"}
         )
       %>
-    }
-
-    , {
-      "name": "recursive tuple",
-      "data": <%=
+    },
+    {
+      key: "recursive tuple",
+      values: <%=
         Metabench.compile_time("recursive_tuple.cpp", (0...50).step(5))
       %>
     }
