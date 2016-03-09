@@ -7,16 +7,17 @@
 set -ev
 
 if [[ "${CMAKE_GENERATOR}" == "" ]]; then CMAKE_GENERATOR=Ninja; fi
+CMAKE_OPTIONS=$*
 
 # Run the example
-(rm -rf example/build && mkdir example/build && cd example/build && cmake .. -G"${CMAKE_GENERATOR}")
+(rm -rf example/build && mkdir example/build && cd example/build && cmake .. -G"${CMAKE_GENERATOR}" ${CMAKE_OPTIONS})
 cmake --build example/build --target path.to.benchmark
 
 # Run the unit tests
 for dir in test/absolute_paths test/ctest_target test/env test/local_header test/n; do
   rm -rf ${dir}/build
   mkdir ${dir}/build
-  (cd ${dir}/build && cmake .. -G"${CMAKE_GENERATOR}")
+  (cd ${dir}/build && cmake .. -G"${CMAKE_GENERATOR}" ${CMAKE_OPTIONS})
   cmake --build ${dir}/build --target check
-  (cd ${dir}/build && ctest --output-on-failure)
+  (cd ${dir}/build && ctest --output-on-failure -VV)
 done

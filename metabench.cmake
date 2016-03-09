@@ -119,7 +119,7 @@ function(metabench_add_benchmark target path_to_dir)
     add_test(NAME ${target}
         COMMAND ${CMAKE_COMMAND} -E env METABENCH_TEST_ONLY=true
                 ${RUBY_EXECUTABLE} -r tilt/erb -r ${configured_metabench_rb}
-                -e "Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
+                -e "\"Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)\""
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir})
 
     add_custom_target(${target}
@@ -158,8 +158,8 @@ file(WRITE ${METABENCH_RB_PATH}
 "  # benchmark to run.                                                                                  \n"
 "  def self.measure(erb_template, range, env: {})                                                       \n"
 "    measure_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench/\@path_to_dir\@/measure.cpp') \n"
-"    exe_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench.\@target\@')                      \n"
-"    command = '\@CMAKE_COMMAND\@ --build \@CMAKE_BINARY_DIR\@ --target _metabench.\@target\@'          \n"
+"    exe_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench.\@target\@\@CMAKE_EXECUTABLE_SUFFIX\@')\n"
+"    command = ['\@CMAKE_COMMAND\@', '--build', '\@CMAKE_BINARY_DIR\@', '--target', '_metabench.\@target\@'] \n"
 "    range = range.to_a                                                                                 \n"
 "    range = [range[0], range[-1]] if ENV['METABENCH_TEST_ONLY'] && range.length >= 2                   \n"
 "                                                                                                       \n"
@@ -175,7 +175,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "      # Compile the file and get timing statistics. The timing statistics                              \n"
 "      # are output to stdout when we compile the file, because we use the                              \n"
 "      # `measure.rb` script below to launch the compiler with CMake.                                   \n"
-"      stdout, stderr, status = Open3.capture3(command)                                                 \n"
+"      stdout, stderr, status = Open3.capture3(*command)                                                \n"
 "      command_line = stdout.match(/\\[command line: (.+)\\]/i)                                         \n"
 "                                                                                                       \n"
 "      # If we didn't match anything, that's because we went too fast, CMake                            \n"

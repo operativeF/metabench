@@ -1,0 +1,59 @@
+# Copyright Louis Dionne 2016
+# Copyright Bruno Dutra 2016
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+shallow_clone: true
+
+branches:
+  except:
+    - /pr\/.+/
+
+os:
+  - Visual Studio 2015
+
+build:
+  verbosity: detailed
+
+configuration:
+  - Debug
+
+install:
+  - choco install ninja
+
+  ############################################################################
+  # All external dependencies are installed in C:\projects\deps
+  ############################################################################
+  - mkdir C:\projects\deps
+  - cd C:\projects\deps
+
+  ############################################################################
+  # Install a pre-built Clang-cl
+  ############################################################################
+  - set LLVM_URL="https://www.dropbox.com/s/caol8ihddfwqs31/LLVM-3.7.0-win64.zip?dl=1"
+  - appveyor DownloadFile %LLVM_URL% -FileName llvm.zip
+  - 7z x llvm.zip -oC:\projects\deps\llvm > nul
+  - set PATH=C:\projects\deps\llvm\bin;%PATH%
+  - clang-cl -v
+
+  ############################################################################
+  # Use a more recent Ruby by default, and install required gems
+  #
+  # Note that we set the RUBY_LIBRARY variable explicitly because CMake fails
+  # to find it otherwise.
+  ############################################################################
+  - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
+  - ruby --version
+  - gem --version
+  - gem install ruby-progressbar tilt
+  - set RUBY_LIBRARY="C:\Ruby21-x64\lib\libx64-msvcrt-ruby210-static.a"
+
+
+before_build:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  - cd C:\projects\metabench
+
+
+build_script:
+  - set CMAKE_GENERATOR=Ninja
+  - C:\cygwin\bin\bash tools\run_tests.sh -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_CXX_FLAGS="-fms-compatibility-version=19" -DRUBY_LIBRARY=%RUBY_LIBRARY%
