@@ -37,16 +37,4 @@ install:
 
 script:
   - cd ${TRAVIS_BUILD_DIR}
-
-  # Run the example
-  - (mkdir example/build && cd example/build && cmake .. -G"${CMAKE_GENERATOR}")
-  - cmake --build example/build --target path.to.benchmark
-
-  # Run the unit tests
-  - |
-    for dir in test/absolute_paths test/ctest_target test/env test/local_header test/n; do
-      mkdir ${dir}/build
-      (cd ${dir}/build && cmake .. -G"${CMAKE_GENERATOR}")
-      cmake --build ${dir}/build --target check
-      (cd ${dir}/build && ctest --output-on-failure)
-    done
+  - ./tools/run_tests.sh
