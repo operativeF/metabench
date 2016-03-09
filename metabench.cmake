@@ -33,7 +33,7 @@ endif()
 #   other named `path/to/dir.html`. `path/to/dir.json` will contain the result
 #   of rendering the `chart.json` file in the original benchmark folder as an
 #   ERB template, while `path/to/dir.html` will contain the minimal code for
-#   visualizing the content of the JSON file as a [Highchart][1] chart.
+#   visualizing the content of the JSON file as a [NVD3][1] chart.
 #
 #   In addition, prior to being rendered as an ERB template, the `chart.json`
 #   file will be passed through CMake's `configure_file` function. This can be
@@ -56,7 +56,7 @@ endif()
 #       expected for this directory is documented in the official documentation
 #       of this module at https://github.com/ldionne/metabench.
 #
-# [1]: http://www.highcharts.com
+# [1]: http://nvd3.org/
 function(metabench_add_benchmark target path_to_dir)
     # Transform any absolute path to a relative path from the current source directory.
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
