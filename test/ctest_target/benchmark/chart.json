@@ -1,1 +1,1 @@
-<%= Metabench.compile_time("dummy.cpp", (0..50).step(5)) %>
+<%= Metabench.compile_time("dummy.cpp", [0, 1, 2]) %>
