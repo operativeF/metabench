@@ -125,14 +125,20 @@ endfunction()
 
 
 ##############################################################################
+# Below this line are scripts and other files that are required by one part or
+# another of Metabench. They are hardcoded here so that users only have to
+# copy the `metabench.cmake` module to their project, without having to worry
+# about dependencies and other implementation details.
+##############################################################################
+
+
+##############################################################################
 # metabench.rb
 #
 # The following is the `metabench.rb` Ruby module, which is automatically
 # 'require'd in the `chart.json` file. This module defines the methods
 # that are used to process and run the compiler on the `.cpp` files of a
-# benchmark directory. This is hardcoded here so that users only have to
-# copy the `metabench.cmake` module to their project, without worrying
-# about implementation details.
+# benchmark directory.
 ##############################################################################
 set(METABENCH_RB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.rb.in)
 file(WRITE ${METABENCH_RB_PATH}
@@ -246,9 +252,7 @@ file(WRITE ${MEASURE_RB_PATH}
 #
 # The following is a template for the HTML files used to visualize the
 # benchmarks. The template is completed by filling it with the contents
-# of the corresponding JSON file. This is hardcoded here so that users
-# only have to copy the `metabench.cmake` module to their project,
-# without worrying about implementation details.
+# of the corresponding JSON file.
 #
 # We also try to pre-download the `highcharts.js` library so that connectivity
 # is only required when running the CMake configuration step, but not
