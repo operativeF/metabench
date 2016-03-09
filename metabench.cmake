@@ -120,7 +120,7 @@ function(metabench_add_benchmark target path_to_dir)
 endfunction()
 
 
-##############################################################################
+################################################################################
 # metabench.rb
 #
 # The following is the `metabench.rb` Ruby module, which is automatically
@@ -129,7 +129,7 @@ endfunction()
 # benchmark directory. This is hardcoded here so that users only have to
 # copy the `metabench.cmake` module to their project, without worrying
 # about implementation details.
-##############################################################################
+################################################################################
 set(METABENCH_RB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.rb.in)
 file(WRITE ${METABENCH_RB_PATH}
 "require 'benchmark'                                                                               \n"
@@ -222,11 +222,11 @@ file(WRITE ${METABENCH_RB_PATH}
 "  end                                                                                             \n"
 "end                                                                                               \n"
 )
-##############################################################################
+################################################################################
 # end metabench.rb
-##############################################################################
+################################################################################
 
-##############################################################################
+################################################################################
 # path/to/dir.html template
 #
 # The following is a template for the HTML files used to visualize the
@@ -234,100 +234,100 @@ file(WRITE ${METABENCH_RB_PATH}
 # of the corresponding JSON file. This is hardcoded here so that users
 # only have to copy the `metabench.cmake` module to their project,
 # without worrying about implementation details.
-##############################################################################
+################################################################################
 set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html)
 file(WRITE ${CHART_TEMPLATE_HTML_PATH}
-"<!DOCTYPE html>                                                                                    \n"
-"<html>                                                                                             \n"
-"  <head>                                                                                           \n"
-"    <meta charset='utf-8'>                                                                         \n"
-"    <style><%= nvd3_css %></style>                                                                 \n"
-"    <style>                                                                                        \n"
-"      * {                                                                                          \n"
-"        box-sizing: border-box;                                                                    \n"
-"      }                                                                                            \n"
-"      html, body {                                                                                 \n"
-"        position: relative;                                                                        \n"
-"        height: 100%;                                                                              \n"
-"        width: 100%;                                                                               \n"
-"        border: 0;                                                                                 \n"
-"        margin: 0;                                                                                 \n"
-"        padding: 0;                                                                                \n"
-"        font-size: 0;                                                                              \n"
-"      }                                                                                            \n"
-"      g {                                                                                          \n"
-"        clip-path: none;                                                                           \n"
-"      }                                                                                            \n"
-"      .nv-axislabel {                                                                              \n"
-"        font-size: 16px !important;                                                                \n"
-"      }                                                                                            \n"
-"    </style>                                                                                       \n"
-"    <script><%= d3_js %></script>                                                                  \n"
-"    <script><%= nvd3_js %></script>                                                                \n"
-"  </head>                                                                                          \n"
-"  <body>                                                                                           \n"
-"    <svg id='chart'></svg>                                                                         \n"
-"    <script type='text/javascript'>                                                                \n"
-"      var chart = <%= data %>;                                                                     \n"
-"      (function () {                                                                               \n"
-"        if(typeof chart.useInteractiveGuideline == 'undefined')                                    \n"
-"          chart.useInteractiveGuideline = true;                                                    \n"
-"        if(typeof chart.color == 'undefined')                                                      \n"
-"          chart.color = d3.scale.category10().range();                                             \n"
-"        if(typeof chart.margin == 'undefined')                                                     \n"
-"          chart.margin = {left: 80, bottom: 60};                                                   \n"
-"        if(typeof chart.x == 'undefined')                                                          \n"
-"          chart.x = function(p){return p[0]};                                                      \n"
-"        if(typeof chart.y == 'undefined')                                                          \n"
-"          chart.y = function(p){return p[1]};                                                      \n"
-"        if(typeof chart.forceX == 'undefined')                                                     \n"
-"          chart.forceX = [0];                                                                      \n"
-"        if(typeof chart.forceY == 'undefined')                                                     \n"
-"          chart.forceY = [0];                                                                      \n"
-"        var xAxis = chart.xAxis || {};                                                             \n"
-"        delete(chart.xAxis);                                                                       \n"
-"        if(typeof xAxis.suffix == 'undefined')                                                     \n"
-"          xAxis.suffix = '';                                                                       \n"
-"        if(typeof xAxis.tickFormat == 'undefined')                                                 \n"
-"          xAxis.tickFormat = function(val){                                                        \n"
-"            return d3.format('.0f')(val) + xAxis.suffix;                                           \n"
-"          };                                                                                       \n"
-"        var yAxis = chart.yAxis || {};                                                             \n"
-"        delete(chart.yAxis);                                                                       \n"
-"        if(typeof yAxis.suffix == 'undefined')                                                     \n"
-"          yAxis.suffix = '';                                                                       \n"
-"        if(typeof yAxis.tickFormat == 'undefined')                                                 \n"
-"          yAxis.tickFormat = function(val){                                                        \n"
-"            return d3.format('.2f')(val) + yAxis.suffix;                                           \n"
-"          };                                                                                       \n"
-"        var data = chart.data || [];                                                               \n"
-"        delete(chart.data);                                                                        \n"
-"        var tooltip = chart.tooltip || {};                                                         \n"
-"        delete(chart.tooltip);                                                                     \n"
-"        var legend = chart.legend || {};                                                           \n"
-"        delete(chart.legend);                                                                      \n"
-"        var obj = nv.models.lineChart().options(chart);                                            \n"
-"        obj.xAxis.options(xAxis);                                                                  \n"
-"        obj.yAxis.options(yAxis);                                                                  \n"
-"        obj.tooltip.options(tooltip);                                                              \n"
-"        obj.legend.options(legend);                                                                \n"
-"        d3.select('#chart').datum(data).call(obj);                                                 \n"
-"        nv.utils.windowResize(function(){setTimeout(obj.update, 0)});                              \n"
-"      })();                                                                                        \n"
-"    </script>                                                                                      \n"
-"  </body>                                                                                          \n"
-"</html>                                                                                            \n"
+"<!DOCTYPE html>                                                             \n"
+"<html>                                                                      \n"
+"  <head>                                                                    \n"
+"    <meta charset='utf-8'>                                                  \n"
+"    <style><%= nvd3_css %></style>                                          \n"
+"    <style>                                                                 \n"
+"      * {                                                                   \n"
+"        box-sizing: border-box;                                             \n"
+"      }                                                                     \n"
+"      html, body {                                                          \n"
+"        position: relative;                                                 \n"
+"        height: 100%;                                                       \n"
+"        width: 100%;                                                        \n"
+"        border: 0;                                                          \n"
+"        margin: 0;                                                          \n"
+"        padding: 0;                                                         \n"
+"        font-size: 0;                                                       \n"
+"      }                                                                     \n"
+"      g {                                                                   \n"
+"        clip-path: none;                                                    \n"
+"      }                                                                     \n"
+"      .nv-axislabel {                                                       \n"
+"        font-size: 16px !important;                                         \n"
+"      }                                                                     \n"
+"    </style>                                                                \n"
+"    <script><%= d3_js %></script>                                           \n"
+"    <script><%= nvd3_js %></script>                                         \n"
+"  </head>                                                                   \n"
+"  <body>                                                                    \n"
+"    <svg id='chart'></svg>                                                  \n"
+"    <script type='text/javascript'>                                         \n"
+"      var chart = <%= data %>;                                              \n"
+"      (function () {                                                        \n"
+"        if(typeof chart.useInteractiveGuideline == 'undefined')             \n"
+"          chart.useInteractiveGuideline = true;                             \n"
+"        if(typeof chart.color == 'undefined')                               \n"
+"          chart.color = d3.scale.category10().range();                      \n"
+"        if(typeof chart.margin == 'undefined')                              \n"
+"          chart.margin = {left: 80, bottom: 60};                            \n"
+"        if(typeof chart.x == 'undefined')                                   \n"
+"          chart.x = function(p){return p[0]};                               \n"
+"        if(typeof chart.y == 'undefined')                                   \n"
+"          chart.y = function(p){return p[1]};                               \n"
+"        if(typeof chart.forceX == 'undefined')                              \n"
+"          chart.forceX = [0];                                               \n"
+"        if(typeof chart.forceY == 'undefined')                              \n"
+"          chart.forceY = [0];                                               \n"
+"        var xAxis = chart.xAxis || {};                                      \n"
+"        delete(chart.xAxis);                                                \n"
+"        if(typeof xAxis.suffix == 'undefined')                              \n"
+"          xAxis.suffix = '';                                                \n"
+"        if(typeof xAxis.tickFormat == 'undefined')                          \n"
+"          xAxis.tickFormat = function(val){                                 \n"
+"            return d3.format('.0f')(val) + xAxis.suffix;                    \n"
+"          };                                                                \n"
+"        var yAxis = chart.yAxis || {};                                      \n"
+"        delete(chart.yAxis);                                                \n"
+"        if(typeof yAxis.suffix == 'undefined')                              \n"
+"          yAxis.suffix = '';                                                \n"
+"        if(typeof yAxis.tickFormat == 'undefined')                          \n"
+"          yAxis.tickFormat = function(val){                                 \n"
+"            return d3.format('.2f')(val) + yAxis.suffix;                    \n"
+"          };                                                                \n"
+"        var data = chart.data || [];                                        \n"
+"        delete(chart.data);                                                 \n"
+"        var tooltip = chart.tooltip || {};                                  \n"
+"        delete(chart.tooltip);                                              \n"
+"        var legend = chart.legend || {};                                    \n"
+"        delete(chart.legend);                                               \n"
+"        var obj = nv.models.lineChart().options(chart);                     \n"
+"        obj.xAxis.options(xAxis);                                           \n"
+"        obj.yAxis.options(yAxis);                                           \n"
+"        obj.tooltip.options(tooltip);                                       \n"
+"        obj.legend.options(legend);                                         \n"
+"        d3.select('#chart').datum(data).call(obj);                          \n"
+"        nv.utils.windowResize(function(){setTimeout(obj.update, 0)});       \n"
+"      })();                                                                 \n"
+"    </script>                                                               \n"
+"  </body>                                                                   \n"
+"</html>                                                                     \n"
 )
-##############################################################################
+################################################################################
 # end index.html
-##############################################################################
+################################################################################
 
-##############################################################################
+################################################################################
 # nvd3.css
 #
 # The following is a copy of the nvd3 1.8.2 css file.
 # https://github.com/novus/nvd3
-##############################################################################
+################################################################################
 set(NVD3_CSS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/nvd3.css)
 file(WRITE ${NVD3_CSS_PATH} "\
 .nvd3 .nv-axis line,.nvd3 .nv-axis path{fill:none;shape-rendering:crispEdges}.n\
@@ -450,16 +450,16 @@ lid #999}.nvtooltip .footer{padding:3px;text-align:center}.nvtooltip-pending-re\
 moval{pointer-events:none;display:none}.nvd3 line.nv-guideline{stroke:#ccc}\n\
 /*# sourceMappingURL=nv.d3.min.css.map */\
 ")
-##############################################################################
+################################################################################
 # end nvd3.css
-##############################################################################
+################################################################################
 
-##############################################################################
+################################################################################
 # nvd3.js
 #
 # The following is a copy of the nvd3 1.8.2 js file.
 # https://github.com/novus/nvd3
-##############################################################################
+################################################################################
 set(NVD3_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/nvd3.js)
 file(WRITE ${NVD3_JS_PATH} "\
 /* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2016-01-24 */\
@@ -3321,16 +3321,16 @@ h=a,c.color(h)}},duration:{get:function(){return k},set:function(a){k=a,m.reset\
 inheritOptions(b,c),a.utils.initOptions(b),b},a.version=\"1.8.2\"}();\
 //# sourceMappingURL=nv.d3.min.js.map\
 ")
-##############################################################################
+################################################################################
 # end nvd3.js
-##############################################################################
+################################################################################
 
-##############################################################################
+################################################################################
 # d3.js
 #
 # The following is a copy of the d3 3.5.16 js file.
 # https://github.com/mbostock/d3
-##############################################################################
+################################################################################
 set(D3_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/d3.js)
 file(WRITE ${D3_JS_PATH} "\
 !function(){function n(n){return n&&(n.ownerDocument||n.document||n).documentEl\
@@ -5261,6 +5261,6 @@ ion/json\",ia,t)},oa.html=function(n,t){return Cn(n,\"text/html\",aa,t)},oa.xml=
 .d3=oa,define(oa)):\"object\"==typeof module&&module.exports?module.exports=oa:th\
 is.d3=oa}();\
 ")
-##############################################################################
+################################################################################
 # end d3.js
-##############################################################################
+################################################################################
