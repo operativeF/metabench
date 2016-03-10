@@ -252,11 +252,11 @@ file(WRITE ${MEASURE_RB_PATH}
 ################################################################################
 # path/to/dir.html template
 #
-# The following is a template for the HTML files used to visualize the
+# The following is a ERB template for the HTML files used to visualize the
 # benchmarks. The template is completed by filling it with the contents
-# of the corresponding JSON file.
+# of the corresponding JSON file and the required JS libraries.
 ################################################################################
-set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html)
+set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html.erb)
 file(WRITE ${CHART_TEMPLATE_HTML_PATH}
 "<!DOCTYPE html>                                                             \n"
 "<html>                                                                      \n"
