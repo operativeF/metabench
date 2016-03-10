@@ -10,4 +10,7 @@ include(metabench)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-metabench_add_benchmark(path.to.benchmark "path/to/benchmark")
+metabench_add_benchmark(decay decay)
+metabench_add_benchmark(make_tuple make_tuple)
+
+add_custom_target(benchmarks ALL DEPENDS decay make_tuple)

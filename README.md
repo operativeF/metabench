@@ -104,10 +104,18 @@ int main() {
 ```
 
 What happens is that Metabench will generate a `.cpp` file for different
-values of `n`, and will gather benchmark data for each of these values. The
-values of `n` that should be considered are specified in the `chart.json.erb`
-file. This file, as outlined above, controls how the `.cpp.erb` files are
-rendered and how the data can be visualized as a chart.
+values of `n`, and will gather benchmark data for each of these values.
+The `.cpp` file will be compiled (to benchmark it) as if it were located
+in the directory containing the `.cpp.erb` file, so that relative include
+paths can be used. Furthermore, it will be compiled as if the `.cpp` file
+was part of a CMake executable added in the same directory as the call to
+`metabench_add_benchmark`. This way, any variable or property set in CMake
+will also apply to the benchmark of the file.
+
+But how does Metabench figure which `n` we should benchmark a file for? These
+values are specified in the `chart.json.erb` file. This file, as outlined above,
+controls how the `.cpp.erb` files are rendered and how the data can be visualized
+as a chart.
 
 TODO: Finish this
 

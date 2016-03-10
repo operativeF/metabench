@@ -11,7 +11,7 @@ CMAKE_OPTIONS=$*
 
 # Run the example
 (rm -rf example/build && mkdir example/build && cd example/build && cmake .. -G"${CMAKE_GENERATOR}" ${CMAKE_OPTIONS})
-cmake --build example/build --target path.to.benchmark
+cmake --build example/build
 
 # Run the unit tests
 for dir in test/absolute_paths test/ctest_target test/env test/local_header test/n test/nested_directories; do
