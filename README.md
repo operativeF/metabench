@@ -1,4 +1,4 @@
-## Metabench <a target="_blank" href="https://travis-ci.org/ldionne/metabench">![Travis status][badge.Travis]</a>
+## Metabench <a target="_blank" href="https://travis-ci.org/ldionne/metabench">![Travis status][badge.Travis]</a> <a target="_blank" href="https://ci.appveyor.com/project/ldionne/metabench">![Appveyor status][badge.Appveyor]</a>
 > A simple framework for compile-time benchmarks
 
 
@@ -122,6 +122,7 @@ it into its own project.
 
 
 <!-- Links -->
+[badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/ldionne/metabench?svg=true&branch=master
 [badge.Travis]: https://travis-ci.org/ldionne/metabench.svg?branch=master
 [Boost.Hana]: http://github.com/boostorg/hana
 [CMake]: http://www.cmake.org
