@@ -4,28 +4,28 @@
 
 template <typename T, typename U = typename std::remove_reference<T>::type>
 struct decay {
-    using type = typename std::remove_cv<U>::type;
+    typedef typename std::remove_cv<U>::type type;
 };
 
 template <typename T, typename U>
-struct decay<T, U[]> { using type = U*; };
+struct decay<T, U[]> { typedef U* type; };
 template <typename T, typename U, std::size_t N>
-struct decay<T, U[N]> { using type = U*; };
+struct decay<T, U[N]> { typedef U* type; };
 
 template <typename T, typename R, typename ...A>
-struct decay<T, R(A...)> { using type = R(*)(A...); };
+struct decay<T, R(A...)> { typedef R(*type)(A...); };
 template <typename T, typename R, typename ...A>
-struct decay<T, R(A..., ...)> { using type = R(*)(A..., ...); };
+struct decay<T, R(A..., ...)> { typedef R(*type)(A..., ...); };
 
 
 <% (0..n).each do |i| %>
     struct T<%= i %> { };
-    using foo1_<%= i %> = ::decay<T<%= i %>>::type;
-    using foo2_<%= i %> = ::decay<T<%= i %>&>::type;
-    using foo3_<%= i %> = ::decay<T<%= i %>&&>::type;
-    using foo4_<%= i %> = ::decay<T<%= i %> const>::type;
-    using foo5_<%= i %> = ::decay<T<%= i %> volatile>::type;
-    using foo6_<%= i %> = ::decay<T<%= i %> [3]>::type;
+    typedef decay<T<%= i %>>::type             foo1_<%= i %>;
+    typedef decay<T<%= i %>&>::type            foo2_<%= i %>;
+    typedef decay<T<%= i %>&&>::type           foo3_<%= i %>;
+    typedef decay<T<%= i %> const>::type       foo4_<%= i %>;
+    typedef decay<T<%= i %> volatile>::type    foo5_<%= i %>;
+    typedef decay<T<%= i %> [3]>::type         foo6_<%= i %>;
 <% end %>
 
 int main() { }
