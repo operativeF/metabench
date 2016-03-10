@@ -22,21 +22,6 @@ install:
   - choco install ninja
 
   ############################################################################
-  # All external dependencies are installed in C:\projects\deps
-  ############################################################################
-  - mkdir C:\projects\deps
-  - cd C:\projects\deps
-
-  ############################################################################
-  # Install a pre-built Clang-cl
-  ############################################################################
-  - set LLVM_URL="https://www.dropbox.com/s/caol8ihddfwqs31/LLVM-3.7.0-win64.zip?dl=1"
-  - appveyor DownloadFile %LLVM_URL% -FileName llvm.zip
-  - 7z x llvm.zip -oC:\projects\deps\llvm > nul
-  - set PATH=C:\projects\deps\llvm\bin;%PATH%
-  - clang-cl -v
-
-  ############################################################################
   # Use a more recent Ruby by default, and install required gems
   #
   # Note that we set the RUBY_LIBRARY variable explicitly because CMake fails
@@ -56,4 +41,4 @@ before_build:
 
 build_script:
   - set CMAKE_GENERATOR=Ninja
-  - C:\cygwin\bin\bash tools\run_tests.sh -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_CXX_FLAGS="-fms-compatibility-version=19" -DRUBY_LIBRARY=%RUBY_LIBRARY%
+  - C:\cygwin\bin\bash tools\run_tests.sh -DCMAKE_CXX_COMPILER=cl -DRUBY_LIBRARY=%RUBY_LIBRARY%
