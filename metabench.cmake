@@ -31,11 +31,11 @@ endif()
 #   source directory. Then, running the `target` target will create two files
 #   in CMake's current binary directory, one named `path/to/dir.json` and the
 #   other named `path/to/dir.html`. `path/to/dir.json` will contain the result
-#   of rendering the `chart.json` file in the original benchmark folder as an
-#   ERB template, while `path/to/dir.html` will contain the minimal code for
+#   of rendering the `chart.json.erb` file in the original benchmark folder as
+#   an ERB template, while `path/to/dir.html` will contain the minimal code for
 #   visualizing the content of the JSON file as a [NVD3][1] chart.
 #
-#   In addition, prior to being rendered as an ERB template, the `chart.json`
+#   In addition, prior to being rendered as an ERB template, the `chart.json.erb`
 #   file will be passed through CMake's `configure_file` function. This can be
 #   used to include platform-dependent informations in the `chart.json` file.
 #
@@ -66,8 +66,8 @@ function(metabench_add_benchmark target path_to_dir)
         message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) is not a valid directory.")
     endif()
 
-    if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json)
-        message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) does not contain a chart.json file.")
+    if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json.erb)
+        message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) does not contain a chart.json.erb file.")
     endif()
 
     # Create a dummy executable that will be used to run the benchmark. We'll
@@ -82,9 +82,9 @@ function(metabench_add_benchmark target path_to_dir)
     # outdated when any of these is changed.
     file(GLOB dependencies "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*")
 
-    # We pass the chart.json file through CMake's `configure_file`.
-    set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json")
-    configure_file("${path_to_dir}/chart.json" ${configured_chart_json} @ONLY)
+    # We pass the chart.json.erb file through CMake's `configure_file`.
+    set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json.erb")
+    configure_file("${path_to_dir}/chart.json.erb" ${configured_chart_json} @ONLY)
 
     # We pass metabench.rb file through CMake's `configure_file`, so current
     # values of CMAKE_CXX_COMPILER and CMAKE_CXX_FLAGS are taken into account.
@@ -138,9 +138,9 @@ endfunction()
 # metabench.rb
 #
 # The following is the `metabench.rb` Ruby module, which is automatically
-# 'require'd in the `chart.json` file. This module defines the methods
-# that are used to process and run the compiler on the `.cpp` files of a
-# benchmark directory.
+# 'require'd in the `chart.json.erb` file. This module defines the methods
+# that are used to process and run the compiler on the `.cpp.erb` files
+# of a benchmark directory.
 ################################################################################
 set(METABENCH_RB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.rb.in)
 file(WRITE ${METABENCH_RB_PATH}
@@ -154,7 +154,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "                                                                                                       \n"
 "module Metabench                                                                                       \n"
 "  # This function is meant to be called inside a ERB-based `chart.json` file.                          \n"
-"  # `erb_template` should be the name of the `.cpp` file containing the                                \n"
+"  # `erb_template` should be the name of the `.cpp.erb` file containing the                            \n"
 "  # benchmark to run.                                                                                  \n"
 "  def self.measure(erb_template, range, env: {})                                                       \n"
 "    measure_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench/\@path_to_dir\@/measure.cpp') \n"

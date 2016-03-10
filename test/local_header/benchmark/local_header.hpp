@@ -1,1 +1,1 @@
-// Local header included by `dummy.cpp`
+// Local header included by `dummy.cpp.erb`

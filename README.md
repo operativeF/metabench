@@ -40,18 +40,18 @@ _directory_ with the following layout:
 
 ```
 some_directory/
-    chart.json
-    file1.cpp
+    chart.json.erb
+    file1.cpp.erb
     ...
-    fileN.cpp
+    fileN.cpp.erb
 ```
 
-The `.cpp` files are files whose compilation time will be benchmarked, and
-the `chart.json` file is a file that controls how the `.cpp` files will be
-benchmarked, exactly what benchmarking data will be gathered, and how we will
-visualize the benchmark data as a chart. However, these files are not just
-normal JSON or `.cpp` files. Instead, they are [ERB templates][ERB] used to
-generate actual JSON and `.cpp` files.
+The `.cpp.erb` files are files whose compilation time will be benchmarked, and
+the `chart.json.erb` file is a file that controls how the `.cpp.erb` files will
+be benchmarked, exactly what benchmarking data will be gathered, and how we will
+visualize the benchmark data as a chart. However, as their extension suggests,
+these files are not just normal JSON or C++ files. Instead, they are
+[ERB templates][ERB] used to generate actual `.json` and `.cpp` files.
 
 #### The principle
 Benchmarking the compilation time of a single `.cpp` file is rather useless,
@@ -75,13 +75,13 @@ int main() { auto tuple = std::make_tuple(1, 2, 3, 4, 5, 6, 7, 8, 9, 10); }
 We would measure the compilation time for this file, and repeat the process
 until satisfactory data has been gathered. This tedious task of generating
 different (but obviously related) `.cpp` files and running the compiler to
-gather timings is what the Metabench module automates. It does this by
-assuming that the `.cpp` files are written using the ERB template system,
-and it generates a family of `.cpp` files from that template. It then
-compiles these files and gathers benchmark data from these compilations.
+gather timings is what the Metabench module automates. It does this by taking
+a `.cpp.erb` file written using the ERB template system, and generating a
+family of `.cpp` files from that template. It then compiles these `.cpp`
+files and gathers benchmark data from these compilations.
 
-Concretely, you start by writing a `.cpp` file (say `std_tuple.cpp`) that may
-contain ERB markup:
+Concretely, you start by writing a `.cpp.erb` file (say `std_tuple.cpp.erb`)
+that may contain ERB markup:
 
 ```c++
 #include <tuple>
@@ -103,11 +103,11 @@ int main() {
 }
 ```
 
-What happens is that Metabench will generate the `.cpp` file for different
+What happens is that Metabench will generate a `.cpp` file for different
 values of `n`, and will gather benchmark data for each of these values. The
-values of `n` that should be considered are specified in the `chart.json` file.
-This file, as outlined above, controls how the `.cpp` files are rendered and
-how the data can be visualized as a chart.
+values of `n` that should be considered are specified in the `chart.json.erb`
+file. This file, as outlined above, controls how the `.cpp.erb` files are
+rendered and how the data can be visualized as a chart.
 
 TODO: Finish this
 
