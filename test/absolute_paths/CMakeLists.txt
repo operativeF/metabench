@@ -4,7 +4,7 @@
 
 # This test makes sure that we can use absolute paths with add_benchmark.
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 metabench_add_benchmark(check "${CMAKE_CURRENT_SOURCE_DIR}/benchmark")

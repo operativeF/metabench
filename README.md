@@ -12,7 +12,7 @@ long compilation times. Metabench was designed to be very simple to use, while
 still allowing fairly complex benchmarks to be written.
 
 ### Dependencies
-Metabench requires [CMake][] 3.0 or higher. It also requires [Ruby][] 2.1 or
+Metabench requires [CMake][] 3.1 or higher. It also requires [Ruby][] 2.1 or
 higher along with the [Progressbar][] and [Tilt][] gems.
 
 ### Usage
