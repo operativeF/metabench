@@ -75,7 +75,9 @@ function(metabench_add_benchmark target path_to_dir)
     # without additional work.
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/measure.cpp "")
     add_executable(_metabench.${target} EXCLUDE_FROM_ALL ${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/measure.cpp)
-    set_target_properties(_metabench.${target} PROPERTIES RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${MEASURE_RB_PATH}")
+    set_target_properties(_metabench.${target} PROPERTIES
+        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${MEASURE_RB_PATH}"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}")
     target_include_directories(_metabench.${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}")
 
     # Dependencies of the benchmark; the benchmark will be considered
@@ -158,7 +160,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "  # benchmark to run.                                                                                  \n"
 "  def self.measure(erb_template, range, env: {})                                                       \n"
 "    measure_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench/\@path_to_dir\@/measure.cpp') \n"
-"    exe_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench.\@target\@\@CMAKE_EXECUTABLE_SUFFIX\@')\n"
+"    exe_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench/\@path_to_dir\@/_metabench.\@target\@\@CMAKE_EXECUTABLE_SUFFIX\@')\n"
 "    command = ['\@CMAKE_COMMAND\@', '--build', '\@CMAKE_BINARY_DIR\@', '--target', '_metabench.\@target\@'] \n"
 "    range = range.to_a                                                                                 \n"
 "    range = [range[0], range[-1]] if ENV['METABENCH_TEST_ONLY'] && range.length >= 2                   \n"
