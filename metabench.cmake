@@ -480,7 +480,7 @@ ble tr.highlight td{padding:1px 9px 1px 0;border-bottom-style:solid;border-bott\
 om-width:1px;border-top-style:solid;border-top-width:1px}.nvtooltip table td.le\
 gend-color-guide div{vertical-align:middle;width:12px;height:12px;border:1px so\
 lid #999}.nvtooltip .footer{padding:3px;text-align:center}.nvtooltip-pending-re\
-moval{pointer-events:none;display:none}.nvd3 line.nv-guideline{stroke:#ccc}\n\
+moval{pointer-events:none;display:none}.nvd3 line.nv-guideline{stroke:#ccc}\
 /*# sourceMappingURL=nv.d3.min.css.map */\
 ")
 ################################################################################
