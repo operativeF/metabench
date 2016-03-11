@@ -14,7 +14,8 @@ CMAKE_OPTIONS=$*
 cmake --build example/build
 
 # Run the unit tests
-for dir in test/absolute_paths test/ctest_target test/env test/local_header test/n test/nested_directories; do
+for dir in test/*; do
+  [[ ! -d ${dir} ]] && continue
   rm -rf ${dir}/build
   mkdir ${dir}/build
   (cd ${dir}/build && cmake .. -G"${CMAKE_GENERATOR}" ${CMAKE_OPTIONS})

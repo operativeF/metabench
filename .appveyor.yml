@@ -9,17 +9,20 @@ branches:
   except:
     - /pr\/.+/
 
-os:
-  - Visual Studio 2015
-
 build:
   verbosity: detailed
 
-configuration:
-  - Debug
+environment:
+    matrix:
+      - CMAKE_GENERATOR: "Ninja"
+      - CMAKE_GENERATOR: "NMake Makefiles"
+      - CMAKE_GENERATOR: "Unix Makefiles"
+      - CMAKE_GENERATOR: "MSYS Makefiles"
 
 install:
-  - choco install ninja
+  - if "%CMAKE_GENERATOR%" equ "Ninja" (choco install ninja)
+  - if "%CMAKE_GENERATOR%" equ "Unix Makefiles" (set "PATH=C:\cygwin\bin;%PATH%")
+  - if "%CMAKE_GENERATOR%" equ "MSYS Makefiles" (set "PATH=C:\MinGW\bin;C:\MinGW\msys\1.0\bin;%PATH%")
 
   ############################################################################
   # Use a more recent Ruby by default, and install required gems
@@ -33,12 +36,9 @@ install:
   - gem install ruby-progressbar tilt
   - set RUBY_LIBRARY="C:\Ruby21-x64\lib\libx64-msvcrt-ruby210-static.a"
 
-
 before_build:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - cd C:\projects\metabench
 
-
 build_script:
-  - set CMAKE_GENERATOR=Ninja
-  - C:\cygwin\bin\bash tools\run_tests.sh -DCMAKE_CXX_COMPILER=cl -DRUBY_LIBRARY=%RUBY_LIBRARY%
+  - bash tools\run_tests.sh -DRUBY_LIBRARY=%RUBY_LIBRARY%
