@@ -111,7 +111,7 @@ function(metabench_add_benchmark target path_to_dir)
             -e "\"nvd3_css = IO.read('${NVD3_CSS_PATH}')\""
             -e "\"nvd3_js = IO.read('${NVD3_JS_PATH}')\""
             -e "\"d3_js = IO.read('${D3_JS_PATH}')\""
-            -e "\"index = Tilt::ERBTemplate.new('${CHART_TEMPLATE_HTML_PATH}')\
+            -e "\"index = Tilt::ERBTemplate.new('${CHART_HTML_ERB_PATH}')\
                 .render(nil, {data: chart, nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})\""
             -e "\"IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', index)\""
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
@@ -258,8 +258,8 @@ file(WRITE ${MEASURE_RB_PATH}
 # benchmarks. The template is completed by filling it with the contents
 # of the corresponding JSON file and the required JS libraries.
 ################################################################################
-set(CHART_TEMPLATE_HTML_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart_template.html.erb)
-file(WRITE ${CHART_TEMPLATE_HTML_PATH}
+set(CHART_HTML_ERB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart.html.erb)
+file(WRITE ${CHART_HTML_ERB_PATH}
 "<!DOCTYPE html>                                                             \n"
 "<html>                                                                      \n"
 "  <head>                                                                    \n"
