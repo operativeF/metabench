@@ -21,112 +21,60 @@ if(${__MISSING_GEMS})
     return()
 endif()
 
+function(metabench_add_dataset target template range env)
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" template "${template}")
+    string(REGEX REPLACE "[.].*$" ".cpp" source "${template}")
+    set(template "${CMAKE_CURRENT_SOURCE_DIR}/${template}")
+    set(source "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${source}")
+    string(REGEX REPLACE "[/\\][^/\\]+$" "" template_dir "${template}")
+    string(REGEX REPLACE "[/\\][^/\\]+$" "" target_dir "${source}")
+    set(datum "${target_dir}/${target}.json")
 
-# metabench_add_benchmark(target path_to_dir)
-#
-#   Creates a target for running a compile-time benchmark. After issuing this
-#   command, running the target named `target` will cause the benchmark in the
-#   `path_to_dir` directory to be executed. For simplicity, let's denote by
-#   `path/to/dir` the value of `path_to_dir` as a relative path from the current
-#   source directory. Then, running the `target` target will create two files
-#   in CMake's current binary directory, one named `path/to/dir.json` and the
-#   other named `path/to/dir.html`. `path/to/dir.json` will contain the result
-#   of rendering the `chart.json.erb` file in the original benchmark folder as
-#   an ERB template, while `path/to/dir.html` will contain the minimal code for
-#   visualizing the content of the JSON file as a [NVD3][1] chart.
-#
-#   In addition, prior to being rendered as an ERB template, the `chart.json.erb`
-#   file will be passed through CMake's `configure_file` function. This can be
-#   used to include platform-dependent informations in the `chart.json` file.
-#
-#   Finally, a CTest target with the same name is also created. When run, this
-#   CTest target will run the benchmark for only a subset of the possible input
-#   values, and won't gather any benchmarking data. This is very useful to make
-#   sure that benchmarks stay sane as part of continuous integration scripts,
-#   for example.
-#
-#   Parameters
-#   ----------
-#   target:
-#       The name of the target associated to this benchmark.
-#
-#   path_to_dir:
-#       The path of the benchmark to run. This may be either an absolute path
-#       or a path relative to the current source directory. The exact structure
-#       expected for this directory is documented in the official documentation
-#       of this module at https://github.com/ldionne/metabench.
-#
-# [1]: http://nvd3.org/
-function(metabench_add_benchmark target path_to_dir)
-    # Transform any absolute path to a relative path from the current source directory.
-    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" path_to_dir ${path_to_dir})
-
-    # Sanity checks on the arguments
-    if (NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir})
-        message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) is not a valid directory.")
+    if(NOT EXISTS "${template}")
+        message(FATAL_ERROR "File ${template} does not exist.")
     endif()
 
-    if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/chart.json.erb)
-        message(FATAL_ERROR "Path specified to add_benchmark (${path_to_dir}) does not contain a chart.json.erb file.")
-    endif()
+    # We pass the metabench.rb.in file through CMake's `configure_file`.
+    set(metabench_rb_path "${target_dir}/${target}.metabench.rb")
+    configure_file("${METABENCH_RB_IN_PATH}" "${metabench_rb_path}" @ONLY)
 
-    # Create a dummy executable that will be used to run the benchmark. We'll
-    # run the benchmark through CMake, which allows us to be cross-platform
-    # without additional work.
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/measure.cpp "")
-    add_executable(_metabench.${target} EXCLUDE_FROM_ALL ${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/measure.cpp)
-    set_target_properties(_metabench.${target} PROPERTIES
-        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${MEASURE_RB_PATH}"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}")
-    target_include_directories(_metabench.${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}")
+    file(WRITE "${source}" "")
+    add_executable(${target} EXCLUDE_FROM_ALL "${source}")
+    target_include_directories(${target} PUBLIC "${template_dir}")
+    set_target_properties(
+        ${target} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${target_dir}"
+        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${metabench_rb_path}"
+    )
+endfunction()
 
-    # Dependencies of the benchmark; the benchmark will be considered
-    # outdated when any of these is changed.
-    file(GLOB dependencies "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}/*")
+function(metabench_add_benchmark target)
+    set(data)
+    foreach(dataset ${ARGN})
+        get_target_property(output_dir ${dataset} RUNTIME_OUTPUT_DIRECTORY)
+        list(APPEND data "${output_dir}/${dataset}.json")
+    endforeach()
 
-    # We pass the chart.json.erb file through CMake's `configure_file`.
-    set(configured_chart_json "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/chart.json.erb")
-    configure_file("${path_to_dir}/chart.json.erb" ${configured_chart_json} @ONLY)
-
-    # We pass metabench.rb file through CMake's `configure_file`, so current
-    # values of CMAKE_CXX_COMPILER and CMAKE_CXX_FLAGS are taken into account.
-    set(configured_metabench_rb "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${path_to_dir}/metabench.rb")
-    configure_file(${METABENCH_RB_PATH} ${configured_metabench_rb} @ONLY)
-
-    # Setup the command to generate `path/to/dir/chart.json`.
-    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
-        COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${configured_metabench_rb}
-            # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
-            -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
-            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))"
-            -e "IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', chart)"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
-        DEPENDS ${dependencies}
-        VERBATIM USES_TERMINAL)
-
-    # Setup the command to generate `path/to/dir/index.html`.
-    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html"
+    set(json_path "${CMAKE_CURRENT_BINARY_DIR}/${target}.json")
+    set(html_path "${CMAKE_CURRENT_BINARY_DIR}/${target}.html")
+    add_custom_command(
+        OUTPUT "${json_path}" "${html_path}"
         COMMAND ${RUBY_EXECUTABLE} -r tilt/erb
-            -e "chart = IO.read('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json')"
+            -e "data = []"
+            -e "'${data}'.split(/\\s*;\\s*/).each { |datum| data << IO.read(datum) }"
+            -e "data = '\"data\": [' + data.join(', ') + ']'"
             -e "nvd3_css = IO.read('${NVD3_CSS_PATH}')"
             -e "nvd3_js = IO.read('${NVD3_JS_PATH}')"
             -e "d3_js = IO.read('${D3_JS_PATH}')"
             -e "index = Tilt::ERBTemplate.new('${CHART_HTML_ERB_PATH}')\
-                .render(nil, {data: chart, nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})"
-            -e "IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', index)"
-        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
-        VERBATIM)
+                .render(nil, {data: '{' + data + '}', nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})"
+            -e "IO.write('${json_path}', data)"
+            -e "IO.write('${html_path}', index)"
+        DEPENDS ${ARGN}
+        VERBATIM
+    )
 
-    # Setup the command to test the benchmark.
-    add_test(NAME ${target}
-        COMMAND ${CMAKE_COMMAND} -E env METABENCH_TEST_ONLY=true
-                ${RUBY_EXECUTABLE} -r tilt/erb -r ${configured_metabench_rb}
-                -e "Tilt::ERBTemplate.new(\"${configured_chart_json}\").render(binding)"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir})
-
-    add_custom_target(${target}
-        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
-                "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html")
+    add_custom_target(${target} ALL DEPENDS "${json_path}" "${html_path}")
 endfunction()
 
 ################################################################################
@@ -137,118 +85,38 @@ endfunction()
 ################################################################################
 
 ################################################################################
-# metabench.rb
-#
-# The following is the `metabench.rb` Ruby module, which is automatically
-# 'require'd in the `chart.json.erb` file. This module defines the methods
-# that are used to process and run the compiler on the `.cpp.erb` files
-# of a benchmark directory.
-################################################################################
-set(METABENCH_RB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.rb.in)
-file(WRITE ${METABENCH_RB_PATH}
-"require 'benchmark'                                                                                    \n"
-"require 'open3'                                                                                        \n"
-"require 'pathname'                                                                                     \n"
-"require 'ruby-progressbar'                                                                             \n"
-"require 'tempfile'                                                                                     \n"
-"require 'tilt/erb'                                                                                     \n"
-"                                                                                                       \n"
-"                                                                                                       \n"
-"module Metabench                                                                                       \n"
-"  # This function is meant to be called inside a ERB-based `chart.json` file.                          \n"
-"  # `erb_template` should be the name of the `.cpp.erb` file containing the                            \n"
-"  # benchmark to run.                                                                                  \n"
-"  def self.measure(erb_template, range, env: {})                                                       \n"
-"    measure_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench/\@path_to_dir\@/measure.cpp') \n"
-"    exe_file = Pathname.new('\@CMAKE_CURRENT_BINARY_DIR\@/_metabench/\@path_to_dir\@/_metabench.\@target\@\@CMAKE_EXECUTABLE_SUFFIX\@')\n"
-"    command = ['\@CMAKE_COMMAND\@', '--build', '\@CMAKE_BINARY_DIR\@', '--target', '_metabench.\@target\@'] \n"
-"    range = range.to_a                                                                                 \n"
-"    range = [range[0], range[-1]] if ENV['METABENCH_TEST_ONLY'] && range.length >= 2                   \n"
-"                                                                                                       \n"
-"    progress = ProgressBar.create(format: '%p%% %t | %B |', title: erb_template,                       \n"
-"                                  total: range.size,        output: STDERR)                            \n"
-"    range.each do |n|                                                                                  \n"
-"      # Evaluate the ERB template with the given environment, and save the                             \n"
-"      # result in a temporary file.                                                                    \n"
-"      code = Tilt::ERBTemplate.new(erb_template).render(nil, n: n, env: env)                           \n"
-"      measure_file.write(code)                                                                         \n"
-"      data = {n: n}                                                                                    \n"
-"                                                                                                       \n"
-"      # Compile the file and get timing statistics. The timing statistics                              \n"
-"      # are output to stdout when we compile the file, because we use the                              \n"
-"      # `measure.rb` script below to launch the compiler with CMake.                                   \n"
-"      stdout, stderr, status = Open3.capture3(*command)                                                \n"
-"      command_line = stdout.match(/\\[command line: (.+)\\]/i)                                         \n"
-"                                                                                                       \n"
-"      # If we didn't match anything, that's because we went too fast, CMake                            \n"
-"      # did not have the time to see the changes to the measure file and                               \n"
-"      # the target was not rebuilt. So we sleep for a bit and then retry                               \n"
-"      # this iteration.                                                                                \n"
-"      (sleep 0.2; redo) if command_line.nil?                                                           \n"
-"      error_string = <<-EOS                                                                            \n"
-"compilation error: #{command_line.captures[0]}                                                         \n"
-"                                                                                                       \n"
-"stdout                                                                                                 \n"
-"#{'-'*80}                                                                                              \n"
-"#{stdout}                                                                                              \n"
-"                                                                                                       \n"
-"stderr                                                                                                 \n"
-"#{'-'*80}                                                                                              \n"
-"#{stderr}                                                                                              \n"
-"                                                                                                       \n"
-"code                                                                                                   \n"
-"#{'-'*80}                                                                                              \n"
-"#{code}                                                                                                \n"
-"EOS\n"
-"      raise error_string if not status.success?                                                        \n"
-"      data[:time] = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                     \n"
-"      # Size of the generated executable in KB                                                         \n"
-"      data[:size] = File.size(exe_file).to_f / 1000                                                    \n"
-"                                                                                                       \n"
-"      progress.increment                                                                               \n"
-"      yield data                                                                                       \n"
-"    end                                                                                                \n"
-"  ensure                                                                                               \n"
-"    measure_file.write('')                                                                             \n"
-"    progress.finish if progress                                                                        \n"
-"  end                                                                                                  \n"
-"                                                                                                       \n"
-"  def self.compile_time(relative_path_to_erb_template, range, **options)                               \n"
-"    result = []                                                                                        \n"
-"    measure(relative_path_to_erb_template, range, **options) do |data|                                 \n"
-"      result << [data[:n], data[:time]]                                                                \n"
-"    end                                                                                                \n"
-"    return result                                                                                      \n"
-"  end                                                                                                  \n"
-"                                                                                                       \n"
-"  def self.executable_size(relative_path_to_erb_template, range, **options)                            \n"
-"    result = []                                                                                        \n"
-"    measure(relative_path_to_erb_template, range, **options) do |data|                                 \n"
-"      result << [data[:n], data[:size]]                                                                \n"
-"    end                                                                                                \n"
-"    return result                                                                                      \n"
-"  end                                                                                                  \n"
-"end                                                                                                    \n"
-)
-################################################################################
-# end metabench.rb
-################################################################################
-
-################################################################################
-# measure.rb
+# metabench.rb.in
 #
 # This script is used to launch the compiler and measure the compilation time.
 ################################################################################
-set(MEASURE_RB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/measure.rb)
-file(WRITE ${MEASURE_RB_PATH}
-"require 'benchmark'                                                    \n"
-"command = ARGV.join(' ')                                               \n"
-"time = Benchmark.realtime { `#{command}` }                             \n"
-"puts \"[command line: #{command}]\"                                    \n"
-"puts \"[compilation time: #{time}]\"                                   \n"
+set(METABENCH_RB_IN_PATH "${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.rb.in")
+file(WRITE ${METABENCH_RB_IN_PATH}
+"require 'benchmark'                                                         \n"
+"require 'pathname'                                                          \n"
+"require 'ruby-progressbar'                                                  \n"
+"require 'tilt/erb'                                                          \n"
+"template = Tilt::ERBTemplate.new('\@template\@')                            \n"
+"source_file = Pathname.new('\@source\@')                                    \n"
+"command = ARGV.join(' ')                                                    \n"
+"data = []                                                                   \n"
+"range = eval('\@range\@').to_a                                              \n"
+"progress = ProgressBar.create(format: '%p%% %t | %B |', title: '\@target\@',\n"
+"                              total: range.size,        output: STDERR)     \n"
+"range.each do |n|                                                           \n"
+"  # Evaluate the ERB template with the given environment                    \n"
+"  source_file.write(template.render(nil, n: n, env: \@env\@))               \n"
+"  time = Benchmark.realtime { `#{command}` }                                \n"
+"  data << [n, time]                                                         \n"
+"  progress.increment                                                        \n"
+"  source_file.write('')                                                     \n"
+"end                                                                         \n"
+"IO.write('\@datum\@', \"{                                                   \n"
+"  key: \\\"\@target\@\\\",                                                  \n"
+"  values: #{data}                                                           \n"
+"}\")                                                                        \n"
 )
 ################################################################################
-# end measure.rb
+# end metabench.rb.in
 ################################################################################
 
 ################################################################################

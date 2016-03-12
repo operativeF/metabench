@@ -8,4 +8,6 @@
 cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
-metabench_add_benchmark(check "benchmark")
+
+metabench_add_dataset(dummy benchmark/dummy.cpp.erb "[1, 2, 3]" "{variable: 123}")
+metabench_add_benchmark(check dummy)
