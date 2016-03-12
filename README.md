@@ -108,7 +108,7 @@ values of `n`, and will gather benchmark data for each of these values.
 The `.cpp` file will be compiled (to benchmark it) as if it were located
 in the directory containing the `.cpp.erb` file, so that relative include
 paths can be used. Furthermore, it will be compiled as if the `.cpp` file
-was part of a CMake executable added in the same directory as the call to
+were part of a CMake executable added in the same directory as the call to
 `metabench_add_benchmark`. This way, any variable or property set in CMake
 will also apply to the benchmark of the file.
 
@@ -120,7 +120,7 @@ as a chart.
 TODO: Finish this
 
 This is it for basic usage! Note that the `example/` directory contains a
-fully working minimal example of using Metabench to create a benchmark.
+fully working example of using Metabench to create benchmarks.
 
 ### History
 Metabench was initially developed inside the [Boost.Hana][] library as a
