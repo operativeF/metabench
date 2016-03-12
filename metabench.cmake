@@ -46,6 +46,24 @@ function(metabench_add_dataset target template range env)
         RUNTIME_OUTPUT_DIRECTORY "${target_dir}"
         RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${metabench_rb_path}"
     )
+
+    # We pass the metabench.test.rb.in file through CMake's `configure_file`.
+    set(metabench_test_rb_path "${target_dir}/${target}.metabench.test.rb")
+    configure_file("${METABENCH_TEST_RB_IN_PATH}" "${metabench_test_rb_path}" @ONLY)
+
+    add_executable(${target}.test EXCLUDE_FROM_ALL ${source})
+    target_include_directories(${target}.test PUBLIC "${template_dir}")
+    set_target_properties(
+        ${target}.test PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${target_dir}"
+        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${metabench_test_rb_path}"
+    )
+
+    add_test(
+        NAME ${target}
+        COMMAND ${CMAKE_COMMAND} --build . --target ${target}.test
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+    )
 endfunction()
 
 function(metabench_add_benchmark target)
@@ -114,6 +132,31 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "  key: \\\"\@target\@\\\",                                                  \n"
 "  values: #{data}                                                           \n"
 "}\")                                                                        \n"
+)
+################################################################################
+# end metabench.rb.in
+################################################################################
+
+################################################################################
+# metabench.rb.in
+#
+# This script is used to launch the compiler and test compilation.
+################################################################################
+set(METABENCH_TEST_RB_IN_PATH "${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.test.rb.in")
+file(WRITE ${METABENCH_TEST_RB_IN_PATH}
+"require 'pathname'                                                          \n"
+"require 'tilt/erb'                                                          \n"
+"template = Tilt::ERBTemplate.new('\@template\@')                            \n"
+"source_file = Pathname.new('\@source\@')                                    \n"
+"command = ARGV.join(' ')                                                    \n"
+"range = eval('\@range\@').to_a                                              \n"
+"range = range[range[0], range[-1]] if range.length > 2                      \n"
+"range.each do |n|                                                           \n"
+"  # Evaluate the ERB template with the given environment                    \n"
+"  source_file.write(template.render(nil, n: n, env: \@env\@))               \n"
+"  `#{command}`                                                              \n"
+"  source_file.write('')                                                     \n"
+"end                                                                         \n"
 )
 ################################################################################
 # end metabench.rb.in
