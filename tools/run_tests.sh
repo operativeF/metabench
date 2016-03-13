@@ -13,9 +13,13 @@ CMAKE_OPTIONS=$*
 (rm -rf example/build && mkdir example/build && cd example/build && cmake .. -G"${CMAKE_GENERATOR}" ${CMAKE_OPTIONS})
 cmake --build example/build
 
+
 # Run the unit tests
 for dir in test/*; do
-  [[ ! -d ${dir} ]] && continue
+  if [[ ! -d ${dir} ]]; then continue; fi
+  echo "Testing ${dir}"
+  echo
+
   rm -rf ${dir}/build
   mkdir ${dir}/build
   (cd ${dir}/build && cmake .. -G"${CMAKE_GENERATOR}" ${CMAKE_OPTIONS})
