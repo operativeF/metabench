@@ -17,8 +17,11 @@ cmake --build example/build
 # Run the unit tests
 for dir in test/*; do
   if [[ ! -d ${dir} ]]; then continue; fi
-  echo "Testing ${dir}"
+
   echo
+  echo
+  echo "Testing ${dir}"
+  echo "------------------------------------"
 
   rm -rf ${dir}/build
   mkdir ${dir}/build
