@@ -156,7 +156,7 @@ function(metabench_add_benchmark target)
         VERBATIM
     )
 
-    add_custom_target(${target} ALL DEPENDS "${json_path}" "${html_path}")
+    add_custom_target(${target} DEPENDS "${json_path}" "${html_path}")
 endfunction()
 
 ################################################################################
