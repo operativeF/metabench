@@ -21,7 +21,7 @@ if(${__MISSING_GEMS})
     return()
 endif()
 
-function(metabench_add_dataset target template range env)
+function(metabench_add_dataset target template range)
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" template "${template}")
     string(REGEX REPLACE "[.].*$" ".cpp" source "${template}")
     set(template "${CMAKE_CURRENT_SOURCE_DIR}/${template}")
@@ -121,8 +121,8 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "progress = ProgressBar.create(format: '%p%% %t | %B |', title: '\@target\@',\n"
 "                              total: range.size,        output: STDERR)     \n"
 "range.each do |n|                                                           \n"
-"  # Evaluate the ERB template with the given environment                    \n"
-"  source_file.write(template.render(nil, n: n, env: \@env\@))               \n"
+"  # Evaluate the ERB template                                               \n"
+"  source_file.write(template.render(nil, n: n))                             \n"
 "  time = Benchmark.realtime { `#{command}` }                                \n"
 "  data << [n, time]                                                         \n"
 "  progress.increment                                                        \n"
@@ -152,8 +152,8 @@ file(WRITE ${METABENCH_TEST_RB_IN_PATH}
 "range = eval('\@range\@').to_a                                              \n"
 "range = range[range[0], range[-1]] if range.length > 2                      \n"
 "range.each do |n|                                                           \n"
-"  # Evaluate the ERB template with the given environment                    \n"
-"  source_file.write(template.render(nil, n: n, env: \@env\@))               \n"
+"  # Evaluate the ERB template                                               \n"
+"  source_file.write(template.render(nil, n: n))                             \n"
 "  `#{command}`                                                              \n"
 "  source_file.write('')                                                     \n"
 "end                                                                         \n"
