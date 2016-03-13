@@ -1,0 +1,13 @@
+{
+  title: 'Dummy chart',
+  xAxis: { axisLabel: 'Dummy X axis' },
+  yAxis: { axisLabel: 'Dummy Y axis' },
+  data: [
+    {
+      key: 'dummy series',
+      values: <%=
+        Metabench::compile_time("dummy.cpp.erb", [0, 1, 2])
+      %>
+    }
+  ]
+}

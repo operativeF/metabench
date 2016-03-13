@@ -97,9 +97,9 @@ function(metabench_add_benchmark target path_to_dir)
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         COMMAND ${RUBY_EXECUTABLE} -r fileutils -r tilt/erb -r ${configured_metabench_rb}
             # We use `.render(binding)` to carry the 'require' of the 'metabench.rb' module.
-            -e "\"chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)\""
-            -e "\"FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))\""
-            -e "\"IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', chart)\""
+            -e "chart = Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)"
+            -e "FileUtils.mkdir_p(File.dirname('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json'))"
+            -e "IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json', chart)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir}
         DEPENDS ${dependencies}
         VERBATIM USES_TERMINAL)
@@ -107,13 +107,13 @@ function(metabench_add_benchmark target path_to_dir)
     # Setup the command to generate `path/to/dir/index.html`.
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html"
         COMMAND ${RUBY_EXECUTABLE} -r tilt/erb
-            -e "\"chart = IO.read('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json')\""
-            -e "\"nvd3_css = IO.read('${NVD3_CSS_PATH}')\""
-            -e "\"nvd3_js = IO.read('${NVD3_JS_PATH}')\""
-            -e "\"d3_js = IO.read('${D3_JS_PATH}')\""
-            -e "\"index = Tilt::ERBTemplate.new('${CHART_HTML_ERB_PATH}')\
-                .render(nil, {data: chart, nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})\""
-            -e "\"IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', index)\""
+            -e "chart = IO.read('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json')"
+            -e "nvd3_css = IO.read('${NVD3_CSS_PATH}')"
+            -e "nvd3_js = IO.read('${NVD3_JS_PATH}')"
+            -e "d3_js = IO.read('${D3_JS_PATH}')"
+            -e "index = Tilt::ERBTemplate.new('${CHART_HTML_ERB_PATH}')\
+                .render(nil, {data: chart, nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})"
+            -e "IO.write('${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.html', index)"
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${path_to_dir}.json"
         VERBATIM)
 
@@ -121,7 +121,7 @@ function(metabench_add_benchmark target path_to_dir)
     add_test(NAME ${target}
         COMMAND ${CMAKE_COMMAND} -E env METABENCH_TEST_ONLY=true
                 ${RUBY_EXECUTABLE} -r tilt/erb -r ${configured_metabench_rb}
-                -e "\"Tilt::ERBTemplate.new('${configured_chart_json}').render(binding)\""
+                -e "Tilt::ERBTemplate.new(\"${configured_chart_json}\").render(binding)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_dir})
 
     add_custom_target(${target}

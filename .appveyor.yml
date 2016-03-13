@@ -15,9 +15,9 @@ build:
 environment:
     matrix:
       - CMAKE_GENERATOR: "Ninja"
-      - CMAKE_GENERATOR: "NMake Makefiles"
-      - CMAKE_GENERATOR: "Unix Makefiles"
-      - CMAKE_GENERATOR: "MSYS Makefiles"
+      # - CMAKE_GENERATOR: "NMake Makefiles"
+      # - CMAKE_GENERATOR: "Unix Makefiles"
+      # - CMAKE_GENERATOR: "MSYS Makefiles"
 
 install:
   - if "%CMAKE_GENERATOR%" equ "Ninja" (choco install ninja)
