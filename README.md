@@ -18,9 +18,11 @@ higher along with the [Progressbar][] and [Tilt][] gems.
 ### Usage
 To use Metabench, make sure you have the dependencies listed above and simply
 drop the `metabench.cmake` file somewhere in your CMake search path for modules.
-Then, use `include(metabench)` to include the module in your CMake file, and
-`metabench_add_benchmark` to add a new compile-time benchmark. For example, a
-minimal CMake file using Metabench would look like:
+Then, use `include(metabench)` to include the module in your CMake file, add
+individual datasets to be benchmarked using `metabench_add_dataset` and finally
+specify which datasets should be put together to comprise a benchmark via
+`metabench_add_benchmark`. For example, a minimal CMake file using Metabench
+would look like:
 
 ```CMake
 # Make sure Metabench can be found when writing include(metabench)
@@ -29,29 +31,19 @@ list(APPEND CMAKE_MODULE_PATH "path/to/metabench/directory")
 # Actually include the module
 include(metabench)
 
+# Add new datasets
+metabench_add_dataset(dataset1 "path/to/dataset1.cpp.erb" "[1, 5, 10]")
+metabench_add_dataset(dataset2 "path/to/dataset2.cpp.erb" "(1...15)")
+metabench_add_dataset(dataset3 "path/to/dataset3.cpp.erb" "(1...20).step(5)")
+
 # Add a new benchmark
-metabench_add_benchmark(path.to.benchmark "path/to/benchmark")
+metabench_add_benchmark(benchmark DATASETS dataset1 dataset2 dataset3)
 ```
 
-This will create a target named `path.to.benchmark`, which, when run, will
-gather data for the benchmark located in the `path/to/benchmark` directory.
-But what's a _benchmark_ for Metabench? For Metabench, a benchmark is a
-_directory_ with the following layout:
-
-```
-some_directory/
-    chart.json.erb
-    file1.cpp.erb
-    ...
-    fileN.cpp.erb
-```
-
-The `.cpp.erb` files are files whose compilation time will be benchmarked, and
-the `chart.json.erb` file is a file that controls how the `.cpp.erb` files will
-be benchmarked, exactly what benchmarking data will be gathered, and how we will
-visualize the benchmark data as a chart. However, as their extension suggests,
-these files are not just normal JSON or C++ files. Instead, they are
-[ERB templates][ERB] used to generate actual `.json` and `.cpp` files.
+This will create a target named `benchmark`, which, when run, will gather
+benchmark data from each `dataset` and output it as a JSON file for easy
+integration with other tools. Additionally an HTML file is generated for easy
+visualization of the benchmark data as an [NVD3][] chart.
 
 #### The principle
 Benchmarking the compilation time of a single `.cpp` file is rather useless,
@@ -112,11 +104,6 @@ were part of a CMake executable added in the same directory as the call to
 `metabench_add_benchmark`. This way, any variable or property set in CMake
 will also apply to the benchmark of the file.
 
-But how does Metabench figure which `n` we should benchmark a file for? These
-values are specified in the `chart.json.erb` file. This file, as outlined above,
-controls how the `.cpp.erb` files are rendered and how the data can be visualized
-as a chart.
-
 TODO: Finish this
 
 This is it for basic usage! Note that the `example/` directory contains a
@@ -138,3 +125,4 @@ it into its own project.
 [Progressbar]: https://rubygems.org/gems/ruby-progressbar
 [Ruby]: https://www.ruby-lang.org/en/
 [Tilt]: https://rubygems.org/gems/tilt
+[NVD3]: http://nvd3.org/

@@ -21,6 +21,30 @@ if(${__MISSING_GEMS})
     return()
 endif()
 
+# metabench_add_dataset(target template range)
+#
+#   Creates a target for benchmarking. After issuing this command, running the
+#   target named `target` will cause the erb `template` to be rendered for each
+#   value in `range`. At each step, the resulting source file is compiled and
+#   benchmarking data is recorded.
+#
+#   Additionally, a CTest target with the same name is also created. When run,
+#   this CTest target will run the benchmark for only the first and last
+#   elements in `range`, and won't gather any benchmarking data. This is very
+#   useful to make sure that benchmarks stay sane as part of continuous
+#   integration scripts, for example.
+#
+#   Parameters
+#   ----------
+#   target:
+#       The name of the target associated to this dataset.
+#
+#   template:
+#       An erb template parametrized over `n` that yields valid C++ code.
+#
+#   range:
+#       A ruby range such as `(1...100).step(5)` for whose elements `template`
+#       will be rendered.
 function(metabench_add_dataset target template range)
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" template "${template}")
     string(REGEX REPLACE "[.].*$" ".cpp" source "${template}")
@@ -51,7 +75,7 @@ function(metabench_add_dataset target template range)
     set(metabench_test_rb_path "${target_dir}/${target}.metabench.test.rb")
     configure_file("${METABENCH_TEST_RB_IN_PATH}" "${metabench_test_rb_path}" @ONLY)
 
-    add_executable(${target}.test EXCLUDE_FROM_ALL ${source})
+    add_executable(${target}.test EXCLUDE_FROM_ALL "${source}")
     target_include_directories(${target}.test PUBLIC "${template_dir}")
     set_target_properties(
         ${target}.test PROPERTIES
@@ -66,10 +90,40 @@ function(metabench_add_dataset target template range)
     )
 endfunction()
 
+# metabench_add_benchmark(target DATASETS dataset1 [dataset2 [dataset3 [...]]] [CHART path/to/json])
+#
+#   Creates a target for running a compile-time benchmark. After issuing this
+#   command, running the target named `target` will cause each `dataset` to be
+#   benchmarked and their results stored in a JSON file named `target.json`
+#   within CMake's current binary directory. Alongside the JSON file, an HTML
+#   file named `target.html` will contain the minimal code for visualizing the
+#   data as an [NVD3][1] chart.
+#
+#   Additionally, a JSON file containing information for rendering the NVD3
+#   chart may also be specified. This can be used to set the chart's
+#   title, axis labels, etc.
+#
+#   Parameters
+#   ----------
+#   target:
+#       The name of the target associated to this benchmark.
+#
+#   DATASETS dataset1 [dataset2 [dataset3 [...]]]:
+#       A list of datasets from which the benchmark is generated.
+#
+#   [CHART path/to/json]:
+#       The path to a JSON file containing data for rendering the chart in the
+#       format specified by NVD3.
+#
+# [1]: http://nvd3.org/
 function(metabench_add_benchmark target)
     set(one_value_args CHART)
     set(multi_value_args DATASETS)
     cmake_parse_arguments(ARGS "" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+    if(NOT ARGS_DATASETS)
+        message(FATAL_ERROR "A benchmark requires at least one dataset.")
+    endif()
 
     if(ARGS_CHART)
         string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" ARGS_CHART "${ARGS_CHART}")
@@ -146,7 +200,7 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 ################################################################################
 
 ################################################################################
-# metabench.rb.in
+# metabench.test.rb.in
 #
 # This script is used to launch the compiler and test compilation.
 ################################################################################
@@ -167,11 +221,11 @@ file(WRITE ${METABENCH_TEST_RB_IN_PATH}
 "end                                                                         \n"
 )
 ################################################################################
-# end metabench.rb.in
+# end metabench.test.rb.in
 ################################################################################
 
 ################################################################################
-# path/to/dir.html template
+# chart.html.erb
 #
 # The following is a ERB template for the HTML files used to visualize the
 # benchmarks. The template is completed by filling it with the contents
