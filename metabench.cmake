@@ -67,8 +67,17 @@ function(metabench_add_dataset target template range)
 endfunction()
 
 function(metabench_add_benchmark target)
+    set(one_value_args CHART)
+    set(multi_value_args DATASETS)
+    cmake_parse_arguments(ARGS "" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+    if(ARGS_CHART)
+        string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" ARGS_CHART "${ARGS_CHART}")
+        set(ARGS_CHART "${CMAKE_CURRENT_SOURCE_DIR}/${ARGS_CHART}")
+    endif()
+
     set(data)
-    foreach(dataset ${ARGN})
+    foreach(dataset ${ARGS_DATASETS})
         get_target_property(output_dir ${dataset} RUNTIME_OUTPUT_DIRECTORY)
         list(APPEND data "${output_dir}/${dataset}.json")
     endforeach()
@@ -77,18 +86,19 @@ function(metabench_add_benchmark target)
     set(html_path "${CMAKE_CURRENT_BINARY_DIR}/${target}.html")
     add_custom_command(
         OUTPUT "${json_path}" "${html_path}"
-        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb
-            -e "data = []"
-            -e "'${data}'.split(/\\s*;\\s*/).each { |datum| data << IO.read(datum) }"
-            -e "data = '\"data\": [' + data.join(', ') + ']'"
+        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r json
+            -e "chart = {}"
+            -e "chart = JSON.parse(IO.read('${ARGS_CHART}')) if File.file?('${ARGS_CHART}')"
+            -e "chart[:data] = []"
+            -e "'${data}'.split(/\\s*;\\s*/).each { |datum| chart[:data] << JSON.parse(IO.read(datum)) }"
             -e "nvd3_css = IO.read('${NVD3_CSS_PATH}')"
             -e "nvd3_js = IO.read('${NVD3_JS_PATH}')"
             -e "d3_js = IO.read('${D3_JS_PATH}')"
             -e "index = Tilt::ERBTemplate.new('${CHART_HTML_ERB_PATH}')\
-                .render(nil, {data: '{' + data + '}', nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})"
-            -e "IO.write('${json_path}', data)"
+                .render(nil, {chart: chart.to_json, nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})"
+            -e "IO.write('${json_path}', chart[:data].to_json)"
             -e "IO.write('${html_path}', index)"
-        DEPENDS ${ARGN}
+        DEPENDS ${ARGS_DATASETS} "${ARGS_CHART}"
         VERBATIM
     )
 
@@ -113,10 +123,11 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "require 'pathname'                                                          \n"
 "require 'ruby-progressbar'                                                  \n"
 "require 'tilt/erb'                                                          \n"
+"require 'json'                                                              \n"
 "template = Tilt::ERBTemplate.new('\@template\@')                            \n"
 "source_file = Pathname.new('\@source\@')                                    \n"
 "command = ARGV.join(' ')                                                    \n"
-"data = []                                                                   \n"
+"datum = {:key => '\@target\@', :values => []}                               \n"
 "range = eval('\@range\@').to_a                                              \n"
 "progress = ProgressBar.create(format: '%p%% %t | %B |', title: '\@target\@',\n"
 "                              total: range.size,        output: STDERR)     \n"
@@ -124,14 +135,11 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "  # Evaluate the ERB template                                               \n"
 "  source_file.write(template.render(nil, n: n))                             \n"
 "  time = Benchmark.realtime { `#{command}` }                                \n"
-"  data << [n, time]                                                         \n"
+"  datum[:values] << [n, time]                                               \n"
 "  progress.increment                                                        \n"
 "  source_file.write('')                                                     \n"
 "end                                                                         \n"
-"IO.write('\@datum\@', \"{                                                   \n"
-"  key: \\\"\@target\@\\\",                                                  \n"
-"  values: #{data}                                                           \n"
-"}\")                                                                        \n"
+"IO.write('\@datum\@', datum.to_json)                                        \n"
 )
 ################################################################################
 # end metabench.rb.in
@@ -202,7 +210,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "  <body>                                                                    \n"
 "    <svg id='chart'></svg>                                                  \n"
 "    <script type='text/javascript'>                                         \n"
-"      var chart = <%= data %>;                                              \n"
+"      var chart = <%= chart %>;                                             \n"
 "      (function () {                                                        \n"
 "        if(typeof chart.useInteractiveGuideline == 'undefined')             \n"
 "          chart.useInteractiveGuideline = true;                             \n"

@@ -1,0 +1,11 @@
+{
+  "title": "Creating a heterogeneous container with n elements",
+  "subtitle": "(smaller is better)",
+  "xAxis": {
+    "axisLabel": "Number of Elements"
+  },
+  "yAxis": {
+    "axisLabel": "Time",
+    "suffix": "s"
+  }
+}

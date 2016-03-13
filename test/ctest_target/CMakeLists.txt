@@ -12,4 +12,4 @@ enable_testing()
 include(metabench)
 
 metabench_add_dataset(dummy benchmark/dummy.cpp.erb "[1, 2, 3]")
-metabench_add_benchmark(check dummy)
+metabench_add_benchmark(check DATASETS dummy)
