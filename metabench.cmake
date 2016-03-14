@@ -122,11 +122,10 @@ function(metabench_add_benchmark target)
     cmake_parse_arguments(ARGS "" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if(NOT ARGS_DATASETS)
-        message(FATAL_ERROR "A benchmark requires at least one dataset.")
+        message(FATAL_ERROR "metabench_add_benchmark requires at least one dataset.")
     endif()
 
-    if(ARGS_CHART)
-        string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" ARGS_CHART "${ARGS_CHART}")
+    if(ARGS_CHART AND NOT IS_ABSOLUTE ${ARGS_CHART})
         set(ARGS_CHART "${CMAKE_CURRENT_SOURCE_DIR}/${ARGS_CHART}")
     endif()
 
@@ -143,8 +142,7 @@ function(metabench_add_benchmark target)
         COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r json
             -e "chart = {}"
             -e "chart = JSON.parse(IO.read('${ARGS_CHART}')) if File.file?('${ARGS_CHART}')"
-            -e "chart[:data] = []"
-            -e "'${data}'.split(/\\s*;\\s*/).each { |datum| chart[:data] << JSON.parse(IO.read(datum)) }"
+            -e "chart[:data] = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "nvd3_css = IO.read('${NVD3_CSS_PATH}')"
             -e "nvd3_js = IO.read('${NVD3_JS_PATH}')"
             -e "d3_js = IO.read('${D3_JS_PATH}')"
