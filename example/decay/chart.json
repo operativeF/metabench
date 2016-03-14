@@ -1,0 +1,11 @@
+{
+  "title": "Calling a decay metafunction on n different types",
+  "subtitle": "(smaller is better)",
+  "xAxis": {
+    "axisLabel": "Number of types"
+  },
+  "yAxis": {
+    "axisLabel": "Time",
+    "suffix": "s"
+  }
+}
