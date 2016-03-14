@@ -21,6 +21,10 @@ if(${__MISSING_GEMS})
     return()
 endif()
 
+# The directory where all files related to Metabench support are written, to
+# avoid polluting the build tree.
+set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
+
 # metabench_add_dataset(target template range)
 #
 #   Creates a target for benchmarking. After issuing this command, running the
@@ -49,7 +53,7 @@ function(metabench_add_dataset target template range)
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" template "${template}")
     string(REGEX REPLACE "[.].*$" ".cpp" source "${template}")
     set(template "${CMAKE_CURRENT_SOURCE_DIR}/${template}")
-    set(source "${CMAKE_CURRENT_BINARY_DIR}/_metabench/${source}")
+    set(source "${METABENCH_DIR}/${source}")
     string(REGEX REPLACE "[/\\][^/\\]+$" "" template_dir "${template}")
     string(REGEX REPLACE "[/\\][^/\\]+$" "" target_dir "${source}")
     set(datum "${target_dir}/${target}.json")
@@ -169,7 +173,7 @@ endfunction()
 #
 # This script is used to launch the compiler and measure the compilation time.
 ################################################################################
-set(METABENCH_RB_IN_PATH "${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.rb.in")
+set(METABENCH_RB_IN_PATH "${METABENCH_DIR}/metabench.rb.in")
 file(WRITE ${METABENCH_RB_IN_PATH}
 "require 'benchmark'                                                         \n"
 "require 'pathname'                                                          \n"
@@ -221,7 +225,7 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 #
 # This script is used to launch the compiler and test compilation.
 ################################################################################
-set(METABENCH_TEST_RB_IN_PATH "${CMAKE_CURRENT_BINARY_DIR}/_metabench/metabench.test.rb.in")
+set(METABENCH_TEST_RB_IN_PATH "${METABENCH_DIR}/metabench.test.rb.in")
 file(WRITE ${METABENCH_TEST_RB_IN_PATH}
 "require 'pathname'                                                          \n"
 "require 'tilt/erb'                                                          \n"
@@ -248,7 +252,7 @@ file(WRITE ${METABENCH_TEST_RB_IN_PATH}
 # benchmarks. The template is completed by filling it with the contents
 # of the corresponding JSON file and the required JS libraries.
 ################################################################################
-set(CHART_HTML_ERB_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/chart.html.erb)
+set(CHART_HTML_ERB_PATH ${METABENCH_DIR}/chart.html.erb)
 file(WRITE ${CHART_HTML_ERB_PATH}
 "<!DOCTYPE html>                                                             \n"
 "<html>                                                                      \n"
@@ -353,7 +357,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 # The following is a copy of the nvd3 1.8.2 css file.
 # https://github.com/novus/nvd3
 ################################################################################
-set(NVD3_CSS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/nvd3.css)
+set(NVD3_CSS_PATH ${METABENCH_DIR}/nvd3.css)
 file(WRITE ${NVD3_CSS_PATH} "\
 .nvd3 .nv-axis line,.nvd3 .nv-axis path{fill:none;shape-rendering:crispEdges}.n\
 v-brush .extent,.nvd3 .background path,.nvd3 .nv-axis line,.nvd3 .nv-axis path{\
@@ -485,7 +489,7 @@ moval{pointer-events:none;display:none}.nvd3 line.nv-guideline{stroke:#ccc}\
 # The following is a copy of the nvd3 1.8.2 js file.
 # https://github.com/novus/nvd3
 ################################################################################
-set(NVD3_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/nvd3.js)
+set(NVD3_JS_PATH ${METABENCH_DIR}/nvd3.js)
 file(WRITE ${NVD3_JS_PATH} "\
 /* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2016-01-24 */\
 \
@@ -3356,7 +3360,7 @@ inheritOptions(b,c),a.utils.initOptions(b),b},a.version=\"1.8.2\"}();\
 # The following is a copy of the d3 3.5.16 js file.
 # https://github.com/mbostock/d3
 ################################################################################
-set(D3_JS_PATH ${CMAKE_CURRENT_BINARY_DIR}/_metabench/d3.js)
+set(D3_JS_PATH ${METABENCH_DIR}/d3.js)
 file(WRITE ${D3_JS_PATH} "\
 !function(){function n(n){return n&&(n.ownerDocument||n.document||n).documentEl\
 ement}function t(n){return n&&(n.ownerDocument&&n.ownerDocument.defaultView||n.\
