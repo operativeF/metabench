@@ -1,0 +1,10 @@
+
+#if defined(DUMMY1) && <%= not [0, 1, 2].include? n %>
+#   error "DUMMY1: something is wrong"
+#endif
+
+#if defined(DUMMY2) && <%= not [3, 4, 5].include? n %>
+#   error "DUMMY2: something is wrong"
+#endif
+
+int main() { }
