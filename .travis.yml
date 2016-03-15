@@ -35,7 +35,7 @@ install:
 
   # Install and use a more recent Ruby and install the gems for the benchmarks
   - rvm use 2.1 --install --binary --fuzzy
-  - gem install ruby-progressbar tilt
+  - gem install ruby-progressbar
 
 script:
   - cd ${TRAVIS_BUILD_DIR}

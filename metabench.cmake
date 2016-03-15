@@ -11,14 +11,14 @@ if(NOT ${RUBY_FOUND})
     return()
 endif()
 
-execute_process(COMMAND ${RUBY_EXECUTABLE} -r ruby-progressbar -r tilt -e ""
+execute_process(COMMAND ${RUBY_EXECUTABLE} -r ruby-progressbar -e ""
                 RESULT_VARIABLE __MISSING_GEMS
                 OUTPUT_QUIET ERROR_QUIET)
 if(${__MISSING_GEMS})
     message(WARNING
-        "The 'ruby-progressbar' and/or 'tilt' gems were not found; "
-        "the metabench.cmake module can't be used."
-        "Use `gem install ruby-progressbar tilt` to install the missing gems.")
+        "The 'ruby-progressbar' gem was not found; the metabench.cmake module "
+        "can't be used. Use `gem install ruby-progressbar` to install the "
+        "missing gem.")
     return()
 endif()
 
@@ -109,7 +109,7 @@ function(metabench_add_dataset target path_to_template range)
     # We also setup a CTest target to test the generation of the dataset.
     # We do not actually collect any data here.
     add_test(NAME ${target}
-        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r ${METABENCH_RB_PATH}
+        COMMAND ${RUBY_EXECUTABLE} -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "measure_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}.cpp')"
@@ -168,17 +168,16 @@ function(metabench_add_benchmark target)
     set(html_path "${CMAKE_CURRENT_BINARY_DIR}/${target}.html")
     add_custom_command(
         OUTPUT "${json_path}" "${html_path}"
-        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r json
+        COMMAND ${RUBY_EXECUTABLE} -r erb -r json
             -e "chart = {}"
             -e "chart = JSON.parse(IO.read('${ARGS_CHART}')) if File.file?('${ARGS_CHART}')"
             -e "chart[:data] = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "nvd3_css = IO.read('${NVD3_CSS_PATH}')"
             -e "nvd3_js = IO.read('${NVD3_JS_PATH}')"
             -e "d3_js = IO.read('${D3_JS_PATH}')"
-            -e "index = Tilt::ERBTemplate.new('${CHART_HTML_ERB_PATH}')\
-                .render(nil, {chart: chart.to_json, nvd3_css: nvd3_css, nvd3_js: nvd3_js, d3_js: d3_js})"
+            -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
             -e "IO.write('${json_path}', chart[:data].to_json)"
-            -e "IO.write('${html_path}', index)"
+            -e "IO.write('${html_path}', html)"
         DEPENDS ${data} "${ARGS_CHART}"
         VERBATIM
     )
@@ -203,11 +202,11 @@ endfunction()
 set(METABENCH_RB_PATH ${METABENCH_DIR}/metabench.rb)
 file(WRITE ${METABENCH_RB_PATH}
 "require 'benchmark'                                                                                    \n"
+"require 'erb'                                                                                          \n"
 "require 'open3'                                                                                        \n"
 "require 'pathname'                                                                                     \n"
 "require 'ruby-progressbar'                                                                             \n"
 "require 'tempfile'                                                                                     \n"
-"require 'tilt/erb'                                                                                     \n"
 "                                                                                                       \n"
 "                                                                                                       \n"
 "module Metabench                                                                                       \n"
@@ -221,7 +220,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "    range.each do |n|                                                                                  \n"
 "      # Evaluate the ERB template with the given environment, and save the                             \n"
 "      # result in a temporary file.                                                                    \n"
-"      code = Tilt::ERBTemplate.new(erb_template).render(nil, n: n)                                     \n"
+"      code = ERB.new(File.read(erb_template)).result(binding)                                          \n"
 "      measure_file.write(code)                                                                         \n"
 "      data = {n: n}                                                                                    \n"
 "                                                                                                       \n"
@@ -342,7 +341,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "  <body>                                                                    \n"
 "    <svg id='chart'></svg>                                                  \n"
 "    <script type='text/javascript'>                                         \n"
-"      var chart = <%= chart %>;                                             \n"
+"      var chart = <%= chart.to_json %>;                                     \n"
 "      (function () {                                                        \n"
 "        if(typeof chart.useInteractiveGuideline == 'undefined')             \n"
 "          chart.useInteractiveGuideline = true;                             \n"

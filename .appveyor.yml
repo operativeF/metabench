@@ -33,7 +33,7 @@ install:
   - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
   - ruby --version
   - gem --version
-  - gem install ruby-progressbar tilt
+  - gem install ruby-progressbar
   - set RUBY_LIBRARY="C:\Ruby21-x64\lib\libx64-msvcrt-ruby210-static.a"
 
 before_build:
