@@ -88,9 +88,10 @@ function(metabench_add_dataset target path_to_template range)
             -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
             -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = Metabench.compile_time('${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}', range, measure_file, exe_file, command)"
+            -e "data = Metabench.compile_time('${path_to_template}', range, measure_file, exe_file, command)"
             -e "IO.write('${json_file}', JSON.generate(data))"
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         VERBATIM USES_TERMINAL
     )
 
@@ -104,7 +105,8 @@ function(metabench_add_dataset target path_to_template range)
             -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
             -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = Metabench.compile_time(\"${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}\", range, measure_file, exe_file, command)"
+            -e "data = Metabench.compile_time(\"${path_to_template}\", range, measure_file, exe_file, command)"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endfunction()
 
