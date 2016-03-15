@@ -115,7 +115,7 @@ function(metabench_add_dataset target path_to_template range)
     )
 endfunction()
 
-# metabench_add_benchmark(target DATASETS dataset1 [dataset2 [dataset3 [...]]] [CHART path/to/json])
+# metabench_add_benchmark(target [ALL] DATASETS dataset1 [dataset2 [dataset3 [...]]] [CHART path/to/json])
 #
 #   Creates a target for running a compile-time benchmark. After issuing this
 #   command, running the target named `target` will cause each `dataset` to be
@@ -133,6 +133,11 @@ endfunction()
 #   target:
 #       The name of the target associated to this benchmark.
 #
+#   [ALL]:
+#       If `ALL` is provided, the benchmark will be added to the default
+#       target. This is the same behaviour as `add_custom_target` used with
+#       the `ALL` keyword.
+#
 #   DATASETS dataset1 [dataset2 [dataset3 [...]]]:
 #       A list of datasets from which the benchmark is generated.
 #
@@ -142,9 +147,10 @@ endfunction()
 #
 # [1]: http://nvd3.org/
 function(metabench_add_benchmark target)
+    set(options ALL)
     set(one_value_args CHART)
     set(multi_value_args DATASETS)
-    cmake_parse_arguments(ARGS "" "${one_value_args}" "${multi_value_args}" ${ARGN})
+    cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if(NOT ARGS_DATASETS)
         message(FATAL_ERROR "metabench_add_benchmark requires at least one dataset.")
@@ -178,7 +184,12 @@ function(metabench_add_benchmark target)
         VERBATIM
     )
 
-    add_custom_target(${target} DEPENDS "${json_path}" "${html_path}")
+    set(dependencies "${json_path}" "${html_path}")
+    if (${ARGS_ALL})
+        add_custom_target(${target} ALL DEPENDS ${dependencies})
+    else()
+        add_custom_target(${target} DEPENDS ${dependencies})
+    endif()
 endfunction()
 
 ################################################################################
