@@ -11,17 +11,6 @@ if(NOT ${RUBY_FOUND})
     return()
 endif()
 
-execute_process(COMMAND ${RUBY_EXECUTABLE} -r ruby-progressbar -e ""
-                RESULT_VARIABLE __MISSING_GEMS
-                OUTPUT_QUIET ERROR_QUIET)
-if(${__MISSING_GEMS})
-    message(WARNING
-        "The 'ruby-progressbar' gem was not found; the metabench.cmake module "
-        "can't be used. Use `gem install ruby-progressbar` to install the "
-        "missing gem.")
-    return()
-endif()
-
 # The directory where all files related to Metabench support are written, to
 # avoid polluting the build tree.
 set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
@@ -205,7 +194,6 @@ file(WRITE ${METABENCH_RB_PATH}
 "require 'erb'                                                                                          \n"
 "require 'open3'                                                                                        \n"
 "require 'pathname'                                                                                     \n"
-"require 'ruby-progressbar'                                                                             \n"
 "require 'tempfile'                                                                                     \n"
 "                                                                                                       \n"
 "                                                                                                       \n"
@@ -215,9 +203,10 @@ file(WRITE ${METABENCH_RB_PATH}
 "  # benchmark to run.                                                                                  \n"
 "  def self.measure(erb_template, range, measure_file, exe_file, command)                               \n"
 "    range = range.to_a                                                                                 \n"
-"    progress = ProgressBar.create(format: '%p%% %t | %B |', title: erb_template,                       \n"
-"                                  total: range.size,        output: STDERR)                            \n"
-"    range.each do |n|                                                                                  \n"
+"    range.each_with_index do |n, index|                                                                \n"
+"      # This writes the progress of the benchmark to STDERR                                            \n"
+"      STDERR.write(\"\\r#{index+1}/#{range.size} #{erb_template} (n = #{n})\")                         \n"
+"                                                                                                       \n"
 "      # Evaluate the ERB template with the given environment, and save the                             \n"
 "      # result in a temporary file.                                                                    \n"
 "      code = ERB.new(File.read(erb_template)).result(binding)                                          \n"
@@ -254,13 +243,11 @@ file(WRITE ${METABENCH_RB_PATH}
 "      data[:time] = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                     \n"
 "      # Size of the generated executable in KB                                                         \n"
 "      data[:size] = File.size(exe_file).to_f / 1000                                                    \n"
-"                                                                                                       \n"
-"      progress.increment                                                                               \n"
 "      yield data                                                                                       \n"
 "    end                                                                                                \n"
 "  ensure                                                                                               \n"
+"    STDERR.write(\"\n\") # Otherwise the output of the next CMake command appears on the same line     \n"
 "    measure_file.write('')                                                                             \n"
-"    progress.finish if progress                                                                        \n"
 "  end                                                                                                  \n"
 "                                                                                                       \n"
 "  def self.compile_time(*args)                                                                         \n"

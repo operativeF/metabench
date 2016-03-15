@@ -24,16 +24,10 @@ install:
   - if "%CMAKE_GENERATOR%" equ "Unix Makefiles" (set "PATH=C:\cygwin\bin;%PATH%")
   - if "%CMAKE_GENERATOR%" equ "MSYS Makefiles" (set "PATH=C:\MinGW\bin;C:\MinGW\msys\1.0\bin;%PATH%")
 
-  ############################################################################
-  # Use a more recent Ruby by default, and install required gems
-  #
-  # Note that we set the RUBY_LIBRARY variable explicitly because CMake fails
-  # to find it otherwise.
-  ############################################################################
+  # Use a more recent Ruby by default. We need to set the RUBY_LIBRARY variable
+  # explicitly because CMake fails to find it otherwise.
   - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
   - ruby --version
-  - gem --version
-  - gem install ruby-progressbar
   - set RUBY_LIBRARY="C:\Ruby21-x64\lib\libx64-msvcrt-ruby210-static.a"
 
 before_build:

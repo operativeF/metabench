@@ -12,13 +12,7 @@ long compilation times. Metabench was designed to be very simple to use, while
 still allowing fairly complex benchmarks to be written.
 
 ### Dependencies
-Metabench requires [CMake][] 3.1 or higher. It also requires [Ruby][] 2.1 or
-higher along with the [Progressbar][] gem. To install the Progressbar gem,
-you can issue
-
-```sh
-gem install ruby-progressbar
-```
+Metabench requires [CMake][] 3.1 or higher and [Ruby][] 2.1 or higher.
 
 ### Usage
 To use Metabench, make sure you have the dependencies listed above and simply
@@ -127,6 +121,5 @@ it into its own project.
 [Boost.Hana]: http://github.com/boostorg/hana
 [CMake]: http://www.cmake.org
 [ERB]: http://en.wikipedia.org/wiki/ERuby
-[Progressbar]: https://rubygems.org/gems/ruby-progressbar
 [Ruby]: https://www.ruby-lang.org/en/
 [NVD3]: http://nvd3.org/
