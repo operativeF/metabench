@@ -111,8 +111,11 @@ fully working example of using Metabench to create benchmarks.
 ### History
 Metabench was initially developed inside the [Boost.Hana][] library as a
 mean to benchmark compile-time algorithms. After seeing that a self-standing
-framework would be useful to the general C++ community, I decided to extract
-it into its own project.
+framework would be useful to the general C++ community, it was decided to
+extract it into its own project.
+
+### License
+Please see [LICENSE.md](LICENSE.md).
 
 
 <!-- Links -->

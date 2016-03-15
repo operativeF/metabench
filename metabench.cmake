@@ -1,7 +1,12 @@
-# Copyright Louis Dionne 2016
-# Copyright Bruno Dutra 2016
+# Copyright 2016 Louis Dionne
+# Copyright 2016 Bruno Dutra
+#
 # Distributed under the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+# See https://github.com/ldionne/metabench/blob/master/LICENSE.md.
+#
+# This file is part of Metabench, a simple framework for compile-time
+# benchmarks. For documentation, questions and other resources please
+# visit the home of the project at https://github.com/ldionne/metabench.
 
 cmake_minimum_required(VERSION 3.0)
 
