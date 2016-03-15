@@ -108,9 +108,9 @@ function(metabench_add_dataset target path_to_template range)
     # We also setup a CTest target to test the generation of the dataset.
     # We do not actually collect any data here.
     add_test(NAME ${target}
-        COMMAND ${CMAKE_COMMAND} -E env METABENCH_TEST_ONLY=true
-            ${RUBY_EXECUTABLE} -r tilt/erb -r ${configured_metabench_rb}
-            -e "range = (${range})"
+        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r ${configured_metabench_rb}
+            -e "range = (${range}).to_a"
+            -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "data = Metabench.compile_time(\"${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}\", range)"
     )
 endfunction()
@@ -215,7 +215,6 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "    exe_file = Pathname.new('${METABENCH_DIR}/\@path_to\@/\@target\@${CMAKE_EXECUTABLE_SUFFIX}')       \n"
 "    command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '\@target\@']         \n"
 "    range = range.to_a                                                                                 \n"
-"    range = [range[0], range[-1]] if ENV['METABENCH_TEST_ONLY'] && range.length >= 2                   \n"
 "                                                                                                       \n"
 "    progress = ProgressBar.create(format: '%p%% %t | %B |', title: erb_template,                       \n"
 "                                  total: range.size,        output: STDERR)                            \n"
