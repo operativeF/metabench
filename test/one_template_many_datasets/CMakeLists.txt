@@ -10,10 +10,10 @@ cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
-metabench_add_dataset(dummy1 benchmark/dummy.cpp.erb "[0, 1, 2]")
+metabench_add_dataset(dummy1 dummy.cpp.erb "[0, 1, 2]")
 target_compile_definitions(dummy1 PUBLIC -DDUMMY1)
 
-metabench_add_dataset(dummy2 benchmark/dummy.cpp.erb "[3, 4, 5]")
+metabench_add_dataset(dummy2 dummy.cpp.erb "[3, 4, 5]")
 target_compile_definitions(dummy2 PUBLIC -DDUMMY2)
 
 metabench_add_benchmark(check DATASETS dummy1 dummy2)

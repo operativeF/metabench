@@ -10,7 +10,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
 enable_testing()
-metabench_add_dataset(dummy benchmark/dummy.cpp.erb "[1, 2, 3]")
+metabench_add_dataset(dummy dummy.cpp.erb "[1, 2, 3]")
 metabench_add_benchmark(check DATASETS dummy)
 
 target_compile_definitions(dummy PUBLIC -DCUSTOM_DEFINITION)
