@@ -92,13 +92,14 @@ function(metabench_add_dataset target path_to_template range)
 
     # Add a command to generate the JSON file that will contain the measurements
     # we collect for this dataset when we build the executable above.
-    set(configured_metabench_rb "${METABENCH_DIR}/${path_to}/${target}.metabench.rb")
-    configure_file(${METABENCH_RB_IN_PATH} ${configured_metabench_rb} @ONLY)
     set(json_file "${METABENCH_DIR}/${path_to}/${target}.json")
     add_custom_command(OUTPUT ${json_file}
-        COMMAND ${RUBY_EXECUTABLE} -r json -r ${configured_metabench_rb}
+        COMMAND ${RUBY_EXECUTABLE} -r json -r ${METABENCH_RB_PATH}
             -e "range = (${range})"
-            -e "data = Metabench.compile_time('${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}', range)"
+            -e "measure_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}.cpp')"
+            -e "exe_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}')"
+            -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
+            -e "data = Metabench.compile_time('${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}', range, measure_file, exe_file, command)"
             -e "IO.write('${json_file}', JSON.generate(data))"
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
         VERBATIM USES_TERMINAL
@@ -108,10 +109,13 @@ function(metabench_add_dataset target path_to_template range)
     # We also setup a CTest target to test the generation of the dataset.
     # We do not actually collect any data here.
     add_test(NAME ${target}
-        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r ${configured_metabench_rb}
+        COMMAND ${RUBY_EXECUTABLE} -r tilt/erb -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
-            -e "data = Metabench.compile_time(\"${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}\", range)"
+            -e "measure_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}.cpp')"
+            -e "exe_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}')"
+            -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
+            -e "data = Metabench.compile_time(\"${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}\", range, measure_file, exe_file, command)"
     )
 endfunction()
 
@@ -190,14 +194,14 @@ endfunction()
 ################################################################################
 
 ################################################################################
-# metabench.rb.in
+# metabench.rb
 #
 # This script is used to drive CMake when gathering the measurements for a
 # single dataset. If takes a `.cpp.erb` file, renders it with different values
 # of `n` and then builds the associated executable for each value of `n`.
 ################################################################################
-set(METABENCH_RB_IN_PATH ${METABENCH_DIR}/metabench.rb.in)
-file(WRITE ${METABENCH_RB_IN_PATH}
+set(METABENCH_RB_PATH ${METABENCH_DIR}/metabench.rb)
+file(WRITE ${METABENCH_RB_PATH}
 "require 'benchmark'                                                                                    \n"
 "require 'open3'                                                                                        \n"
 "require 'pathname'                                                                                     \n"
@@ -210,12 +214,8 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "  # This function is meant to be called inside a ERB-based `chart.json` file.                          \n"
 "  # `erb_template` should be the name of the `.cpp.erb` file containing the                            \n"
 "  # benchmark to run.                                                                                  \n"
-"  def self.measure(erb_template, range)                                                                \n"
-"    measure_file = Pathname.new('${METABENCH_DIR}/\@path_to\@/\@target\@.cpp')                         \n"
-"    exe_file = Pathname.new('${METABENCH_DIR}/\@path_to\@/\@target\@${CMAKE_EXECUTABLE_SUFFIX}')       \n"
-"    command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '\@target\@']         \n"
+"  def self.measure(erb_template, range, measure_file, exe_file, command)                               \n"
 "    range = range.to_a                                                                                 \n"
-"                                                                                                       \n"
 "    progress = ProgressBar.create(format: '%p%% %t | %B |', title: erb_template,                       \n"
 "                                  total: range.size,        output: STDERR)                            \n"
 "    range.each do |n|                                                                                  \n"
@@ -264,17 +264,17 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "    progress.finish if progress                                                                        \n"
 "  end                                                                                                  \n"
 "                                                                                                       \n"
-"  def self.compile_time(relative_path_to_erb_template, range)                                          \n"
+"  def self.compile_time(*args)                                                                         \n"
 "    result = []                                                                                        \n"
-"    measure(relative_path_to_erb_template, range) do |data|                                            \n"
+"    measure(*args) do |data|                                                                           \n"
 "      result << [data[:n], data[:time]]                                                                \n"
 "    end                                                                                                \n"
 "    return result                                                                                      \n"
 "  end                                                                                                  \n"
 "                                                                                                       \n"
-"  def self.executable_size(relative_path_to_erb_template, range)                                       \n"
+"  def self.executable_size(*args)                                                                      \n"
 "    result = []                                                                                        \n"
-"    measure(relative_path_to_erb_template, range) do |data|                                            \n"
+"    measure(*args) do |data|                                                                           \n"
 "      result << [data[:n], data[:size]]                                                                \n"
 "    end                                                                                                \n"
 "    return result                                                                                      \n"
@@ -282,7 +282,7 @@ file(WRITE ${METABENCH_RB_IN_PATH}
 "end                                                                                                    \n"
 )
 ################################################################################
-# end metabench.rb.in
+# end metabench.rb
 ################################################################################
 
 ################################################################################
