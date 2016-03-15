@@ -85,8 +85,8 @@ function(metabench_add_dataset target path_to_template range)
     add_custom_command(OUTPUT ${json_file}
         COMMAND ${RUBY_EXECUTABLE} -r json -r ${METABENCH_RB_PATH}
             -e "range = (${range})"
-            -e "measure_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}.cpp')"
-            -e "exe_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}')"
+            -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
+            -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = Metabench.compile_time('${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}', range, measure_file, exe_file, command)"
             -e "IO.write('${json_file}', JSON.generate(data))"
@@ -101,8 +101,8 @@ function(metabench_add_dataset target path_to_template range)
         COMMAND ${RUBY_EXECUTABLE} -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
-            -e "measure_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}.cpp')"
-            -e "exe_file = Pathname.new('${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}')"
+            -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
+            -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = Metabench.compile_time(\"${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}\", range, measure_file, exe_file, command)"
     )
@@ -190,12 +190,8 @@ endfunction()
 ################################################################################
 set(METABENCH_RB_PATH ${METABENCH_DIR}/metabench.rb)
 file(WRITE ${METABENCH_RB_PATH}
-"require 'benchmark'                                                                                    \n"
 "require 'erb'                                                                                          \n"
 "require 'open3'                                                                                        \n"
-"require 'pathname'                                                                                     \n"
-"require 'tempfile'                                                                                     \n"
-"                                                                                                       \n"
 "                                                                                                       \n"
 "module Metabench                                                                                       \n"
 "  # This function is meant to be called inside a ERB-based `chart.json` file.                          \n"
@@ -210,7 +206,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "      # Evaluate the ERB template with the given environment, and save the                             \n"
 "      # result in a temporary file.                                                                    \n"
 "      code = ERB.new(File.read(erb_template)).result(binding)                                          \n"
-"      measure_file.write(code)                                                                         \n"
+"      IO.write(measure_file, code)                                                                     \n"
 "      data = {n: n}                                                                                    \n"
 "                                                                                                       \n"
 "      # Compile the file and get timing statistics. The timing statistics                              \n"
@@ -247,7 +243,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "    end                                                                                                \n"
 "  ensure                                                                                               \n"
 "    STDERR.write(\"\n\") # Otherwise the output of the next CMake command appears on the same line     \n"
-"    measure_file.write('')                                                                             \n"
+"    IO.write(measure_file, '')                                                                         \n"
 "  end                                                                                                  \n"
 "                                                                                                       \n"
 "  def self.compile_time(*args)                                                                         \n"
