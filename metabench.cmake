@@ -102,7 +102,7 @@ endfunction()
 #   benchmarked and their results stored in a JSON file named `target.json`
 #   within CMake's current binary directory. Alongside the JSON file, an HTML
 #   file named `target.html` will contain the minimal code for visualizing the
-#   data as an [NVD3][1] chart.
+#   data as a [NVD3][1] chart.
 #
 #   Additionally, a JSON file containing information for rendering the NVD3
 #   chart may also be specified. This can be used to set the chart's
@@ -349,7 +349,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "</html>                                                                     \n"
 )
 ################################################################################
-# end index.html
+# end chart.html.erb
 ################################################################################
 
 ################################################################################
