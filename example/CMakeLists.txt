@@ -17,3 +17,5 @@ metabench_add_benchmark(make_tuple DATASETS std_tuple recursive_tuple CHART make
 metabench_add_dataset(std_decay decay/std_decay.cpp.erb "(0...500).step(100)")
 metabench_add_dataset(my_decay decay/my_decay.cpp.erb "(0...500).step(100)")
 metabench_add_benchmark(decay DATASETS std_decay my_decay CHART decay/chart.json)
+
+add_custom_target(benchmarks ALL DEPENDS decay make_tuple)
