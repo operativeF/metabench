@@ -5,7 +5,6 @@
     "axisLabel": "Number of Elements"
   },
   "yAxis": {
-    "axisLabel": "Time",
-    "suffix": "s"
+    "axisLabel": "Time"
   }
 }
