@@ -176,9 +176,6 @@ function(metabench_add_benchmark target)
             -e "chart = {}"
             -e "chart = JSON.parse(IO.read('${ARGS_CHART}')) if File.file?('${ARGS_CHART}')"
             -e "chart[:data] = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
-            -e "nvd3_css = IO.read('${NVD3_CSS_PATH}')"
-            -e "nvd3_js = IO.read('${NVD3_JS_PATH}')"
-            -e "d3_js = IO.read('${D3_JS_PATH}')"
             -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
             -e "IO.write('${json_path}', chart[:data].to_json)"
             -e "IO.write('${html_path}', html)"
@@ -300,7 +297,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "<html>                                                                      \n"
 "  <head>                                                                    \n"
 "    <meta charset='utf-8'>                                                  \n"
-"    <style><%= nvd3_css %></style>                                          \n"
+"    <style><%= IO.read('${METABENCH_DIR}/nvd3.css') %></style>              \n"
 "    <style>                                                                 \n"
 "      * {                                                                   \n"
 "        box-sizing: border-box;                                             \n"
@@ -321,8 +318,8 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "        font-size: 16px !important;                                         \n"
 "      }                                                                     \n"
 "    </style>                                                                \n"
-"    <script><%= d3_js %></script>                                           \n"
-"    <script><%= nvd3_js %></script>                                         \n"
+"    <script><%= IO.read('${METABENCH_DIR}/d3.js') %></script>               \n"
+"    <script><%= IO.read('${METABENCH_DIR}/nvd3.js') %></script>             \n"
 "  </head>                                                                   \n"
 "  <body>                                                                    \n"
 "    <svg id='chart'></svg>                                                  \n"
@@ -403,8 +400,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 # The following is a copy of the nvd3 1.8.2 css file.
 # https://github.com/novus/nvd3
 ################################################################################
-set(NVD3_CSS_PATH ${METABENCH_DIR}/nvd3.css)
-file(WRITE ${NVD3_CSS_PATH} "\
+file(WRITE ${METABENCH_DIR}/nvd3.css "\
 .nvd3 .nv-axis line,.nvd3 .nv-axis path{fill:none;shape-rendering:crispEdges}.n\
 v-brush .extent,.nvd3 .background path,.nvd3 .nv-axis line,.nvd3 .nv-axis path{\
 shape-rendering:crispEdges}.nv-distx,.nv-disty,.nv-noninteractive,.nvd3 .nv-axi\
@@ -535,8 +531,7 @@ moval{pointer-events:none;display:none}.nvd3 line.nv-guideline{stroke:#ccc}\
 # The following is a copy of the nvd3 1.8.2 js file.
 # https://github.com/novus/nvd3
 ################################################################################
-set(NVD3_JS_PATH ${METABENCH_DIR}/nvd3.js)
-file(WRITE ${NVD3_JS_PATH} "\
+file(WRITE ${METABENCH_DIR}/nvd3.js "\
 /* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2016-01-24 */\
 \
 !function(){var a={};a.dev=!1,a.tooltip=a.tooltip||{},a.utils=a.utils||{},a.mod\
@@ -1538,7 +1533,7 @@ a){n=a}},y:{get:function(){return o},set:function(a){o=a}},xScale:{get:function\
 n(a){m=a}},xDomain:{get:function(){return c},set:function(a){c=a}},yDomain:{get\
 ")
 
-file(APPEND ${NVD3_JS_PATH} "\
+file(APPEND ${METABENCH_DIR}/nvd3.js "\
 :function(){return d},set:function(a){d=a}},xRange:{get:function(){return e},se\
 t:function(a){e=a}},yRange:{get:function(){return f},set:function(a){f=a}},clip\
 Edge:{get:function(){return s},set:function(a){s=a}},id:{get:function(){return \
@@ -2540,7 +2535,7 @@ return\"translate(\"+l(n(a,b))+\",\"+m(r(a,b))+\")\"}).attr(\"d\",function(a,c){
 /b[0].values.length*.9;return\"m0,0l0,\"+(m(p(a,c))-m(r(a,c)))+\"l\"+-d/2+\",0l\"+d/2\
 ")
 
-file(APPEND ${NVD3_JS_PATH} "\
+file(APPEND ${METABENCH_DIR}/nvd3.js "\
 +\",0l0,\"+(m(s(a,c))-m(p(a,c)))+\"l0,\"+(m(q(a,c))-m(s(a,c)))+\"l\"+d/2+\",0l\"+-d/2+\"\
 ,0z\"})}),b}var c,d,e,f,g={top:0,right:0,bottom:0,left:0},h=null,i=null,j=Math.f\
 loor(1e4*Math.random()),k=null,l=d3.scale.linear(),m=d3.scale.linear(),n=functi\
@@ -3406,8 +3401,7 @@ inheritOptions(b,c),a.utils.initOptions(b),b},a.version=\"1.8.2\"}();\
 # The following is a copy of the d3 3.5.16 js file.
 # https://github.com/mbostock/d3
 ################################################################################
-set(D3_JS_PATH ${METABENCH_DIR}/d3.js)
-file(WRITE ${D3_JS_PATH} "\
+file(WRITE ${METABENCH_DIR}/d3.js "\
 !function(){function n(n){return n&&(n.ownerDocument||n.document||n).documentEl\
 ement}function t(n){return n&&(n.ownerDocument&&n.ownerDocument.defaultView||n.\
 document&&n||n.defaultView)}function e(n,t){return t>n?-1:n>t?1:n>=t?0:NaN}func\
@@ -4409,7 +4403,7 @@ gth;a>i;i++){u.push(t=[]),t.parentNode=(e=this[i]).parentNode;for(var o=0,l=e.l\
 ength;l>o;o++)(r=e[o])&&n.call(r,r.__data__,o,i)&&t.push(r)}return E(u)},Aa.ord\
 ")
 
-file(APPEND ${D3_JS_PATH} "\
+file(APPEND ${METABENCH_DIR}/d3.js "\
 er=function(){for(var n=-1,t=this.length;++n<t;)for(var e,r=this[n],u=r.length-\
 1,i=r[u];--u>=0;)(e=r[u])&&(i&&i!==e.nextSibling&&i.parentNode.insertBefore(e,i\
 ),i=e);return this},Aa.sort=function(n){n=I.apply(this,arguments);for(var t=-1,\
