@@ -36,6 +36,10 @@ install:
   # Install and use a more recent Ruby
   - rvm use 2.1 --install --binary --fuzzy
 
-script:
+before_script:
   - cd ${TRAVIS_BUILD_DIR}
-  - ./tools/run_tests.sh
+  - (mkdir build && cd build && cmake ..)
+
+script:
+  - cmake --build build
+  - (cd build && ctest --output-on-failure -VV)

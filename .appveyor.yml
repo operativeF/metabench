@@ -35,4 +35,8 @@ before_build:
   - cd C:\projects\metabench
 
 build_script:
-  - bash tools\run_tests.sh -DRUBY_LIBRARY=%RUBY_LIBRARY%
+  - mkdir build
+  - cd build
+  - cmake .. -G%CMAKE_GENERATOR% -DMETABENCH_UNIT_TEST_OPTIONS="-DRUBY_LIBRARY=%RUBY_LIBRARY%"
+  - cmake --build .
+  - ctest --output-on-failure -VV
