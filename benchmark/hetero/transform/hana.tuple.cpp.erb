@@ -1,0 +1,24 @@
+// Copyright Louis Dionne 2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+#include <boost/hana/transform.hpp>
+#include <boost/hana/tuple.hpp>
+namespace hana = boost::hana;
+
+
+struct f {
+    template <typename X>
+    constexpr X operator()(X x) const { return x; }
+};
+
+template <int i>
+struct x { };
+
+int main() {
+    constexpr auto xs = hana::make_tuple(
+        <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
+    );
+    constexpr auto result = hana::transform(xs, f{});
+    (void)result;
+}

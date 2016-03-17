@@ -1,0 +1,20 @@
+// Copyright Louis Dionne 2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+#include <boost/hana/at.hpp>
+#include <boost/hana/experimental/types.hpp>
+namespace hana = boost::hana;
+
+
+template <int> struct x;
+
+
+int main() {
+    constexpr auto xs = hana::experimental::types<
+        <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+    >{};
+
+    constexpr auto result = hana::at_c<<%= n - 1 %>>(xs);
+    (void)result;
+}
