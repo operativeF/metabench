@@ -14,7 +14,7 @@ using list = metal::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
-using result = metal::at<list, metal::number<int, <%= n - 1 %>>>::type;
+using result = metal::at_t<list, metal::number<int, <%= n - 1 %>>>;
 
 
 int main() { }

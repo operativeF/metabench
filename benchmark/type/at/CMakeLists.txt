@@ -10,7 +10,7 @@ foreach(dataset brigand.list meta.list metal.list mpl.list mpl.vector)
     dependencies_are_satisfied(satisfied ${dataset})
 
     if (${satisfied})
-        metabench_add_dataset(${dataset} ${dataset}.cpp.erb "(1..10)")
+        metabench_add_dataset(${dataset} ${dataset}.cpp.erb "(1..20).step(2)")
         list(APPEND datasets ${dataset})
     endif()
 endforeach()
