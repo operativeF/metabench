@@ -59,4 +59,6 @@ function(dependencies_are_satisfied result dataset)
 endfunction()
 
 add_subdirectory(hetero/at)
+add_subdirectory(hetero/make)
+
 add_subdirectory(type/at)

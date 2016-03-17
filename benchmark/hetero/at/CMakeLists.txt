@@ -10,8 +10,8 @@ foreach(dataset fusion.list fusion.vector hana.basic_tuple hana.tuple std.tuple)
     dependencies_are_satisfied(satisfied ${dataset})
 
     if (${satisfied})
-        metabench_add_dataset(${dataset} ${dataset}.cpp.erb "(1..10)")
-        list(APPEND datasets ${dataset})
+        metabench_add_dataset(dataset.hetero.at.${dataset} ${dataset}.cpp.erb "(1..10)")
+        list(APPEND datasets dataset.hetero.at.${dataset})
     endif()
 endforeach()
 
