@@ -26,7 +26,7 @@ if (Hana_FOUND)
     include_directories(${Hana_INCLUDE_DIRS})
 endif()
 
-find_package(Metal)
+find_package(Metal QUIET)
 if (Metal_FOUND)
     include_directories(${METAL_INCLUDE_DIRS})
 endif()
