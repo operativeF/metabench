@@ -8,5 +8,6 @@ enable_testing()
 
 include(metabench)
 
+add_subdirectory(benchmark)
 add_subdirectory(example)
 add_subdirectory(test)

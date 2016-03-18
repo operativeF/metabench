@@ -2,13 +2,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-cmake_minimum_required(VERSION 3.1)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/..")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-enable_testing()
-include(metabench)
-
 
 # Check for dependencies
 find_package(Boost)
@@ -58,6 +52,9 @@ function(dependencies_are_satisfied result dataset)
             "known metaprogramming library.")
     endif()
 endfunction()
+
+
+add_custom_target(benchmarks)
 
 add_subdirectory(hetero/at)
 add_subdirectory(hetero/make)

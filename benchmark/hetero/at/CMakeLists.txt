@@ -24,3 +24,4 @@ foreach(dataset fusion.list fusion.vector hana.basic_tuple hana.tuple std.tuple)
 endforeach()
 
 metabench_add_benchmark(benchmark.hetero.at DATASETS ${datasets})
+add_dependencies(benchmarks benchmark.hetero.at)

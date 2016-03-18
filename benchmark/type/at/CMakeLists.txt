@@ -22,3 +22,4 @@ foreach(dataset brigand.list hana.types meta.list metal.list mpl.list mpl.vector
 endforeach()
 
 metabench_add_benchmark(benchmark.type.at DATASETS ${datasets})
+add_dependencies(benchmarks benchmark.type.at)

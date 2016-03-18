@@ -22,3 +22,4 @@ foreach(dataset hana.types mpl.list mpl.vector)
 endforeach()
 
 metabench_add_benchmark(benchmark.type.transform DATASETS ${datasets})
+add_dependencies(benchmarks benchmark.type.transform)
