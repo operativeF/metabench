@@ -24,11 +24,9 @@ install:
   - if "%CMAKE_GENERATOR%" equ "Unix Makefiles" (set "PATH=C:\cygwin\bin;%PATH%")
   - if "%CMAKE_GENERATOR%" equ "MSYS Makefiles" (set "PATH=C:\MinGW\bin;C:\MinGW\msys\1.0\bin;%PATH%")
 
-  # Use a more recent Ruby by default. We need to set the RUBY_LIBRARY variable
-  # explicitly because CMake fails to find it otherwise.
+  # Use a more recent Ruby by default.
   - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
   - ruby --version
-  - set RUBY_LIBRARY="C:\Ruby21-x64\lib\libx64-msvcrt-ruby210-static.a"
 
 before_build:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
@@ -37,6 +35,6 @@ before_build:
 build_script:
   - mkdir build
   - cd build
-  - cmake .. -G%CMAKE_GENERATOR% -DRUBY_LIBRARY=%RUBY_LIBRARY% -DMETABENCH_UNIT_TEST_OPTIONS="-DRUBY_LIBRARY=%RUBY_LIBRARY%"
+  - cmake .. -G%CMAKE_GENERATOR%
   - cmake --build .
   - ctest --output-on-failure -VV

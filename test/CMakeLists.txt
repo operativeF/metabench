@@ -6,9 +6,6 @@
 # and possibly CTest targets. This might look a bit odd, because we're using
 # CMake to run CMake, but we do this instead of using `add_subdirectory` to
 # make sure each test is run in its own "sandbox".
-#
-# The METABENCH_UNIT_TEST_OPTIONS variable can be used to pass options down to
-# the unit tests. It is used e.g. in the Appveyor build.
 
 file(GLOB test_dirs
     LIST_DIRECTORIES true
@@ -24,7 +21,7 @@ foreach(dir ${test_dirs})
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${dir}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
         COMMAND ${CMAKE_COMMAND} -E chdir ${dir}
-                ${CMAKE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${dir} -G${CMAKE_GENERATOR} ${METABENCH_UNIT_TEST_OPTIONS}
+                ${CMAKE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${dir} -G${CMAKE_GENERATOR}
         COMMAND ${CMAKE_COMMAND} --build ${dir} --target check
         COMMAND ${CMAKE_COMMAND} -E chdir ${dir}
                 ${CMAKE_CTEST_COMMAND} --output-on-failure

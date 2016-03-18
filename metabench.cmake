@@ -10,8 +10,8 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-find_package(Ruby 2.1)
-if(NOT ${RUBY_FOUND})
+find_package(Ruby 2.1 QUIET)
+if(NOT RUBY_EXECUTABLE)
     message(WARNING "Ruby >= 2.1 was not found; the metabench.cmake module can't be used.")
     return()
 endif()
