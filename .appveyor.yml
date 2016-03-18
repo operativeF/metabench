@@ -33,8 +33,5 @@ before_build:
   - cd C:\projects\metabench
 
 build_script:
-  - mkdir build
-  - cd build
-  - cmake .. -G%CMAKE_GENERATOR%
-  - cmake --build .
-  - ctest --output-on-failure -VV
+  - type check_cr.rb
+  - ruby check_cr.rb
