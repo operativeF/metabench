@@ -37,6 +37,6 @@ before_build:
 build_script:
   - mkdir build
   - cd build
-  - cmake .. -G%CMAKE_GENERATOR% -DMETABENCH_UNIT_TEST_OPTIONS="-DRUBY_LIBRARY=%RUBY_LIBRARY%"
+  - cmake .. -G%CMAKE_GENERATOR% -DRUBY_LIBRARY=%RUBY_LIBRARY% -DMETABENCH_UNIT_TEST_OPTIONS="-DRUBY_LIBRARY=%RUBY_LIBRARY%"
   - cmake --build .
   - ctest --output-on-failure -VV
