@@ -21,12 +21,14 @@ foreach(dir ${test_dirs})
     endif()
 
     add_custom_target(test.${dir}
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${dir}/build
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}/build
-        COMMAND ${CMAKE_COMMAND} -E chdir ${dir}/build ${CMAKE_COMMAND} .. -G${CMAKE_GENERATOR} ${METABENCH_UNIT_TEST_OPTIONS}
-        COMMAND ${CMAKE_COMMAND} --build ${dir}/build --target check
-        COMMAND ${CMAKE_COMMAND} -E chdir ${dir}/build ${CMAKE_CTEST_COMMAND} --output-on-failure
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${dir}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
+        COMMAND ${CMAKE_COMMAND} -E chdir ${dir}
+                ${CMAKE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${dir} -G${CMAKE_GENERATOR} ${METABENCH_UNIT_TEST_OPTIONS}
+        COMMAND ${CMAKE_COMMAND} --build ${dir} --target check
+        COMMAND ${CMAKE_COMMAND} -E chdir ${dir}
+                ${CMAKE_CTEST_COMMAND} --output-on-failure
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         VERBATIM USES_TERMINAL
     )
 
