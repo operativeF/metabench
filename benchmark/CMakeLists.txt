@@ -3,6 +3,7 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 include(ExternalProject)
+include(CheckCXXCompilerFlag)
 
 # Add several metaprogramming libraries that we want to benchmark
 find_package(Boost)
@@ -86,6 +87,11 @@ function(dependencies_are_satisfied result dataset)
     endif()
 endfunction()
 
+set(cxx_flag -ftemplate-depth=5000)
+check_cxx_compiler_flag(${cxx_flag} HAS_FTEMPLATE_DEPTH)
+if(HAS_FTEMPLATE_DEPTH)
+    add_compile_options(${cxx_flag})
+endif()
 
 add_custom_target(benchmarks)
 
