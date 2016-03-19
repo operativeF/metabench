@@ -1,0 +1,23 @@
+// Copyright Louis Dionne 2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+#include <boost/mpl/list.hpp>
+#include <boost/mpl/quote.hpp>
+#include <boost/mpl/transform.hpp>
+namespace mpl = boost::mpl;
+
+
+template <typename X>
+struct f { using type = X; };
+
+template <int> struct x;
+
+using xs = mpl::list<
+    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+>;
+
+using result = mpl::transform<xs, mpl::quote1<f>>::type;
+
+
+int main() { }
