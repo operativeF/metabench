@@ -78,7 +78,7 @@ function(metabench_add_dataset target path_to_template range)
     file(WRITE ${METABENCH_DIR}/${path_to}/${target}.cpp "")
     add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${path_to}/${target}.cpp)
     set_target_properties(${target} PROPERTIES
-        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- ${MEASURE_RB_PATH}"
+        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${MEASURE_RB_PATH}\""
         RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}/${path_to}"
     )
     target_include_directories(${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${path_to}")
@@ -112,7 +112,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
             -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = Metabench.measure(\"${path_to_template}\", range, measure_file, exe_file, command)"
+            -e "data = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endfunction()
@@ -274,11 +274,11 @@ file(WRITE ${METABENCH_RB_PATH}
 ################################################################################
 set(MEASURE_RB_PATH ${METABENCH_DIR}/measure.rb)
 file(WRITE ${MEASURE_RB_PATH}
-"require 'benchmark'                                                    \n"
-"command = ARGV.join(' ')                                               \n"
-"time = Benchmark.realtime { `#{command}` }                             \n"
-"puts \"[command line: #{command}]\"                                    \n"
-"puts \"[compilation time: #{time}]\"                                   \n"
+"require 'benchmark'                                                               \n"
+"command = ARGV.map { |arg| arg.match(/\\s/) ? '\"' + arg + '\"' : arg }.join(' ') \n"
+"time = Benchmark.realtime { `#{command}` }                                        \n"
+"puts \"[command line: #{command}]\"                                               \n"
+"puts \"[compilation time: #{time}]\"                                              \n"
 )
 ################################################################################
 # end measure.rb

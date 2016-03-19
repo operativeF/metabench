@@ -17,19 +17,20 @@ foreach(dir ${test_dirs})
         continue()
     endif()
 
-    add_custom_target(test.${dir}
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${dir}
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
-        COMMAND ${CMAKE_COMMAND} -E chdir ${dir}
+    string(REPLACE " " "_" target test.${dir})
+    add_custom_target(${target}
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "${dir}"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${dir}"
+        COMMAND ${CMAKE_COMMAND} -E chdir "${dir}"
                 ${CMAKE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${dir} -G${CMAKE_GENERATOR}
-        COMMAND ${CMAKE_COMMAND} --build ${dir} --target check
-        COMMAND ${CMAKE_COMMAND} -E chdir ${dir}
+        COMMAND ${CMAKE_COMMAND} --build "${dir}" --target check
+        COMMAND ${CMAKE_COMMAND} -E chdir "${dir}"
                 ${CMAKE_CTEST_COMMAND} --output-on-failure
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         VERBATIM USES_TERMINAL
     )
 
-    add_test(NAME test.${dir}
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test.${dir}
+    add_test(NAME ${target}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${target}
     )
 endforeach()
