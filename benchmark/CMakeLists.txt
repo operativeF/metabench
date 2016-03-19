@@ -50,7 +50,7 @@ if (METABENCH_HANA)
     find_package(Hana QUIET)
     if (Hana_FOUND)
         message(STATUS "Hana found - version ${Hana_VERSION}")
-        #TODO: add directories here
+        include_directories(${Hana_INCLUDE_DIRS})
         add_custom_target(Hana)
     else()
         message(STATUS "Hana not found - fetching branch develop")
