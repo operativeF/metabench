@@ -12,20 +12,25 @@ option(METABENCH_MPL        "Benchmark MPL"     ON)
 include(ExternalProject)
 
 if (METABENCH_FUSION OR METABENCH_MPL)
-    find_package(Boost)
+    find_package(Boost QUIET)
     if (Boost_FOUND)
+        message(STATUS "Boost found - version ${Boost_VERSION}")
         include_directories(${Boost_INCLUDE_DIRS})
+    else()
+        message(WARNING "Boost not found - Fusion and MPL will be unavailable.")
+        set(METABENCH_FUSION OFF)
+        set(METABENCH_MPL OFF)
     endif()
 endif()
 
 if (METABENCH_BRIGAND)
     find_package(Brigand QUIET)
     if (Brigand_FOUND)
-        message(STATUS "Brigand version: ${Brigand_VERSION}")
+        message(STATUS "Brigand found - version ${Brigand_VERSION}")
         #TODO: add directories here
         add_custom_target(Brigand)
     else()
-        message(STATUS "Brigand version: branch master")
+        message(STATUS "Brigand not found - fetching branch master")
         ExternalProject_Add(Brigand
             URL https://github.com/edouarda/brigand/archive/master.zip
             TIMEOUT 10
@@ -44,11 +49,11 @@ endif()
 if (METABENCH_HANA)
     find_package(Hana QUIET)
     if (Hana_FOUND)
-        message(STATUS "Hana version: ${Hana_VERSION}")
+        message(STATUS "Hana found - version ${Hana_VERSION}")
         #TODO: add directories here
         add_custom_target(Hana)
     else()
-        message(STATUS "Hana version: branch develop")
+        message(STATUS "Hana not found - fetching branch develop")
         ExternalProject_Add(Hana
             URL https://github.com/ldionne/hana/archive/develop.zip
             TIMEOUT 10
@@ -67,11 +72,11 @@ endif()
 if (METABENCH_META)
     find_package(Meta QUIET)
     if (Meta_FOUND)
-        message(STATUS "Meta version: ${Meta_VERSION}")
+        message(STATUS "Meta found - version ${Meta_VERSION}")
         #TODO: add directories here
         add_custom_target(Meta)
     else()
-        message(STATUS "Meta version: branch master")
+        message(STATUS "Meta not found - fetching branch master")
         ExternalProject_Add(Meta
             URL https://github.com/ericniebler/meta/archive/master.zip
             TIMEOUT 10
@@ -90,11 +95,11 @@ endif()
 if (METABENCH_METAL)
     find_package(Metal QUIET)
     if (Metal_FOUND)
-        message(STATUS "Metal version: ${Metal_VERSION}")
+        message(STATUS "Metal found - version ${Metal_VERSION}")
         include_directories(${METAL_INCLUDE_DIRS})
         add_custom_target(Metal)
     else()
-        message(STATUS "Metal version: branch master")
+        message(STATUS "Metal not found - fetching branch master")
         ExternalProject_Add(Metal
             URL https://github.com/brunocodutra/metal/archive/master.zip
             TIMEOUT 10
