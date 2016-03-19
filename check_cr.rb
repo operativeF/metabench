@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-STDERR.write("line1\r")
+STDERR.print("line1")
 sleep 5
-STDERR.write("line2")
+STDERR.print("\rline2")
