@@ -2,4 +2,4 @@
 
 STDERR.print("line1")
 sleep 5
-STDERR.print("\rline2")
+STDERR.print("\r\rline2")
