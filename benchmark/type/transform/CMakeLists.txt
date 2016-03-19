@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(datasets)
-foreach(dataset hana.types mpl.list mpl.vector)
+foreach(dataset hana.types metal.list mpl.list mpl.vector)
     dependencies_are_satisfied(satisfied ${dataset})
 
     if (${dataset} MATCHES "mpl\\.")
