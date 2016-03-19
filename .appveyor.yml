@@ -15,14 +15,13 @@ build:
 environment:
     matrix:
       - CMAKE_GENERATOR: "Ninja"
-      # - CMAKE_GENERATOR: "NMake Makefiles"
-      # - CMAKE_GENERATOR: "Unix Makefiles"
-      # - CMAKE_GENERATOR: "MSYS Makefiles"
+      - CMAKE_GENERATOR: "MinGW Makefiles"
 
 install:
   - if "%CMAKE_GENERATOR%" equ "Ninja" (choco install ninja)
-  - if "%CMAKE_GENERATOR%" equ "Unix Makefiles" (set "PATH=C:\cygwin\bin;%PATH%")
-  - if "%CMAKE_GENERATOR%" equ "MSYS Makefiles" (set "PATH=C:\MinGW\bin;C:\MinGW\msys\1.0\bin;%PATH%")
+
+  # MinGW complains about sh.exe being in PATH
+  - set PATH=C:\MinGW\bin;%PATH:C:\Program Files\Git\usr\bin;=%
 
   # Use a more recent Ruby by default.
   - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
@@ -35,6 +34,6 @@ before_build:
 build_script:
   - mkdir build
   - cd build
-  - cmake .. -G%CMAKE_GENERATOR%
+  - cmake .. -G"%CMAKE_GENERATOR%"
   - cmake --build .
   - ctest --output-on-failure -VV
