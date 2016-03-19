@@ -35,3 +35,6 @@ before_build:
 build_script:
   - type check_cr.rb
   - ruby check_cr.rb
+
+  - type check_cr.py
+  - python check_cr.py
