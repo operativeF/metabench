@@ -25,10 +25,9 @@ if (METABENCH_BRIGAND)
         #TODO: add directories here
         add_custom_target(Brigand)
     else()
-        message(STATUS "Brigand version: origin/master")
+        message(STATUS "Brigand version: branch master")
         ExternalProject_Add(Brigand
-            GIT_REPOSITORY https://github.com/edouarda/brigand
-            GIT_TAG origin/master
+            URL https://github.com/edouarda/brigand/archive/master.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
@@ -49,10 +48,9 @@ if (METABENCH_HANA)
         #TODO: add directories here
         add_custom_target(Hana)
     else()
-        message(STATUS "Hana version: origin/develop")
+        message(STATUS "Hana version: branch develop")
         ExternalProject_Add(Hana
-            GIT_REPOSITORY https://github.com/ldionne/hana
-            GIT_TAG origin/develop
+            URL https://github.com/ldionne/hana/archive/develop.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
@@ -73,10 +71,9 @@ if (METABENCH_META)
         #TODO: add directories here
         add_custom_target(Meta)
     else()
-        message(STATUS "Meta version: origin/master")
+        message(STATUS "Meta version: branch master")
         ExternalProject_Add(Meta
-            GIT_REPOSITORY https://github.com/ericniebler/meta
-            GIT_TAG origin/master
+            URL https://github.com/ericniebler/meta/archive/master.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
@@ -97,10 +94,9 @@ if (METABENCH_METAL)
         include_directories(${METAL_INCLUDE_DIRS})
         add_custom_target(Metal)
     else()
-        message(STATUS "Metal version: origin/master")
+        message(STATUS "Metal version: branch master")
         ExternalProject_Add(Metal
-            GIT_REPOSITORY https://github.com/brunocodutra/metal
-            GIT_TAG origin/master
+            URL https://github.com/brunocodutra/metal/archive/master.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
