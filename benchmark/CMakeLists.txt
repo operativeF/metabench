@@ -35,6 +35,7 @@ if (METABENCH_BRIGAND)
             BUILD_COMMAND ""   # Disable build step
             INSTALL_COMMAND "" # Disable install step
             TEST_COMMAND ""    # Disable test step
+            UPDATE_COMMAND ""  # Disable source work-tree update
         )
         ExternalProject_Get_Property(Brigand SOURCE_DIR)
         include_directories(${SOURCE_DIR})
@@ -58,6 +59,7 @@ if (METABENCH_HANA)
             BUILD_COMMAND ""   # Disable build step
             INSTALL_COMMAND "" # Disable install step
             TEST_COMMAND ""    # Disable test step
+            UPDATE_COMMAND ""  # Disable source work-tree update
         )
         ExternalProject_Get_Property(Hana SOURCE_DIR)
         include_directories(${SOURCE_DIR}/include)
@@ -81,6 +83,7 @@ if (METABENCH_META)
             BUILD_COMMAND ""   # Disable build step
             INSTALL_COMMAND "" # Disable install step
             TEST_COMMAND ""    # Disable test step
+            UPDATE_COMMAND ""  # Disable source work-tree update
         )
         ExternalProject_Get_Property(Meta SOURCE_DIR)
         include_directories(${SOURCE_DIR}/include)
@@ -104,6 +107,7 @@ if (METABENCH_METAL)
             BUILD_COMMAND ""   # Disable build step
             INSTALL_COMMAND "" # Disable install step
             TEST_COMMAND ""    # Disable test step
+            UPDATE_COMMAND ""  # Disable source work-tree update
         )
         ExternalProject_Get_Property(Metal SOURCE_DIR)
         include_directories(${SOURCE_DIR}/include)
