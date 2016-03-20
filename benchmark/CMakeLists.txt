@@ -32,7 +32,7 @@ if (METABENCH_BRIGAND)
         add_custom_target(Brigand)
     else()
         message(STATUS "Brigand not found - fetching branch master")
-        ExternalProject_Add(Brigand
+        ExternalProject_Add(Brigand EXCLUDE_FROM_ALL 1
             URL https://github.com/edouarda/brigand/archive/master.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
@@ -55,7 +55,7 @@ if (METABENCH_HANA)
         add_custom_target(Hana)
     else()
         message(STATUS "Hana not found - fetching branch develop")
-        ExternalProject_Add(Hana
+        ExternalProject_Add(Hana EXCLUDE_FROM_ALL 1
             URL https://github.com/ldionne/hana/archive/develop.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
@@ -78,7 +78,7 @@ if (METABENCH_META)
         add_custom_target(Meta)
     else()
         message(STATUS "Meta not found - fetching branch master")
-        ExternalProject_Add(Meta
+        ExternalProject_Add(Meta EXCLUDE_FROM_ALL 1
             URL https://github.com/ericniebler/meta/archive/master.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
@@ -101,7 +101,7 @@ if (METABENCH_METAL)
         add_custom_target(Metal)
     else()
         message(STATUS "Metal not found - fetching branch master")
-        ExternalProject_Add(Metal
+        ExternalProject_Add(Metal EXCLUDE_FROM_ALL 1
             URL https://github.com/brunocodutra/metal/archive/master.zip
             TIMEOUT 10
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
