@@ -77,12 +77,17 @@ install:
       export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DEPS_DIR}/llvm/install/lib"
     fi
 
+  # Install Boost headers
+  - BOOST_URL="http://github.com/boostorg/boost.git"
+  - travis_retry git clone --depth 1 --recursive --quiet ${BOOST_URL}
+  - (cd boost && ./bootstrap.sh && ./b2 headers)
+
   # Install and use a more recent Ruby
   - rvm use 2.1 --install --binary --fuzzy
 
 before_script:
   - cd ${TRAVIS_BUILD_DIR}
-  - (mkdir build && cd build && cmake ..)
+  - (mkdir build && cd build && cmake .. -DBOOST_ROOT=${DEPS_DIR}/boost)
 
 script:
   - cmake --build build

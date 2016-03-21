@@ -27,6 +27,12 @@ install:
   - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
   - ruby --version
 
+  # Install Boost headers
+  - git clone --depth 1 --recursive --quiet http://github.com/boostorg/boost.git
+  - cd boost
+  - call bootstrap.bat
+  - call b2 headers
+
 before_build:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - cd C:\projects\metabench
@@ -34,6 +40,6 @@ before_build:
 build_script:
   - mkdir build
   - cd build
-  - cmake .. -G"%CMAKE_GENERATOR%"
+  - cmake .. -G"%CMAKE_GENERATOR%" -DBOOST_ROOT=%C:\projects\metabench\boost%
   - cmake --build .
   - ctest --output-on-failure -VV
