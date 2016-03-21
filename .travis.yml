@@ -19,6 +19,8 @@ addons:
       - clang-3.6
       - clang-3.7
       - clang-3.8
+      - g++-4.8
+      - g++-4.9
 
     sources:
       - ubuntu-toolchain-r-test
@@ -28,17 +30,24 @@ addons:
       - llvm-toolchain-precise
 
 env:
-  - COMPILER=clang++-3.6 CMAKE_GENERATOR="Ninja"
-  - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles"
+  # Test all generators and Clang + GCC
+  - TEST=true COMPILER=clang++-3.6 CMAKE_GENERATOR="Ninja"
+  - TEST=true COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles"
+  - TEST=true COMPILER=clang++-3.7 CMAKE_GENERATOR="Ninja"
+  - TEST=true COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles"
+  - TEST=true COMPILER=clang++-3.8 CMAKE_GENERATOR="Ninja"
+  - TEST=true COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles"
+  - TEST=true COMPILER=g++-4.8     CMAKE_GENERATOR="Ninja"
+  - TEST=true COMPILER=g++-4.8     CMAKE_GENERATOR="Unix Makefiles"
+  - TEST=true COMPILER=g++-4.9     CMAKE_GENERATOR="Ninja"
+  - TEST=true COMPILER=g++-4.9     CMAKE_GENERATOR="Unix Makefiles"
 
-  - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles"
-  - COMPILER=clang++-3.7 CMAKE_GENERATOR="Ninja"
-
-  - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles"
-  - COMPILER=clang++-3.8 CMAKE_GENERATOR="Ninja"
-
-  - COMPILER=gcc CMAKE_GENERATOR="Ninja"
-  - COMPILER=gcc CMAKE_GENERATOR="Unix Makefiles"
+  # Benchmarks
+  - BENCHMARK=true COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles"
+  - BENCHMARK=true COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles"
+  - BENCHMARK=true COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles"
+  - BENCHMARK=true COMPILER=g++-4.8     CMAKE_GENERATOR="Unix Makefiles"
+  - BENCHMARK=true COMPILER=g++-4.9     CMAKE_GENERATOR="Unix Makefiles"
 
 before_install:
   - export CXX=${COMPILER} # Override CXX set by Travis
@@ -90,5 +99,13 @@ before_script:
   - (mkdir build && cd build && cmake .. -DBOOST_ROOT=${DEPS_DIR}/boost)
 
 script:
-  - cmake --build build
-  - (cd build && ctest --output-on-failure -VV)
+  - |
+    if [[ "${TEST}" == "true" ]]; then
+      cmake --build build
+      (cd build && ctest --output-on-failure)
+    fi
+
+  - |
+    if [[ "${BENCHMARK}" == "true" ]]; then
+      cmake --build build --target benchmarks
+    fi
