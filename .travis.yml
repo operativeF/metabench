@@ -5,9 +5,6 @@
 language: cpp
 os: linux
 sudo: false
-compiler:
-  - clang
-  - gcc
 
 # Do not build branches of the form "pr/*". By prefixing pull requests coming
 # from branches inside the repository with pr/, this avoids building both the
@@ -17,11 +14,34 @@ branches:
 
 addons:
   apt:
-    packages: ninja-build
+    packages:
+      - ninja-build
+      - clang-3.6
+      - clang-3.7
+      - clang-3.8
+
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
+      - llvm-toolchain-precise-3.7
+      # - llvm-toolchain-precise-3.8 <- Not whitelisted yet
+      - llvm-toolchain-precise
 
 env:
-  - CMAKE_GENERATOR="Ninja"
-  - CMAKE_GENERATOR="Unix Makefiles"
+  - COMPILER=clang++-3.6 CMAKE_GENERATOR="Ninja"
+  - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles"
+
+  - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles"
+  - COMPILER=clang++-3.7 CMAKE_GENERATOR="Ninja"
+
+  - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles"
+  - COMPILER=clang++-3.8 CMAKE_GENERATOR="Ninja"
+
+  - COMPILER=gcc CMAKE_GENERATOR="Ninja"
+  - COMPILER=gcc CMAKE_GENERATOR="Unix Makefiles"
+
+before_install:
+  - export CXX=${COMPILER} # Override CXX set by Travis
 
 install:
   # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
@@ -32,6 +52,30 @@ install:
   - CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
   - mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
   - export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+
+  # Install libc++ and libc++abi
+  - |
+    if [[ "${CXX}" == "clang++-3.6" || "${CXX}" == "clang++-3.7" || "${CXX}" == "clang++-3.8" ]]; then
+      if   [[ "${CXX}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
+      elif [[ "${CXX}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.1";
+      elif [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.0"; fi
+
+      LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
+      LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
+      LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
+
+      mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
+      travis_retry wget --quiet -O - ${LLVM_URL} | tar --strip-components=1 -xJ -C llvm
+      travis_retry wget --quiet -O - ${LIBCXX_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxx
+      travis_retry wget --quiet -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C llvm/projects/libcxxabi
+      (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/llvm/install)
+      (cd llvm/build/projects/libcxx && make install -j2)
+      (cd llvm/build/projects/libcxxabi && make install -j2)
+
+      export CXXFLAGS="-isystem ${DEPS_DIR}/llvm/install/include/c++/v1"
+      export LDFLAGS="-L ${DEPS_DIR}/llvm/install/lib -l c++ -l c++abi"
+      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DEPS_DIR}/llvm/install/lib"
+    fi
 
   # Install and use a more recent Ruby
   - rvm use 2.1 --install --binary --fuzzy
