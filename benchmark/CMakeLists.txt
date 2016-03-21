@@ -34,7 +34,7 @@ if (METABENCH_BRIGAND)
         message(STATUS "Brigand not found - fetching branch master")
         ExternalProject_Add(Brigand EXCLUDE_FROM_ALL 1
             URL https://github.com/edouarda/brigand/archive/master.zip
-            TIMEOUT 10
+            TIMEOUT 120
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
@@ -57,7 +57,7 @@ if (METABENCH_HANA)
         message(STATUS "Hana not found - fetching branch develop")
         ExternalProject_Add(Hana EXCLUDE_FROM_ALL 1
             URL https://github.com/ldionne/hana/archive/develop.zip
-            TIMEOUT 10
+            TIMEOUT 120
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
@@ -80,7 +80,7 @@ if (METABENCH_META)
         message(STATUS "Meta not found - fetching branch master")
         ExternalProject_Add(Meta EXCLUDE_FROM_ALL 1
             URL https://github.com/ericniebler/meta/archive/master.zip
-            TIMEOUT 10
+            TIMEOUT 120
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
@@ -103,7 +103,7 @@ if (METABENCH_METAL)
         message(STATUS "Metal not found - fetching branch master")
         ExternalProject_Add(Metal EXCLUDE_FROM_ALL 1
             URL https://github.com/brunocodutra/metal/archive/master.zip
-            TIMEOUT 10
+            TIMEOUT 120
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
