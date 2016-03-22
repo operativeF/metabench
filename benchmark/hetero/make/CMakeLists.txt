@@ -12,5 +12,5 @@ add_dataset(datasets dataset.hetero.make.hana.basic_tuple hana.basic_tuple.cpp.e
 add_dataset(datasets dataset.hetero.make.hana.tuple       hana.tuple.cpp.erb          "(1..500).step(10)")
 add_dataset(datasets dataset.hetero.make.std.tuple        std.tuple.cpp.erb           "(1..100).step(10)")
 
-metabench_add_benchmark(benchmark.hetero.make DATASETS ${datasets})
+metabench_add_benchmark(benchmark.hetero.make DATASETS ${datasets} FILENAME index)
 add_dependencies(benchmarks benchmark.hetero.make)
