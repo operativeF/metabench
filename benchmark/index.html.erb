@@ -5,8 +5,8 @@
 
     <title>Metabench</title>
 
-    <link href="web/bootstrap.min.css" rel="stylesheet">
-    <link href="web/octicons.css" rel="stylesheet">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="octicons.css" rel="stylesheet">
     <style>
       html, body {
         height: 100%;
@@ -43,6 +43,10 @@
         overflow: hidden !important;
       }
 
+      a:focus {
+        outline: none;
+      }
+
       #footer {
         height: 100px;
         font-size: 0.9em;
@@ -72,6 +76,10 @@
             </div>
           </li>
         </ul>
+        <ul class="index nav navbar-nav">
+          <li class="section active" section="type"><a href="#">Pure Type</a></li>
+          <li class="section" section="hetero"><a href="#">Heterogeneous</a></li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
           <li>
             <a aria-label="View on GitHub" href="https://github.com/ldionne/metabench">
@@ -88,7 +96,8 @@
       <% benchmarks.each do |benchmark| %>
         <div class="row">
           <div class="col-sm-12">
-            <iframe class="chart thumbnail" scrolling="no" src="<%= benchmark %>" ></iframe>
+            <iframe class="chart thumbnail" section="<%= benchmark[:section] %>" src="<%= benchmark[:path] %>" scrolling="no">
+            </iframe>
           </div>
         </div>
       <% end %>
@@ -118,7 +127,18 @@
       </div>
     </div>
 
-    <script src="web/jquery-1.11.3.min.js"></script>
-    <script src="web/bootstrap.min.js"></script>
+    <script src="jquery-1.11.3.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script>
+      $(function(){
+        $(".index > .section").on("click", function(){
+          $(this).addClass("active").siblings().removeClass("active");
+          $(".chart:visible").hide()
+          $(".chart[section=" + $(this).attr("section") + "]").fadeIn();
+        });
+
+        $(".index > .section.active").click();
+      });
+    </script>
   </body>
 </html>
