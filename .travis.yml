@@ -130,8 +130,8 @@ script:
 
       # Suppress output to avoid leaking the token when the command fails
       git clone https://ldionne:${GITHUB_TOKEN}@github.com/ldionne/metabench --depth 1 --branch=gh-pages tmp &>/dev/null
-      rm -rf tmp/{index.html,hetero/,type/,*.css,*.js,*.eot,*.ttf}
-      for f in build/benchmark/{hetero,type,bootstrap.*,index.html,octicons.*,jquery*}; do
+      rm -rf tmp/{index.html,hetero/,type/}
+      for f in build/benchmark/{hetero,type,index.html}; do
           cp -R ${f} tmp/
       done
 

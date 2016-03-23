@@ -171,37 +171,25 @@ if(HAS_FTEMPLATE_DEPTH)
     add_compile_options(${cxx_flag})
 endif()
 
-file(GLOB type_benchmark_dirs
+file(GLOB benchmark_dirs
     LIST_DIRECTORIES true
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-    "type/*"
+    "hetero/*" "type/*"
 )
 
-file(GLOB hetero_benchmark_dirs
-    LIST_DIRECTORIES true
-    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-    "hetero/*"
-)
-
-set(benchmark_dirs ${type_benchmark_dirs} ${hetero_benchmark_dirs})
-
-set(WEB_DIR_PATH "${CMAKE_CURRENT_SOURCE_DIR}/web")
 set(INDEX_HTML_ERB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/index.html.erb")
 set(index_html_path "${CMAKE_CURRENT_BINARY_DIR}/index.html")
-add_custom_command(
-        OUTPUT "${index_html_path}"
-        COMMAND ${RUBY_EXECUTABLE} -r erb
-            -e "benchmarks = []"
-            -e "benchmarks += '${type_benchmark_dirs}'.split(';').map \
-                { |benchmark| {section: 'type', path: benchmark + '/index.html'} }"
-            -e "benchmarks += '${hetero_benchmark_dirs}'.split(';').map \
-                { |benchmark| {section: 'hetero', path: benchmark + '/index.html'} }"
-            -e "html = ERB.new(File.read('${INDEX_HTML_ERB_PATH}')).result(binding)"
-            -e "IO.write('${index_html_path}', html)"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${WEB_DIR_PATH}" "${CMAKE_CURRENT_BINARY_DIR}"
-        DEPENDS "${WEB_DIR_PATH}" "${INDEX_HTML_ERB_PATH}"
-        VERBATIM
-    )
+add_custom_command(OUTPUT "${index_html_path}"
+    COMMAND ${RUBY_EXECUTABLE} -r erb
+        -e "benchmarks = '${benchmark_dirs}'.split(';').map { |b|               "
+        -e "    {section: b =~ /hetero/ ? 'hetero' : 'type',                    "
+        -e "     path: b + '/index.html'}                                       "
+        -e "}                                                                   "
+        -e "html = ERB.new(File.read('${INDEX_HTML_ERB_PATH}')).result(binding) "
+        -e "IO.write('${index_html_path}', html)                                "
+    DEPENDS "${INDEX_HTML_ERB_PATH}"
+    VERBATIM
+)
 
 add_custom_target(benchmarks DEPENDS "${index_html_path}")
 
