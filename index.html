@@ -8,8 +8,8 @@
 
     <title>Metabench</title>
 
-    <link href="bootstrap.min.css" rel="stylesheet">
-    <link href="octicons.css" rel="stylesheet">
+    <link href="{{ site.baseurl }}/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ site.baseurl }}/octicons.css" rel="stylesheet">
     <style>
       html, body {
         height: 100%;
@@ -98,7 +98,7 @@
       {% for benchmark in site.hetero %}
         <div class="row">
           <div class="col-sm-12">
-            <iframe class="chart thumbnail" section="hetero" src="{{ benchmark.url }}" scrolling="no">
+            <iframe class="chart thumbnail" section="hetero" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
             </iframe>
           </div>
         </div>
@@ -107,7 +107,7 @@
       {% for benchmark in site.type %}
         <div class="row">
           <div class="col-sm-12">
-            <iframe class="chart thumbnail" section="type" src="{{ benchmark.url }}" scrolling="no">
+            <iframe class="chart thumbnail" section="type" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
             </iframe>
           </div>
         </div>
@@ -138,8 +138,8 @@
       </div>
     </div>
 
-    <script src="jquery-1.11.3.min.js"></script>
-    <script src="bootstrap.min.js"></script>
+    <script src="{{ site.baseurl }}/jquery-1.11.3.min.js"></script>
+    <script src="{{ site.baseurl }}/bootstrap.min.js"></script>
     <script>
       $(function(){
         $(".index > .section").on("click", function(){

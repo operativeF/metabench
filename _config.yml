@@ -2,6 +2,7 @@ title: Metabench
 email: ldionne.2@gmail.com
 description: "A collection of metaprogramming benchmarks."
 url: "http://ldionne.github.io/metabench"
+baseurl: "/metabench"
 
 collections:
   hetero:
