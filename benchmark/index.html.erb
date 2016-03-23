@@ -11,27 +11,23 @@
       html, body {
         height: 100%;
       }
-
-      .navbar-nav > li, .navbar-nav {
-        float: left !important;
-      }
-
+      
       .navbar-right {
-        float: right !important;
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 0;
+      }
+      
+      .navbar-right > li {
+        float: left;
       }
 
       #content {
         height: auto;
         min-height: 100%;
-        padding-top: 70px;
         padding-bottom: 100px;
         margin-bottom: -100px;
-      }
-
-      @media (max-width: 768px) {
-        #content {
-            padding-top: 90px;
-        }
       }
 
       .chart {
@@ -67,16 +63,12 @@
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
-        <ul class="nav navbar-nav navbar-left">
-          <li>
-            <div class="navbar-header">
-              <a class="navbar-brand" href="#">Metabench</a>
-            </div>
-          </li>
-        </ul>
-        <ul class="index nav navbar-nav">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Metabench</a>
+        </div>
+        <ul class="index nav navbar-nav navbar-left">
           <li class="section active" section="type"><a href="#">Pure Type</a></li>
           <li class="section" section="hetero"><a href="#">Heterogeneous</a></li>
         </ul>
