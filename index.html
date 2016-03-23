@@ -96,21 +96,25 @@
 
     <div id="content" class="container-fluid">
       {% for benchmark in site.hetero %}
-        <div class="row">
-          <div class="col-sm-12">
-            <iframe class="chart thumbnail" section="hetero" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
-            </iframe>
+        {% if benchmark.url contains "clang++-3.8" %}
+          <div class="row">
+            <div class="col-sm-12">
+              <iframe class="chart thumbnail" section="hetero" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
+              </iframe>
+            </div>
           </div>
-        </div>
+        {% endif %}
       {% endfor %}
 
       {% for benchmark in site.type %}
-        <div class="row">
-          <div class="col-sm-12">
-            <iframe class="chart thumbnail" section="type" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
-            </iframe>
+        {% if benchmark.url contains "clang++-3.8" %}
+          <div class="row">
+            <div class="col-sm-12">
+              <iframe class="chart thumbnail" section="type" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
+              </iframe>
+            </div>
           </div>
-        </div>
+        {% endif %}
       {% endfor %}
     </div>
 
