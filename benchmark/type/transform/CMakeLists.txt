@@ -10,5 +10,5 @@ add_dataset(datasets dataset.type.transform.metal.list    metal.list.cpp.erb  "(
 add_dataset(datasets dataset.type.transform.mpl.list      mpl.list.cpp.erb    "(1..50).step(5)")
 add_dataset(datasets dataset.type.transform.mpl.vector    mpl.vector.cpp.erb  "(1..50).step(5)")
 
-metabench_add_benchmark(benchmark.type.transform DATASETS ${datasets} FILENAME index)
+metabench_add_benchmark(benchmark.type.transform DATASETS ${datasets})
 add_dependencies(benchmarks benchmark.type.transform)

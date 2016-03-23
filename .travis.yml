@@ -130,9 +130,16 @@ script:
 
       # Suppress output to avoid leaking the token when the command fails
       git clone https://ldionne:${GITHUB_TOKEN}@github.com/ldionne/metabench --depth 1 --branch=gh-pages tmp &>/dev/null
-      rm -rf tmp/{index.html,hetero/,type/}
-      for f in build/benchmark/{hetero,type,index.html}; do
-          cp -R ${f} tmp/
+      for collection in hetero type; do
+        rm -rf tmp/_${collection}
+        mkdir -p tmp/_${collection}
+        for chart in build/benchmark/${collection}/**/*.html; do
+          # Add a YAML front matter for Jekyll and copy the file to gh-pages.
+          (echo "---"; echo "---") > ${chart}.tmp
+          cat ${chart} >> ${chart}.tmp
+          mv ${chart}.tmp ${chart}
+          cp ${chart} tmp/_${collection}
+        done
       done
 
       pushd tmp

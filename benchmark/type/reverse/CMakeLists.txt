@@ -10,5 +10,5 @@ add_dataset(datasets dataset.type.reverse.metal.list    metal.list.cpp.erb  "(1.
 add_dataset(datasets dataset.type.reverse.mpl.list      mpl.list.cpp.erb    "(1..50).step(5)")
 add_dataset(datasets dataset.type.reverse.mpl.vector    mpl.vector.cpp.erb  "(1..50).step(5)")
 
-metabench_add_benchmark(benchmark.type.reverse DATASETS ${datasets} FILENAME index)
+metabench_add_benchmark(benchmark.type.reverse DATASETS ${datasets})
 add_dependencies(benchmarks benchmark.type.reverse)
