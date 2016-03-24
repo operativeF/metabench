@@ -127,13 +127,13 @@ script:
       git clone https://ldionne:${GITHUB_TOKEN}@github.com/ldionne/metabench --depth 1 --branch=gh-pages tmp &>/dev/null
       for collection in hetero type; do
         rm -rf tmp/_${collection}/${COMPILER}
-        mkdir -p tmp/_${collection}/${COMPILER}
-        for chart in build/benchmark/${collection}/**/*.html; do
-          # Add a YAML front matter for Jekyll and copy the file to gh-pages.
+        rsync -am --include '*/' --include '*.html' --exclude '*' build/benchmark/${collection}/ tmp/_${collection}/${COMPILER}
+
+        # Add a YAML front matter to every chart (for Jekyll).
+        for chart in tmp/_${collection}/${COMPILER}/**/*.html; do
           (echo "---"; echo "---") > ${chart}.tmp
           cat ${chart} >> ${chart}.tmp
           mv ${chart}.tmp ${chart}
-          cp ${chart} tmp/_${collection}/${COMPILER}
         done
       done
 
