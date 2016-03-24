@@ -95,22 +95,11 @@
     </nav>
 
     <div id="content" class="container-fluid">
-      {% for benchmark in site.hetero %}
+      {% for benchmark in site.documents %}
         {% if benchmark.url contains "clang++-3.8" %}
           <div class="row">
             <div class="col-sm-12">
-              <iframe class="chart thumbnail" section="hetero" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
-              </iframe>
-            </div>
-          </div>
-        {% endif %}
-      {% endfor %}
-
-      {% for benchmark in site.type %}
-        {% if benchmark.url contains "clang++-3.8" %}
-          <div class="row">
-            <div class="col-sm-12">
-              <iframe class="chart thumbnail" section="type" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
+              <iframe class="chart thumbnail" section="{{ benchmark.collection }}" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
               </iframe>
             </div>
           </div>
