@@ -57,15 +57,26 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #   [NAME name]:
 #       A name used to identify the dataset. Defaults to `target`.
 #
+#   [ENV env]:
+#       An arbitrary Ruby Hash that will be made available to the ERB template
+#       in the `env` variable. For example, if you pass `ENV "{foo: 1, bar: 2}"`,
+#       `env[:foo]` will be equal to `1` and `env[:bar]` will be equal to `2`
+#       inside the ERB template. This argument can be used to parameterize the
+#       dataset in more complex ways.
+#
 # [1]: http://nvd3.org/
 function(metabench_add_dataset target path_to_template range)
     set(options)
-    set(one_value_args NAME)
+    set(one_value_args NAME ENV)
     set(multi_value_args)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if (NOT ARGS_NAME)
         set(ARGS_NAME ${target})
+    endif()
+
+    if (NOT ARGS_ENV)
+        set(ARGS_ENV "{}")
     endif()
 
     # Transform any absolute path to a relative path from the current source directory.
@@ -102,12 +113,13 @@ function(metabench_add_dataset target path_to_template range)
     add_custom_command(OUTPUT ${json_file}
         COMMAND ${RUBY_EXECUTABLE} -r json -r ${METABENCH_RB_PATH}
             -e "range = (${range})"
+            -e "env = (${ARGS_ENV})"
             -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
             -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = {}"
             -e "data[:key] = '${ARGS_NAME}'"
-            -e "data[:values] = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command)"
+            -e "data[:values] = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env)"
             -e "IO.write('${json_file}', JSON.generate(data))"
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -121,10 +133,11 @@ function(metabench_add_dataset target path_to_template range)
         COMMAND ${RUBY_EXECUTABLE} -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
+            -e "env = (${ARGS_ENV})"
             -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
             -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command)"
+            -e "data = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endfunction()
@@ -234,7 +247,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "require 'time'                                                                                         \n"
 "                                                                                                       \n"
 "module Metabench                                                                                       \n"
-"  def self.measure(erb_template, range, measure_file, exe_file, command)                               \n"
+"  def self.measure(erb_template, range, measure_file, exe_file, command, env)                          \n"
 "    data = []                                                                                          \n"
 "    range = range.to_a                                                                                 \n"
 "    range.each_with_index do |n, index|                                                                \n"
