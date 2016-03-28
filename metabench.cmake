@@ -64,10 +64,17 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #       inside the ERB template. This argument can be used to parameterize the
 #       dataset in more complex ways.
 #
+#   [MEDIAN_OF n]:
+#       The number of times to compile the ERB template when gathering timing
+#       information. The compilation is done `n` times, and the median of these
+#       `n` values is retained. This can help reduce variability at the cost
+#       of longer benchmarking times. By default, the compilation is done only
+#       once. `n` must be a positive (non-zero) integer.
+#
 # [1]: http://nvd3.org/
 function(metabench_add_dataset target path_to_template range)
     set(options)
-    set(one_value_args NAME ENV)
+    set(one_value_args NAME ENV MEDIAN_OF)
     set(multi_value_args)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -77,6 +84,10 @@ function(metabench_add_dataset target path_to_template range)
 
     if (NOT ARGS_ENV)
         set(ARGS_ENV "{}")
+    endif()
+
+    if (NOT ARGS_MEDIAN_OF)
+        set(ARGS_MEDIAN_OF 1)
     endif()
 
     # Transform any absolute path to a relative path from the current source directory.
@@ -119,7 +130,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = {}"
             -e "data[:key] = '${ARGS_NAME}'"
-            -e "data[:values] = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env)"
+            -e "data[:values] = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env, ${ARGS_MEDIAN_OF})"
             -e "IO.write('${json_file}', JSON.generate(data))"
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -137,7 +148,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
             -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env)"
+            -e "data = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env, 1)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endfunction()
@@ -247,7 +258,16 @@ file(WRITE ${METABENCH_RB_PATH}
 "require 'time'                                                                                         \n"
 "                                                                                                       \n"
 "module Metabench                                                                                       \n"
-"  def self.measure(erb_template, range, measure_file, exe_file, command, env)                          \n"
+"  def self.median(values)                                                                              \n"
+"    values = values.sort                                                                               \n"
+"    if values.length.even?                                                                             \n"
+"       return (values[values.length / 2 - 1] + values[values.length / 2])/2                            \n"
+"    else                                                                                               \n"
+"      return values[values.length / 2]                                                                 \n"
+"    end                                                                                                \n"
+"  end                                                                                                  \n"
+"                                                                                                       \n"
+"  def self.measure(erb_template, range, measure_file, exe_file, command, env, median_reps)             \n"
 "    data = []                                                                                          \n"
 "    range = range.to_a                                                                                 \n"
 "    range.each_with_index do |n, index|                                                                \n"
@@ -260,16 +280,17 @@ file(WRITE ${METABENCH_RB_PATH}
 "      IO.write(measure_file, code)                                                                     \n"
 "      datum = {n: n}                                                                                   \n"
 "                                                                                                       \n"
-"      # Compile the file and get timing statistics. The timing statistics                              \n"
-"      # are output to stdout when we compile the file, because we use the                              \n"
-"      # `measure.rb` script below to launch the compiler with CMake.                                   \n"
-"      # We change the timestamp of the measure file to make sure CMake                                 \n"
-"      # considers the target as outdated.                                                              \n"
-"      FileUtils.touch measure_file, mtime: Time.now+1                                                  \n"
-"      stdout, stderr, status = Open3.capture3(*command)                                                \n"
-"      command_line = stdout.match(/\\[command line: (.+)\\]/i)                                         \n"
+"      timings = median_reps.times.map do                                                               \n"
+"        # Compile the file and get timing statistics. The timing statistics                            \n"
+"        # are output to stdout when we compile the file, because we use the                            \n"
+"        # `measure.rb` script below to launch the compiler with CMake.                                 \n"
+"        # We change the timestamp of the measure file to make sure CMake                               \n"
+"        # considers the target as outdated.                                                            \n"
+"        FileUtils.touch measure_file, mtime: Time.now+1                                                \n"
+"        stdout, stderr, status = Open3.capture3(*command)                                              \n"
+"        command_line = stdout.match(/\\[command line: (.+)\\]/i)                                       \n"
 "                                                                                                       \n"
-"      error_string = <<-EOS                                                                            \n"
+"        error_string = <<-EOS                                                                          \n"
 "compilation error: #{command_line && command_line.captures[0]}                                         \n"
 "                                                                                                       \n"
 "stdout                                                                                                 \n"
@@ -284,8 +305,10 @@ file(WRITE ${METABENCH_RB_PATH}
 "#{'-'*80}                                                                                              \n"
 "#{code}                                                                                                \n"
 "EOS\n"
-"      raise error_string if not status.success?                                                        \n"
-"      datum[:time] = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                    \n"
+"        raise error_string if not status.success?                                                      \n"
+"        stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                                 \n"
+"      end                                                                                              \n"
+"      datum[:time] = median(timings)                                                                   \n"
 "      # Size of the generated executable in KB                                                         \n"
 "      datum[:size] = File.size(exe_file).to_f / 1000                                                   \n"
 "      data << datum                                                                                    \n"
