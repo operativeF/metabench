@@ -66,45 +66,47 @@
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Metabench</a>
-        </div>
-        <ul class="index nav navbar-nav navbar-left">
-          <li class="section active" section="type"><a href="#">Pure Type</a></li>
-          <li class="section" section="hetero"><a href="#">Heterogeneous</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a id="download" aria-label="Download from GitHub" href="https://github.com/ldionne/metabench/archive/master.zip">
-              <span class="hidden-xs">Download</span>
-              <span class="hidden-xs octicon octicon-cloud-download" aria-hidden="true"></span>
-              <span class="visible-xs-block mega-octicon octicon-cloud-download" aria-hidden="true"></span>
-            </a>
-          </li>
-          <li>
-            <a aria-label="View on GitHub" href="https://github.com/ldionne/metabench">
-              <span class="hidden-xs">View on GitHub</span>
-              <span class="hidden-xs octicon octicon-mark-github" aria-hidden="true"></span>
-              <span class="visible-xs-block mega-octicon octicon-mark-github" aria-hidden="true"></span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <div id="content" class="container-fluid">
-      {% for benchmark in site.documents %}
-        {% if benchmark.url contains "clang++-3.8" %}
-          <div class="row">
-            <div class="col-sm-12">
-              <iframe class="chart thumbnail" section="{{ benchmark.collection }}" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
-              </iframe>
-            </div>
+    <div id="content">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Metabench</a>
           </div>
-        {% endif %}
-      {% endfor %}
+          <ul class="index nav navbar-nav navbar-left">
+            <li class="section active" section="type"><a href="#">Pure Type</a></li>
+            <li class="section" section="hetero"><a href="#">Heterogeneous</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a id="download" aria-label="Download from GitHub" href="https://github.com/ldionne/metabench/archive/master.zip">
+                <span class="hidden-xs">Download</span>
+                <span class="hidden-xs octicon octicon-cloud-download" aria-hidden="true"></span>
+                <span class="visible-xs-block mega-octicon octicon-cloud-download" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a aria-label="View on GitHub" href="https://github.com/ldionne/metabench">
+                <span class="hidden-xs">View on GitHub</span>
+                <span class="hidden-xs octicon octicon-mark-github" aria-hidden="true"></span>
+                <span class="visible-xs-block mega-octicon octicon-mark-github" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+        {% for benchmark in site.documents %}
+          {% if benchmark.url contains "clang++-3.8" %}
+            <div class="row">
+              <div class="col-sm-12">
+                <iframe class="chart thumbnail" section="{{ benchmark.collection }}" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
+                </iframe>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
 
     <div id="footer">
