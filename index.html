@@ -15,6 +15,10 @@
         height: 100%;
       }
 
+      a:focus {
+        outline: none;
+      }
+
       .navbar-right {
         position: absolute;
         right: 0;
@@ -33,25 +37,30 @@
         margin-bottom: -100px;
       }
 
-      .chart {
-        width: 100%;
-        height: 280px;
-      }
-
-      iframe {
-        overflow: hidden !important;
-      }
-
-      a:focus {
-        outline: none;
-      }
-
       #footer {
         height: 100px;
         font-size: 0.9em;
         text-align: center;
         padding-top: 20px;
         border-top: 1px solid #EEEEEE;
+      }
+
+      .charts {
+        overflow: hidden;
+      }
+
+      .chart {
+        width: 100%;
+        height: 280px;
+      }
+
+      .chart iframe {
+        overflow: hidden !important;
+        height: 100%;
+        width: 100%;
+        border: none;
+        margin: 0;
+        padding: 0;
       }
 
       .social-btns .social-btn {
@@ -95,13 +104,14 @@
         </div>
       </nav>
 
-      <div class="container-fluid">
+      <div class="charts container-fluid" style="height: 0">
         {% for benchmark in site.documents %}
           {% if benchmark.url contains "clang++-3.8" %}
             <div class="row">
               <div class="col-sm-12">
-                <iframe class="chart thumbnail" section="{{ benchmark.collection }}" src="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no">
-                </iframe>
+                <div class="chart thumbnail" section="{{ benchmark.collection }}">
+                  <iframe source="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no"></iframe>
+                </div>
               </div>
             </div>
           {% endif %}
@@ -139,12 +149,22 @@
       $(function(){
         $(".index > .section").on("click", function(){
           $(this).addClass("active").siblings().removeClass("active");
-          $(".chart:visible").hide()
+          $(".chart:not([section=" + $(this).attr("section") + "])").hide();
           $(".chart[section=" + $(this).attr("section") + "]").fadeIn();
         });
 
-        $(".index > .section.active").click();
-      });
+        $.when
+          .apply($, $(".chart iframe").map(function(idx, obj){
+            var deferred = $.Deferred();
+            $(obj).on("load", deferred.resolve);
+            $(obj).attr("src", $(obj).attr("source")).removeAttr("source");
+            return deferred.promise();
+          }))
+          .then(function(){
+            $(".index > .section.active").click();
+            $(".charts").hide().css({height: ""}).fadeIn();
+          });
+      })
     </script>
   </body>
 </html>
