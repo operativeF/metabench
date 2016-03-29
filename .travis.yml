@@ -120,10 +120,8 @@ script:
         rsync -am --include '*/' --include '*.html' --exclude '*' build/benchmark/${collection}/ tmp/_${collection}/${COMPILER}
 
         # Add a YAML front matter to every chart (for Jekyll).
-        for chart in tmp/_${collection}/${COMPILER}/**/*.html; do
-          (echo "---"; echo "---") > ${chart}.tmp
-          cat ${chart} >> ${chart}.tmp
-          mv ${chart}.tmp ${chart}
+        for chart in tmp/_${collection}/${COMPILER}/*/*.html; do
+          sed -i -e "1i---" -e "1icompiler: ${COMPILER}" -e "1i---" ${chart}
         done
       done
 
