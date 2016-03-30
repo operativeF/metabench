@@ -73,14 +73,9 @@ compilers:
         border-top: 1px solid #EEEEEE;
       }
 
-      .chart {
-        width: 100%;
-        height: 280px;
-      }
-
       .chart iframe {
         overflow: hidden !important;
-        height: 100%;
+        height: 280px;
         width: 100%;
         border: none;
         margin: 0;
@@ -144,15 +139,24 @@ compilers:
       </nav>
 
       <div class="container-fluid">
-        {% for benchmark in site.documents %}
         <div class="row">
           <div class="col-sm-12">
-            <div class="chart thumbnail" collection="{{ benchmark.collection }}" compiler="{{ benchmark.compiler }}" style="display: none">
-              <iframe source="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no"></iframe>
+            <div class="panel-group">
+              {% for benchmark in site.documents %}
+              <div class="chart panel panel-default" collection="{{ benchmark.collection }}" compiler="{{ benchmark.compiler }}" style="display: none">
+                <div class="panel-heading">
+                  <span class="panel-title">
+                    <a data-toggle="collapse" href="#chart{{ forloop.index }}">{{ benchmark.url | split: "/" | shift: 3 | pop | join: "/" }}</a>
+                  </span>
+                </div>
+                <div id="chart{{ forloop.index }}" class="panel-collapse collapse">
+                  <iframe class="panel-body" source="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no"></iframe>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           </div>
         </div>
-        {% endfor %}
       </div>
     </div>
 
@@ -199,7 +203,7 @@ compilers:
     <script src="{{ site.baseurl }}/bootstrap.min.js"></script>
     <script>
       function load(iframes){
-        var iframes = $(iframes).filter(":not([src])");
+        var iframes = $(iframes).find("iframe:not([src])[source]");
 
         if(iframes.length <= 0)
           return;
@@ -238,7 +242,7 @@ compilers:
           $(this).addClass("active").siblings(".collection").removeClass("active");
           $(".chart:not([collection='" + $(this).attr("collection") + "'])").hide();
           $(".chart[collection='" + $(this).attr("collection") + "'][compiler='" + compiler + "']").fadeIn();
-          load(".chart:visible > iframe");
+          load(".chart:visible");
         });
 
         $(".index > .compilers .compiler").on("click", function(){
@@ -246,7 +250,7 @@ compilers:
           $(this).addClass("active").siblings(".compiler").removeClass("active");
           $(".chart:not([compiler='" + $(this).attr("compiler") + "'])").hide();
           $(".chart[compiler='" + $(this).attr("compiler") + "'][collection='" + collection + "']").fadeIn();
-          load(".chart:visible > iframe");
+          load(".chart:visible");
         });
 
         $(".index > .compilers").on("click", function(){
