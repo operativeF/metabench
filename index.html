@@ -73,10 +73,6 @@ compilers:
         border-top: 1px solid #EEEEEE;
       }
 
-      .charts {
-        overflow: hidden;
-      }
-
       .chart {
         width: 100%;
         height: 280px;
@@ -147,16 +143,31 @@ compilers:
         </div>
       </nav>
 
-      <div class="charts container-fluid" style="height: 0">
+      <div class="container-fluid">
         {% for benchmark in site.documents %}
         <div class="row">
           <div class="col-sm-12">
-            <div class="chart thumbnail" collection="{{ benchmark.collection }}" compiler="{{ benchmark.compiler }}">
+            <div class="chart thumbnail" collection="{{ benchmark.collection }}" compiler="{{ benchmark.compiler }}" style="display: none">
               <iframe source="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no"></iframe>
             </div>
           </div>
         </div>
         {% endfor %}
+      </div>
+    </div>
+
+    <div id="dialog" class="modal fade" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Loading charts...</h1>
+          </div>
+          <div class="modal-body">
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped active" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -187,12 +198,47 @@ compilers:
     <script src="{{ site.baseurl }}/jquery-1.11.3.min.js"></script>
     <script src="{{ site.baseurl }}/bootstrap.min.js"></script>
     <script>
+      function load(iframes){
+        var iframes = $(iframes).filter(":not([src])");
+
+        if(iframes.length <= 0)
+          return;
+
+        var dialog = $("#dialog");
+        var bar = $(".progress-bar", dialog).attr("aria-valuenow", 0).css({width: "0%"});
+
+        dialog.modal("toggle");
+
+        var promises = iframes.map(function(idx, iframe){
+          var deferred = $.Deferred().done(function(){
+            bar.attr("aria-valuenow", parseFloat(bar.attr("aria-valuenow")) + 100/iframes.length);
+            bar.css({width: Math.round(bar.attr("aria-valuenow")) + "%"});
+          });
+
+          $(iframe).one("load", deferred.resolve);
+          return deferred.promise();
+        });
+
+        $.when
+          .apply($, promises)
+          .then(function(){
+            setTimeout(function(){
+              dialog.modal("toggle");
+            }, 600);
+          });
+
+        iframes.each(function(idx, iframe){
+          $(iframe).attr("src", $(iframe).attr("source")).removeAttr("source");
+        });
+      }
+
       $(function(){
         $(".index > .collection").on("click", function(){
           var compiler = $(".index > .compilers .compiler.active").attr("compiler");
           $(this).addClass("active").siblings(".collection").removeClass("active");
           $(".chart:not([collection='" + $(this).attr("collection") + "'])").hide();
           $(".chart[collection='" + $(this).attr("collection") + "'][compiler='" + compiler + "']").fadeIn();
+          load(".chart:visible > iframe");
         });
 
         $(".index > .compilers .compiler").on("click", function(){
@@ -200,26 +246,14 @@ compilers:
           $(this).addClass("active").siblings(".compiler").removeClass("active");
           $(".chart:not([compiler='" + $(this).attr("compiler") + "'])").hide();
           $(".chart[compiler='" + $(this).attr("compiler") + "'][collection='" + collection + "']").fadeIn();
+          load(".chart:visible > iframe");
         });
 
         $(".index > .compilers").on("click", function(){
           $("> .active > .name", this).text($(".compiler.active", this).text());
         });
 
-        $(".index > .compilers").click();
-
-        $.when
-          .apply($, $(".chart iframe").map(function(idx, obj){
-            var deferred = $.Deferred();
-            $(obj).on("load", deferred.resolve);
-            $(obj).attr("src", $(obj).attr("source")).removeAttr("source");
-            return deferred.promise();
-          }))
-          .then(function(){
-            $(".index > .collection.active").click();
-            $(".index > .compilers .compiler.active").click();
-            $(".charts").hide().css({height: ""}).fadeIn();
-          });
+        $(".index > .compilers .compiler.active").click();
       })
     </script>
 
