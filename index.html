@@ -54,6 +54,13 @@ compilers:
         margin: 0;
       }
 
+      .panel-group .panel-footer {
+        background-color: initial;
+        padding: 0px 10px 4px;
+        font-size: 0.8em;
+        text-align: right;
+      }
+
       .navbar-right > li {
         float: left;
       }
@@ -151,6 +158,7 @@ compilers:
                 </div>
                 <div id="chart{{ forloop.index }}" class="panel-collapse collapse">
                   <iframe class="panel-body" source="{{ site.baseurl }}{{ benchmark.url }}" scrolling="no"></iframe>
+                 <div class="panel-footer text-muted">Last updated on {{ benchmark.timestamp }}</div>
                 </div>
               </div>
               {% endfor %}
