@@ -5,7 +5,10 @@ url: "http://ldionne.github.io/metabench"
 baseurl: "/metabench"
 
 collections:
-  hetero:
-    output: true
   type:
+    name: Pure Type
+    output: true
+    active: true
+  hetero:
+    name: Heterogeneous
     output: true
