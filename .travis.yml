@@ -121,7 +121,7 @@ script:
 
         # Add a YAML front matter to every chart (for Jekyll).
         for chart in tmp/_${collection}/${COMPILER}/*/*.html; do
-          sed -i -e "1i---" -e "1icompiler: ${COMPILER}" -e "1i---" ${chart}
+          sed -i -e "1i---" -e "1itimestamp: $(date '+%a, %-d %b %Y')" -e "1icompiler: ${COMPILER}" -e "1i---" ${chart}
         done
       done
 
