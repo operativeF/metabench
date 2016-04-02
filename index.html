@@ -96,6 +96,10 @@ compilers:
         padding: 0;
       }
 
+      .chart a:hover {
+        text-decoration: none;
+      }
+
       .github-btn {
         overflow: hidden;
         border: 0px none;
@@ -160,6 +164,7 @@ compilers:
               <div class="chart panel panel-default" data-collection="{{ benchmark.collection }}" data-compiler="{{ benchmark.compiler }}" style="display: none">
                 <div class="panel-heading" data-toggle="collapse" data-target="#chart{{ forloop.index }}" role="button">
                   <span class="panel-title" >{{ benchmark.url | split: "/" | shift: 3 | pop | join: "/" }}</span>
+                  <span class="link pull-right"><a class="octicon octicon-link-external" href="{{ site.baseurl }}{{ benchmark.url }}"></a></span>
                 </div>
                 <div id="chart{{ forloop.index }}" class="panel-collapse collapse">
                   <iframe class="panel-body" data-src="{{ site.baseurl }}{{ benchmark.url }}"></iframe>
@@ -228,6 +233,10 @@ compilers:
 
         $(".chart").on("click", function(){
           load(this);
+        });
+
+        $(".chart .link").on("click", function(e){
+          e.stopPropagation();
         });
 
         $(".index > .compilers").on("click", function(){
