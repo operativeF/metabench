@@ -5,13 +5,12 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
 template <int i>
 struct x { };
 
 int main() {
     constexpr auto xs = hana::make_tuple(
-        <%= (0..n).map { |i| "x<#{i}>{}" }.join(', ') %>
+        <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
     (void)xs;
 }

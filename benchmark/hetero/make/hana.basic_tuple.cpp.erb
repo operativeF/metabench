@@ -11,7 +11,7 @@ struct x { };
 
 int main() {
     constexpr auto xs = hana::make_basic_tuple(
-        <%= (0..n).map { |i| "x<#{i}>{}" }.join(', ') %>
+        <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
     (void)xs;
 }

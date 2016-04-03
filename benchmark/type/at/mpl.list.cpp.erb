@@ -2,8 +2,10 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-<%= n > 20 ? "#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS" : ''%>
-<%= n > 20 ? "#define BOOST_MPL_LIMIT_LIST_SIZE #{(n/10.0).ceil * 10}" : ''%>
+<% if n > 20 %>
+    #define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+    #define BOOST_MPL_LIMIT_LIST_SIZE <%= ((n + 9) / 10) * 10 %>
+<% end %>
 
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/list.hpp>
@@ -13,11 +15,10 @@ namespace mpl = boost::mpl;
 template <int>
 struct x;
 
-using list = mpl::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
->;
-
-using result = mpl::at_c<list, <%= n - 1 %>>::type;
+typedef mpl::at_c<
+    mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %> >,
+    <%= n - 1 %>
+>::type result;
 
 
 int main() { }

@@ -2,8 +2,10 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-<%= n > 20 ? "#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS" : ''%>
-<%= n > 20 ? "#define BOOST_MPL_LIMIT_LIST_SIZE #{(n/10.0).ceil * 10}" : ''%>
+<% if n > 20 %>
+    #define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+    #define BOOST_MPL_LIMIT_LIST_SIZE <%= ((n + 9) / 10) * 10 %>
+<% end %>
 
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/reverse.hpp>
@@ -12,11 +14,9 @@ namespace mpl = boost::mpl;
 
 template <int> struct x;
 
-using xs = mpl::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
->;
-
-using result = mpl::reverse<xs>::type;
+typedef mpl::reverse<
+    mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %> >
+>::type result;
 
 
 int main() { }

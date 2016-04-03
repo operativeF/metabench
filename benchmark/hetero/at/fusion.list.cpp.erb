@@ -15,9 +15,9 @@ template <int>
 struct x { };
 
 int main() {
-    auto list = fusion::make_list(
-        <%= (1..n).map { |n| "x<#{n}>{}" }.join(', ') %>
+    (void)fusion::at_c<<%= n - 1 %>>(
+        fusion::make_list(
+            <%= (1..n).map { |n| "x<#{n}>()" }.join(', ') %>
+        )
     );
-    auto result = fusion::at_c<<%= n - 1 %>>(list);
-    (void)result;
 }

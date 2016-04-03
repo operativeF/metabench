@@ -4,13 +4,12 @@
 
 #include <tuple>
 
-
 template <int i>
 struct x { };
 
 int main() {
     constexpr auto xs = std::make_tuple(
-        <%= (0..n).map { |i| "x<#{i}>{}" }.join(', ') %>
+        <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
     (void)xs;
 }
