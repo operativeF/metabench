@@ -11,7 +11,6 @@ option(METABENCH_MPL        "Benchmark MPL"     ON)
 
 include(ExternalProject)
 include(CheckCXXCompilerFlag)
-include(benchmark/FindCXXStandard)
 
 if (METABENCH_FUSION OR METABENCH_MPL)
     find_package(Boost QUIET)
@@ -121,41 +120,57 @@ macro(add_dataset datasets dataset path_to_template range)
     string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
 
     if(${dataset} MATCHES "brigand\\.")
-        if (NOT (${CXX_STANDARD} LESS 2011) AND ${METABENCH_BRIGAND})
+        if (METABENCH_BRIGAND)
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
             add_dependencies(${dataset} Brigand)
             list(APPEND ${datasets} ${dataset})
         endif()
     elseif(${dataset} MATCHES "fusion\\.")
-        if (${METABENCH_FUSION})
+        if (METABENCH_FUSION)
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} MEDIAN_OF 3)
             list(APPEND ${datasets} ${dataset})
         endif()
     elseif(${dataset} MATCHES "hana\\.")
-        if (NOT (${CXX_STANDARD} LESS 2014) AND ${METABENCH_HANA})
+        if (METABENCH_HANA
+            AND NOT (
+                CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+                CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6"
+            )
+            AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        )
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
             add_dependencies(${dataset} Hana)
             list(APPEND ${datasets} ${dataset})
         endif()
     elseif(${dataset} MATCHES "meta\\.")
-        if (NOT (${CXX_STANDARD} LESS 2011) AND ${METABENCH_META})
+        if (METABENCH_META
+            AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        )
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
             add_dependencies(${dataset} Meta)
             list(APPEND ${datasets} ${dataset})
         endif()
     elseif(${dataset} MATCHES "metal\\.")
-        if (NOT (${CXX_STANDARD} LESS 2011) AND ${METABENCH_METAL})
+        if (METABENCH_METAL
+            AND NOT (
+                CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
+                CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19"
+            )
+        )
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
             add_dependencies(${dataset} Metal)
             list(APPEND ${datasets} ${dataset})
         endif()
     elseif (${dataset} MATCHES "mpl\\.")
-        if (${METABENCH_MPL})
+        if (METABENCH_MPL)
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} MEDIAN_OF 3)
             list(APPEND ${datasets} ${dataset})
         endif()
     elseif (${dataset} MATCHES "std\\.")
-        if (NOT (${CXX_STANDARD} LESS 2011))
+        if (NOT (
+                CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
+                CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19"
+        ))
             metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
             list(APPEND ${datasets} ${dataset})
         endif()
@@ -166,6 +181,8 @@ macro(add_dataset datasets dataset path_to_template range)
         )
     endif()
 endmacro()
+
+set(CMAKE_CXX_STANDARD 14)
 
 set(cxx_flag -ftemplate-depth=5000)
 check_cxx_compiler_flag(${cxx_flag} HAS_FTEMPLATE_DEPTH)

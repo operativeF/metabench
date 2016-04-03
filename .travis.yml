@@ -21,6 +21,7 @@ addons:
       - clang-3.8
       - g++-4.8
       - g++-4.9
+      - g++-5
 
     sources:
       - ubuntu-toolchain-r-test
@@ -46,6 +47,8 @@ env:
     - COMPILER=g++-4.8     CMAKE_GENERATOR="Unix Makefiles"
     - COMPILER=g++-4.9     CMAKE_GENERATOR="Ninja"
     - COMPILER=g++-4.9     CMAKE_GENERATOR="Unix Makefiles"
+    - COMPILER=g++-5       CMAKE_GENERATOR="Ninja"
+    - COMPILER=g++-5       CMAKE_GENERATOR="Unix Makefiles"
 
 before_install:
   # IMPORTANT: Keep this step empty, as it is overwritten by the script that

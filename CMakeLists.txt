@@ -3,10 +3,13 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 cmake_minimum_required(VERSION 3.1)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-enable_testing()
 
+project(Metabench CXX)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include(metabench)
+
+enable_testing()
 
 add_subdirectory(benchmark)
 add_subdirectory(example)

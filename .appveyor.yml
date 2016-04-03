@@ -14,14 +14,17 @@ build:
 
 environment:
     matrix:
-      - CMAKE_GENERATOR: "Ninja"
-      - CMAKE_GENERATOR: "MinGW Makefiles"
+      - MSVC: "14.0"
+        CMAKE_GENERATOR: "Ninja"
+
+      - MSVC: "12.0"
+        CMAKE_GENERATOR: "Ninja"
 
 install:
   - if "%CMAKE_GENERATOR%" equ "Ninja" (choco install ninja)
 
-  # MinGW complains about sh.exe being in PATH
-  - set PATH=C:\MinGW\bin;%PATH:C:\Program Files\Git\usr\bin;=%
+  # Remove MinGW from PATH
+  - set PATH=%PATH:C:\MinGW\bin;=%
 
   # Use a more recent Ruby by default.
   - set PATH=C:\Ruby21-x64;C:\Ruby21-x64\bin;%PATH%
@@ -34,12 +37,12 @@ install:
   - call b2 headers
 
 before_build:
-  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  - call "C:\Program Files (x86)\Microsoft Visual Studio %MSVC%\VC\vcvarsall.bat"
   - cd C:\projects\metabench
 
 build_script:
   - mkdir build
   - cd build
-  - cmake .. -G"%CMAKE_GENERATOR%" -DBOOST_ROOT=%C:\projects\metabench\boost%
+  - cmake .. -G"%CMAKE_GENERATOR%" -DBOOST_ROOT="C:\projects\metabench\boost"
   - cmake --build .
-  - ctest --output-on-failure -VV
+  - ctest --output-on-failure
