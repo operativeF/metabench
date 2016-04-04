@@ -65,26 +65,6 @@ compilers:
         text-align: right;
       }
 
-      .panel-group .panel-collapse.collapse {
-        display: block;
-      }
-
-      .panel-group .panel-collapse.collapse * {
-        visibility: hidden;
-      }
-
-      .panel-group .panel-collapse.collapse.in * {
-        visibility: visible;
-      }
-
-      .modal-header {
-        padding: 10px 15px;
-      }
-
-      .progress {
-        margin: 0;
-      }
-
       #content {
         height: auto;
         min-height: 100%;
@@ -181,27 +161,12 @@ compilers:
                 <div class="panel-heading" data-toggle="collapse" data-target="#chart{{ forloop.index }}" role="button">
                   <span class="panel-title" >{{ benchmark.url | split: "/" | shift: 3 | pop | join: "/" }}</span>
                 </div>
-                <div id="chart{{ forloop.index }}" class="panel-collapse collapse" style="height: 0px">
+                <div id="chart{{ forloop.index }}" class="panel-collapse collapse">
                   <iframe class="panel-body" data-src="{{ site.baseurl }}{{ benchmark.url }}"></iframe>
                   <div class="panel-footer text-muted">Last updated on {{ benchmark.timestamp }}</div>
                 </div>
               </div>
               {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="dialog" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Loading charts...</h3>
-          </div>
-          <div class="modal-body">
-            <div class="progress">
-              <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
             </div>
           </div>
         </div>
@@ -241,29 +206,6 @@ compilers:
         if(iframes.length <= 0)
           return;
 
-        var dialog = $("#dialog");
-        var bar = $(".progress-bar", dialog).attr("aria-valuenow", 0).css({width: "0%"});
-
-        dialog.modal("toggle");
-
-        var promises = iframes.map(function(idx, iframe){
-          var deferred = $.Deferred().done(function(){
-            bar.attr("aria-valuenow", parseFloat(bar.attr("aria-valuenow")) + 100/iframes.length);
-            bar.css({width: Math.round(bar.attr("aria-valuenow")) + "%"});
-          });
-
-          $(iframe).one("load", deferred.resolve);
-          return deferred.promise();
-        });
-
-        $.when
-          .apply($, promises)
-          .then(function(){
-            setTimeout(function(){
-              dialog.modal("toggle");
-            }, 600);
-          });
-
         iframes.each(function(idx, iframe){
           $(iframe).attr("src", $(iframe).attr("data-src")).removeAttr("data-src");
         });
@@ -275,7 +217,6 @@ compilers:
           $(this).addClass("active").siblings(".collection").removeClass("active");
           $(".chart:not([data-collection='" + $(this).attr("data-collection") + "'])").hide();
           $(".chart[data-collection='" + $(this).attr("data-collection") + "'][data-compiler='" + compiler + "']").fadeIn();
-          load(".chart:visible");
         });
 
         $(".index > .compilers .compiler").on("click", function(){
@@ -283,7 +224,10 @@ compilers:
           $(this).addClass("active").siblings(".compiler").removeClass("active");
           $(".chart:not([data-compiler='" + $(this).attr("data-compiler") + "'])").hide();
           $(".chart[data-compiler='" + $(this).attr("data-compiler") + "'][data-collection='" + collection + "']").fadeIn();
-          load(".chart:visible");
+        });
+
+        $(".chart").on("click", function(){
+          load(this);
         });
 
         $(".index > .compilers").on("click", function(){
