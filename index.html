@@ -65,26 +65,6 @@ compilers:
         text-align: right;
       }
 
-      .panel-group .panel-collapse.collapse {
-        display: block;
-      }
-
-      .panel-group .panel-collapse.collapse * {
-        visibility: hidden;
-      }
-
-      .panel-group .panel-collapse.collapse.in * {
-        visibility: visible;
-      }
-
-      .modal-header {
-        padding: 10px 15px;
-      }
-
-      .progress {
-        margin: 0;
-      }
-
       #content {
         height: auto;
         min-height: 100%;
@@ -181,7 +161,7 @@ compilers:
                 <div class="panel-heading" data-toggle="collapse" data-target="#chart{{ forloop.index }}" role="button">
                   <span class="panel-title" >{{ benchmark.url | split: "/" | shift: 3 | pop | join: "/" }}</span>
                 </div>
-                <div id="chart{{ forloop.index }}" class="panel-collapse collapse" style="height: 0px">
+                <div id="chart{{ forloop.index }}" class="panel-collapse collapse">
                   <iframe class="panel-body" data-src="{{ site.baseurl }}{{ benchmark.url }}"></iframe>
                   <div class="panel-footer text-muted">Last updated on {{ benchmark.timestamp }}</div>
                 </div>
