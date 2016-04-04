@@ -178,7 +178,7 @@ compilers:
             <div class="panel-group">
               {% for benchmark in site.documents %}
               <div class="chart panel panel-default" data-collection="{{ benchmark.collection }}" data-compiler="{{ benchmark.compiler }}" style="display: none">
-                <div class="panel-heading" data-toggle="collapse" data-target="#chart{{ forloop.index }}" role="button">
+                <div class="panel-heading" data-toggle="collapse" data-target="#chart{{ forloop.index }}" role="button" onclick="load('#chart{{ forloop.index }}')">
                   <span class="panel-title" >{{ benchmark.url | split: "/" | shift: 3 | pop | join: "/" }}</span>
                 </div>
                 <div id="chart{{ forloop.index }}" class="panel-collapse collapse" style="height: 0px">
@@ -275,7 +275,6 @@ compilers:
           $(this).addClass("active").siblings(".collection").removeClass("active");
           $(".chart:not([data-collection='" + $(this).attr("data-collection") + "'])").hide();
           $(".chart[data-collection='" + $(this).attr("data-collection") + "'][data-compiler='" + compiler + "']").fadeIn();
-          load(".chart:visible");
         });
 
         $(".index > .compilers .compiler").on("click", function(){
@@ -283,7 +282,6 @@ compilers:
           $(this).addClass("active").siblings(".compiler").removeClass("active");
           $(".chart:not([data-compiler='" + $(this).attr("data-compiler") + "'])").hide();
           $(".chart[data-compiler='" + $(this).attr("data-compiler") + "'][data-collection='" + collection + "']").fadeIn();
-          load(".chart:visible");
         });
 
         $(".index > .compilers").on("click", function(){
