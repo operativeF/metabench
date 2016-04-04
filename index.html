@@ -193,21 +193,6 @@ compilers:
       </div>
     </div>
 
-    <div id="dialog" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Loading charts...</h3>
-          </div>
-          <div class="modal-body">
-            <div class="progress">
-              <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div id="footer">
       <div class="container">
         <div class="row text-muted">
@@ -240,29 +225,6 @@ compilers:
 
         if(iframes.length <= 0)
           return;
-
-        var dialog = $("#dialog");
-        var bar = $(".progress-bar", dialog).attr("aria-valuenow", 0).css({width: "0%"});
-
-        dialog.modal("toggle");
-
-        var promises = iframes.map(function(idx, iframe){
-          var deferred = $.Deferred().done(function(){
-            bar.attr("aria-valuenow", parseFloat(bar.attr("aria-valuenow")) + 100/iframes.length);
-            bar.css({width: Math.round(bar.attr("aria-valuenow")) + "%"});
-          });
-
-          $(iframe).one("load", deferred.resolve);
-          return deferred.promise();
-        });
-
-        $.when
-          .apply($, promises)
-          .then(function(){
-            setTimeout(function(){
-              dialog.modal("toggle");
-            }, 600);
-          });
 
         iframes.each(function(idx, iframe){
           $(iframe).attr("src", $(iframe).attr("data-src")).removeAttr("data-src");
