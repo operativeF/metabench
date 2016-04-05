@@ -1,0 +1,26 @@
+// Copyright Bruno Dutra 2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+#include <metal/list/list.hpp>
+#include <metal/list/replace_if.hpp>
+#include <metal/number/number.hpp>
+#include <metal/lambda/lambda.hpp>
+
+template <int> struct x;
+
+template<typename>
+struct is_odd;
+
+template<int i>
+struct is_odd<x<i>>
+    : metal::integer<i%2>
+{};
+
+using xs = metal::list<
+    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+>;
+
+using result = metal::replace_if_t<xs, metal::lambda<is_odd>, void>;
+
+int main() { }
