@@ -9,181 +9,45 @@ option(METABENCH_META       "Benchmark Meta"    ON)
 option(METABENCH_METAL      "Benchmark Metal"   ON)
 option(METABENCH_MPL        "Benchmark MPL"     ON)
 
-include(ExternalProject)
-include(CheckCXXCompilerFlag)
 
-if (METABENCH_FUSION OR METABENCH_MPL)
-    find_package(Boost QUIET)
-    if (Boost_FOUND)
-        message(STATUS "Boost found - version ${Boost_VERSION}")
-        include_directories(${Boost_INCLUDE_DIRS})
-    else()
-        message(WARNING "Boost not found - Fusion and MPL will be unavailable.")
-        set(METABENCH_FUSION OFF)
-        set(METABENCH_MPL OFF)
-    endif()
-endif()
+include(benchmark/dependencies/boost)
+include(benchmark/dependencies/brigand)
+include(benchmark/dependencies/hana)
+include(benchmark/dependencies/meta)
+include(benchmark/dependencies/metal)
+include(benchmark/dependencies/std)
 
-if (METABENCH_BRIGAND)
-    find_package(Brigand QUIET)
-    if (Brigand_FOUND)
-        message(STATUS "Brigand found - version ${Brigand_VERSION}")
-        #TODO: add directories here
-        add_custom_target(Brigand)
-    else()
-        message(STATUS "Brigand not found - fetching branch master")
-        ExternalProject_Add(Brigand EXCLUDE_FROM_ALL 1
-            URL https://github.com/edouarda/brigand/archive/master.zip
-            TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-            CONFIGURE_COMMAND "" # Disable configure step
-            BUILD_COMMAND ""     # Disable build step
-            INSTALL_COMMAND ""   # Disable install step
-            TEST_COMMAND ""      # Disable test step
-            UPDATE_COMMAND ""    # Disable source work-tree update
-        )
-        ExternalProject_Get_Property(Brigand SOURCE_DIR)
-        include_directories(${SOURCE_DIR})
-    endif()
-endif()
-
-if (METABENCH_HANA)
-    find_package(Hana QUIET)
-    if (Hana_FOUND)
-        message(STATUS "Hana found - version ${Hana_VERSION}")
-        include_directories(${Hana_INCLUDE_DIRS})
-        add_custom_target(Hana)
-    else()
-        message(STATUS "Hana not found - fetching branch develop")
-        ExternalProject_Add(Hana EXCLUDE_FROM_ALL 1
-            URL https://github.com/ldionne/hana/archive/develop.zip
-            TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-            CONFIGURE_COMMAND "" # Disable configure step
-            BUILD_COMMAND ""     # Disable build step
-            INSTALL_COMMAND ""   # Disable install step
-            TEST_COMMAND ""      # Disable test step
-            UPDATE_COMMAND ""    # Disable source work-tree update
-        )
-        ExternalProject_Get_Property(Hana SOURCE_DIR)
-        include_directories(${SOURCE_DIR}/include)
-    endif()
-endif()
-
-if (METABENCH_META)
-    find_package(Meta QUIET)
-    if (Meta_FOUND)
-        message(STATUS "Meta found - version ${Meta_VERSION}")
-        #TODO: add directories here
-        add_custom_target(Meta)
-    else()
-        message(STATUS "Meta not found - fetching branch master")
-        ExternalProject_Add(Meta EXCLUDE_FROM_ALL 1
-            URL https://github.com/ericniebler/meta/archive/master.zip
-            TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-            CONFIGURE_COMMAND "" # Disable configure step
-            BUILD_COMMAND ""     # Disable build step
-            INSTALL_COMMAND ""   # Disable install step
-            TEST_COMMAND ""      # Disable test step
-            UPDATE_COMMAND ""    # Disable source work-tree update
-        )
-        ExternalProject_Get_Property(Meta SOURCE_DIR)
-        include_directories(${SOURCE_DIR}/include)
-    endif()
-endif()
-
-if (METABENCH_METAL)
-    find_package(Metal QUIET)
-    if (Metal_FOUND)
-        message(STATUS "Metal found - version ${Metal_VERSION}")
-        include_directories(${METAL_INCLUDE_DIRS})
-        add_custom_target(Metal)
-    else()
-        message(STATUS "Metal not found - fetching branch master")
-        ExternalProject_Add(Metal EXCLUDE_FROM_ALL 1
-            URL https://github.com/brunocodutra/metal/archive/master.zip
-            TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-            CONFIGURE_COMMAND "" # Disable configure step
-            BUILD_COMMAND ""     # Disable build step
-            INSTALL_COMMAND ""   # Disable install step
-            TEST_COMMAND ""      # Disable test step
-            UPDATE_COMMAND ""    # Disable source work-tree update
-        )
-        ExternalProject_Get_Property(Metal SOURCE_DIR)
-        include_directories(${SOURCE_DIR}/include)
-    endif()
-endif()
 
 macro(add_dataset datasets dataset path_to_template range)
-    string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
-
     if(${dataset} MATCHES "brigand\\.")
-        if (METABENCH_BRIGAND)
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
-            add_dependencies(${dataset} Brigand)
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        Brigand_add_dataset(${dataset} ${path_to_template} ${range})
     elseif(${dataset} MATCHES "fusion\\.")
-        if (METABENCH_FUSION)
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} MEDIAN_OF 3)
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        Fusion_add_dataset(${dataset} ${path_to_template} ${range})
     elseif(${dataset} MATCHES "hana\\.")
-        if (METABENCH_HANA
-            AND NOT (
-                CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
-                CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6"
-            )
-            AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        )
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
-            add_dependencies(${dataset} Hana)
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        Hana_add_dataset(${dataset} ${path_to_template} ${range})
     elseif(${dataset} MATCHES "meta\\.")
-        if (METABENCH_META
-            AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        )
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
-            add_dependencies(${dataset} Meta)
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        Meta_add_dataset(${dataset} ${path_to_template} ${range})
     elseif(${dataset} MATCHES "metal\\.")
-        if (METABENCH_METAL
-            AND NOT (
-                CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
-                CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19"
-            )
-        )
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
-            add_dependencies(${dataset} Metal)
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        Metal_add_dataset(${dataset} ${path_to_template} ${range})
     elseif (${dataset} MATCHES "mpl\\.")
-        if (METABENCH_MPL)
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} MEDIAN_OF 3)
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        MPL_add_dataset(${dataset} ${path_to_template} ${range})
     elseif (${dataset} MATCHES "std\\.")
-        if (NOT (
-                CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
-                CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19"
-        ))
-            metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
-            list(APPEND ${datasets} ${dataset})
-        endif()
+        Std_add_dataset(${dataset} ${path_to_template} ${range})
     else()
         message(FATAL_ERROR
             "The dataset named '${dataset}' does not appear to benchmark any "
             "known metaprogramming library."
         )
     endif()
+
+    if (TARGET ${dataset})
+        list(APPEND ${datasets} ${dataset})
+    endif()
 endmacro()
 
-set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_CXX_STANDARD 14)
+include(CheckCXXCompilerFlag)
 set(cxx_flag -ftemplate-depth=5000)
 check_cxx_compiler_flag(${cxx_flag} HAS_FTEMPLATE_DEPTH)
 if(HAS_FTEMPLATE_DEPTH)
