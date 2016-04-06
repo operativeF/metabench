@@ -4,6 +4,7 @@
 
 set(datasets)
 add_dataset(datasets dataset.type.replace_if.brigand.list  brigand.list.cpp.erb "(0..500).step(10)")
+add_dataset(datasets dataset.type.replace_if.hana.types    hana.types.cpp.erb   "(0..500).step(10)")
 add_dataset(datasets dataset.type.replace_if.meta.list     meta.list.cpp.erb    "(0..500).step(10)")
 add_dataset(datasets dataset.type.replace_if.metal.list    metal.list.cpp.erb   "(0..500).step(10)")
 add_dataset(datasets dataset.type.replace_if.mpl.list      mpl.list.cpp.erb     "(0..50).step(1)")
