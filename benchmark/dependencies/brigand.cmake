@@ -5,12 +5,11 @@
 if (METABENCH_BRIGAND)
     find_package(Brigand QUIET)
     if (Brigand_FOUND)
-        message(STATUS "Brigand found - version ${Brigand_VERSION}")
-        #TODO: add directories here
+        message(STATUS "Local Brigand installation found - version ${Brigand_VERSION}")
         add_custom_target(Brigand)
     else()
+        message(STATUS "No local Brigand installation found - fetching branch master")
         include(ExternalProject)
-        message(STATUS "Brigand not found - fetching branch master")
         ExternalProject_Add(Brigand EXCLUDE_FROM_ALL 1
             URL https://github.com/edouarda/brigand/archive/master.zip
             TIMEOUT 120
@@ -22,14 +21,16 @@ if (METABENCH_BRIGAND)
             UPDATE_COMMAND ""    # Disable source work-tree update
         )
         ExternalProject_Get_Property(Brigand SOURCE_DIR)
-        include_directories(${SOURCE_DIR})
+        set(Brigand_INCLUDE_DIRS ${SOURCE_DIR})
     endif()
-endif()
 
-function(Brigand_add_dataset dataset path_to_template range)
-    if (METABENCH_BRIGAND)
+    function(Brigand_add_dataset dataset path_to_template range)
         string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
         metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
+        target_include_directories(${dataset} PUBLIC ${Brigand_INCLUDE_DIRS})
         add_dependencies(${dataset} Brigand)
-    endif()
-endfunction()
+    endfunction()
+else()
+    function(Brigand_add_dataset)
+    endfunction()
+endif()

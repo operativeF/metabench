@@ -6,12 +6,11 @@ if (METABENCH_METAL AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
                              CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19"))
     find_package(Metal QUIET)
     if (Metal_FOUND)
-        message(STATUS "Metal found - version ${Metal_VERSION}")
-        include_directories(${METAL_INCLUDE_DIRS})
+        message(STATUS "Local Metal installation found - version ${Metal_VERSION}")
         add_custom_target(Metal)
     else()
+        message(STATUS "No local Metal installation found - fetching branch master")
         include(ExternalProject)
-        message(STATUS "Metal not found - fetching branch master")
         ExternalProject_Add(Metal EXCLUDE_FROM_ALL 1
             URL https://github.com/brunocodutra/metal/archive/master.zip
             TIMEOUT 120
@@ -23,12 +22,13 @@ if (METABENCH_METAL AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
             UPDATE_COMMAND ""    # Disable source work-tree update
         )
         ExternalProject_Get_Property(Metal SOURCE_DIR)
-        include_directories(${SOURCE_DIR}/include)
+        set(METAL_INCLUDE_DIRS ${SOURCE_DIR}/include)
     endif()
 
     function(Metal_add_dataset dataset path_to_template range)
         string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
         metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
+        target_include_directories(${dataset} PUBLIC ${METAL_INCLUDE_DIRS})
         add_dependencies(${dataset} Metal)
     endfunction()
 else()

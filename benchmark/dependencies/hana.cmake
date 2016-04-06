@@ -9,12 +9,11 @@ if (METABENCH_HANA
 )
     find_package(Hana QUIET)
     if (Hana_FOUND)
-        message(STATUS "Hana found - version ${Hana_VERSION}")
-        include_directories(${Hana_INCLUDE_DIRS})
+        message(STATUS "Local Hana installation found - version ${Hana_VERSION}")
         add_custom_target(Hana)
     else()
+        message(STATUS "No local Hana installation found - fetching branch develop")
         include(ExternalProject)
-        message(STATUS "Hana not found - fetching branch develop")
         ExternalProject_Add(Hana EXCLUDE_FROM_ALL 1
             URL https://github.com/ldionne/hana/archive/develop.zip
             TIMEOUT 120
@@ -26,12 +25,13 @@ if (METABENCH_HANA
             UPDATE_COMMAND ""    # Disable source work-tree update
         )
         ExternalProject_Get_Property(Hana SOURCE_DIR)
-        include_directories(${SOURCE_DIR}/include)
+        set(Hana_INCLUDE_DIRS ${SOURCE_DIR}/include)
     endif()
 
     function(Hana_add_dataset dataset path_to_template range)
         string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
         metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
+        target_include_directories(${dataset} PUBLIC ${Hana_INCLUDE_DIRS})
         add_dependencies(${dataset} Hana)
     endfunction()
 else()
