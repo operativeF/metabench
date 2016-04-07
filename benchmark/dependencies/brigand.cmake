@@ -13,7 +13,7 @@ if (METABENCH_BRIGAND)
         ExternalProject_Add(Brigand EXCLUDE_FROM_ALL 1
             URL https://github.com/edouarda/brigand/archive/master.zip
             TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dependencies/brigand"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
             INSTALL_COMMAND ""   # Disable install step

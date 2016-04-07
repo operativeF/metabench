@@ -14,7 +14,7 @@ if (METABENCH_METAL AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
         ExternalProject_Add(Metal EXCLUDE_FROM_ALL 1
             URL https://github.com/brunocodutra/metal/archive/master.zip
             TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dependencies/metal"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
             INSTALL_COMMAND ""   # Disable install step

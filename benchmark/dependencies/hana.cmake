@@ -15,9 +15,9 @@ if (METABENCH_HANA
         message(STATUS "No local Hana installation found - fetching branch develop")
         include(ExternalProject)
         ExternalProject_Add(Hana EXCLUDE_FROM_ALL 1
-            URL https://github.com/ldionne/hana/archive/develop.zip
+            URL https://github.com/boostorg/hana/archive/develop.zip
             TIMEOUT 120
-            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dependencies/hana"
             CONFIGURE_COMMAND "" # Disable configure step
             BUILD_COMMAND ""     # Disable build step
             INSTALL_COMMAND ""   # Disable install step
