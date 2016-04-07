@@ -40,8 +40,7 @@ metabench_add_benchmark(benchmark DATASETS dataset1 dataset2 dataset3)
 ```
 
 This will create a target named `benchmark`, which, when run, will gather
-benchmark data from each `dataset` and output it as a JSON file for easy
-integration with other tools. Additionally an HTML file is generated for easy
+benchmark data from each `dataset` and output a HTML file providing a
 visualization of the benchmark data as a [NVD3][] chart.
 
 #### The principle

@@ -2,27 +2,26 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-# This test makes sure that we actually generate JSON and HTML files
-# containing the charts.
+# This test makes sure that we generate a HTML file containing the chart in
+# the current CMake binary directory, and that the name of the file is the
+# target passed to `metabench_add_benchmark`.
 
 cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
 metabench_add_dataset(dummy dummy.cpp.erb "[1, 2, 3]")
-metabench_add_benchmark(check DATASETS dummy CHART chart.json)
+metabench_add_benchmark(check DATASETS dummy)
 
 enable_testing()
 
-add_test(NAME generate_the_charts
+add_test(NAME generate_chart
     COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --target check)
 
-add_test(NAME make_sure_we_generate_charts
+add_test(NAME check_generated_chart
     COMMAND ${RUBY_EXECUTABLE}
-        -e "json = '${CMAKE_CURRENT_BINARY_DIR}/check.json'"
         -e "html = '${CMAKE_CURRENT_BINARY_DIR}/check.html'"
-        -e "raise \"file #{json} is missing\" if !File.exist?(json)"
         -e "raise \"file #{html} is missing\" if !File.exist?(html)"
 )
 
-set_tests_properties(make_sure_we_generate_charts PROPERTIES DEPENDS generate_the_charts)
+set_tests_properties(check_generated_chart PROPERTIES DEPENDS generate_chart)

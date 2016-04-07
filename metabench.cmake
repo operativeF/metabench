@@ -157,12 +157,10 @@ endfunction()
 #
 #   Creates a target for running a compile-time benchmark. After issuing this
 #   command, running the target named `target` will cause each `dataset` to be
-#   benchmarked and their results stored in a JSON file named `target.json`
-#   within CMake's current binary directory. Alongside the JSON file, an HTML
-#   file named `target.html` will contain the minimal code for visualizing the
-#   data as a [NVD3][1] chart.
+#   generated. A HTML chart is also generated, allowing the datasets to be
+#   visualized.
 #
-#   Additionally, a JSON file containing information for rendering the NVD3
+#   Additionally, a JSON file containing information for rendering the
 #   chart may also be specified. This can be used to set the chart's
 #   title, axis labels, etc.
 #
@@ -184,15 +182,11 @@ endfunction()
 #       format specified by NVD3.
 #
 #   [OUTPUT path/to/file]:
-#       A path pattern identifying where the output files should be placed.
-#       More specifically, the JSON and HTML files generated will be named
-#       `path/to/file.json` and `path/to/file.html`, respectively. If a
+#       The path of the resulting HTML file containing the chart. If a
 #       relative path is used, the path will be considered as being relative
-#       to the current CMake binary directory. This defaults to `target`, so
-#       that the output files will be `target.json` and `target.html` in the
-#       current CMake binary directory.
-#
-# [1]: http://nvd3.org/
+#       to the current CMake binary directory. This defaults to `target.html`,
+#       so that the output file will be `target.html` in the current CMake
+#       binary directory.
 function(metabench_add_benchmark target)
     set(options ALL)
     set(one_value_args CHART OUTPUT)
@@ -208,7 +202,7 @@ function(metabench_add_benchmark target)
     endif()
 
     if (NOT ARGS_OUTPUT)
-        set(ARGS_OUTPUT ${target})
+        set(ARGS_OUTPUT "${target}.html")
     endif()
 
     if(NOT IS_ABSOLUTE ${ARGS_OUTPUT})
@@ -222,24 +216,22 @@ function(metabench_add_benchmark target)
     endforeach()
 
     add_custom_command(
-        OUTPUT "${ARGS_OUTPUT}.json" "${ARGS_OUTPUT}.html"
+        OUTPUT "${ARGS_OUTPUT}"
         COMMAND ${RUBY_EXECUTABLE} -r erb -r json -r fileutils
             -e "chart = {}"
             -e "chart = JSON.parse(IO.read('${ARGS_CHART}')) if File.file?('${ARGS_CHART}')"
             -e "chart[:data] = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
-            -e "IO.write('${ARGS_OUTPUT}.json', chart[:data].to_json)"
-            -e "IO.write('${ARGS_OUTPUT}.html', html)"
+            -e "IO.write('${ARGS_OUTPUT}', html)"
         DEPENDS ${data} "${ARGS_CHART}"
         VERBATIM
     )
 
-    set(dependencies "${ARGS_OUTPUT}.json" "${ARGS_OUTPUT}.html")
     if (${ARGS_ALL})
-        add_custom_target(${target} ALL DEPENDS ${dependencies})
+        add_custom_target(${target} ALL DEPENDS "${ARGS_OUTPUT}")
     else()
-        add_custom_target(${target} DEPENDS ${dependencies})
+        add_custom_target(${target} DEPENDS "${ARGS_OUTPUT}")
     endif()
 endfunction()
 

@@ -10,5 +10,5 @@ add_dataset(datasets dataset.type.replace_if.metal.list    metal.list.cpp.erb   
 add_dataset(datasets dataset.type.replace_if.mpl.list      mpl.list.cpp.erb     "(0..50).step(1)")
 add_dataset(datasets dataset.type.replace_if.mpl.vector    mpl.vector.cpp.erb   "(0..50).step(1)")
 
-metabench_add_benchmark(benchmark.type.replace_if DATASETS ${datasets} OUTPUT index)
+metabench_add_benchmark(benchmark.type.replace_if DATASETS ${datasets} OUTPUT index.html)
 add_dependencies(benchmarks benchmark.type.replace_if)
