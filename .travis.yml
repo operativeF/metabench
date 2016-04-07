@@ -37,18 +37,15 @@ env:
     - secure: "TY3VQ9eOoYxiBvP6kR+WyE0pgJ5vmxgXhCqjhGPWiieKn3H8hUhhbacSnmODXJQ89jbcIgLxUSPSWq3ZAJNDPem0nyEfoBklnJFq7IrZ1sXZ3ywBcHHEq/09+LTsjElg+9NU6HRMmzuT1WCG76/KmQHL7THSjQoPKHLAbHLuTzWeMVzC1qB0JC/SsfFXmuB0ZCNIQsu6P9ADLUpUgjm1mEXiUIDIXtfFPUvhC7UCC+kw5OR4rmwWM0adzFJglA2gom73fxkX9O/qPtZh6nroV7Vu6cUsbTjmW7YlV+0Us5YWgulC7dJqAO8GrHbfk35n3unMs2ScJ4nzWVEFCwCFiMOWb8VWIPRSQXDjuxkc1Cuf8A2M6FnFqZqhXE2JlsUfVAgI7zrG5LytYJkJxxphV4Hbkf0gTJ8VdA6dHV69AX8BIcszhCPo2PdMRvA+3iAL8FIMopVtDDcra8glO8JsFsR6C5ptdXMpDZ2/KMvoZta8Rpk38YEsiwf9mI7vBDV5okWM071U1jbVDGc8FIDfC14xIwFy7WFOWtZA4KYQTS5PxqEyPxtIRNNdWfCiNcNmm4eozw/kSmcYzMQxheWTx2Wv9V7EdKcx1r7mmv/MXzGnKLRW4j5I7VbG3pMXWr2KA5+qQdnYRjK/xa0j1aOD1OWwE4Fzt4ETkVGzZ8dvFm8="
 
   matrix:
-    - COMPILER=clang++-3.6 CMAKE_GENERATOR="Ninja"
     - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles"
-    - COMPILER=clang++-3.7 CMAKE_GENERATOR="Ninja"
     - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles"
-    - COMPILER=clang++-3.8 CMAKE_GENERATOR="Ninja"
     - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles"
-    - COMPILER=g++-4.8     CMAKE_GENERATOR="Ninja"
     - COMPILER=g++-4.8     CMAKE_GENERATOR="Unix Makefiles"
-    - COMPILER=g++-4.9     CMAKE_GENERATOR="Ninja"
     - COMPILER=g++-4.9     CMAKE_GENERATOR="Unix Makefiles"
-    - COMPILER=g++-5       CMAKE_GENERATOR="Ninja"
     - COMPILER=g++-5       CMAKE_GENERATOR="Unix Makefiles"
+
+    # Also test on ninja
+    - COMPILER=clang++-3.8 CMAKE_GENERATOR="Ninja"
 
 before_install:
   # IMPORTANT: Keep this step empty, as it is overwritten by the script that
