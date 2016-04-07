@@ -28,9 +28,8 @@ if (METABENCH_HANA
         set(Hana_INCLUDE_DIRS ${SOURCE_DIR}/include)
     endif()
 
-    function(Hana_add_dataset dataset path_to_template range)
-        string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
-        metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
+    function(Hana_add_dataset dataset)
+        metabench_add_dataset(${dataset} ${ARGN})
         target_include_directories(${dataset} PUBLIC ${Hana_INCLUDE_DIRS})
         add_dependencies(${dataset} Hana)
     endfunction()

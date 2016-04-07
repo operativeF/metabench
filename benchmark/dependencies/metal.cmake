@@ -25,9 +25,8 @@ if (METABENCH_METAL AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
         set(METAL_INCLUDE_DIRS ${SOURCE_DIR}/include)
     endif()
 
-    function(Metal_add_dataset dataset path_to_template range)
-        string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
-        metabench_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name})
+    function(Metal_add_dataset dataset)
+        metabench_add_dataset(${dataset} ${ARGN})
         target_include_directories(${dataset} PUBLIC ${METAL_INCLUDE_DIRS})
         add_dependencies(${dataset} Metal)
     endfunction()
