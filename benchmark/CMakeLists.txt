@@ -20,21 +20,22 @@ include(benchmark/dependencies/std)
 
 macro(add_dataset datasets dataset path_to_template range)
     string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
+    set(args ${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
 
     if(${dataset} MATCHES "brigand\\.")
-        Brigand_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        Brigand_add_dataset(${args})
     elseif(${dataset} MATCHES "fusion\\.")
-        Fusion_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        Fusion_add_dataset(${args})
     elseif(${dataset} MATCHES "hana\\.")
-        Hana_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        Hana_add_dataset(${args})
     elseif(${dataset} MATCHES "meta\\.")
-        Meta_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        Meta_add_dataset(${args})
     elseif(${dataset} MATCHES "metal\\.")
-        Metal_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        Metal_add_dataset(${args})
     elseif (${dataset} MATCHES "mpl\\.")
-        MPL_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        MPL_add_dataset(${args})
     elseif (${dataset} MATCHES "std\\.")
-        Std_add_dataset(${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json)
+        Std_add_dataset(${args})
     else()
         message(FATAL_ERROR
             "The dataset named '${dataset}' does not appear to benchmark any "
@@ -47,13 +48,18 @@ macro(add_dataset datasets dataset path_to_template range)
     endif()
 endmacro()
 
+add_custom_target(benchmarks)
+macro(add_benchmark target)
+    metabench_add_benchmark(${target} ${ARGN} OUTPUT index.html)
+    add_dependencies(benchmarks ${target})
+endmacro()
+
 
 set(CMAKE_CXX_STANDARD 14)
 include(CheckCXXCompilerFlag)
-set(cxx_flag -ftemplate-depth=5000)
-check_cxx_compiler_flag(${cxx_flag} HAS_FTEMPLATE_DEPTH)
+check_cxx_compiler_flag(-ftemplate-depth=5000 HAS_FTEMPLATE_DEPTH)
 if(HAS_FTEMPLATE_DEPTH)
-    add_compile_options(${cxx_flag})
+    add_compile_options(-ftemplate-depth=5000)
 endif()
 
 file(GLOB benchmark_dirs
@@ -62,7 +68,6 @@ file(GLOB benchmark_dirs
     "hetero/*" "type/*"
 )
 
-add_custom_target(benchmarks)
 foreach(benchmark_dir ${benchmark_dirs})
     add_subdirectory(${benchmark_dir})
 endforeach()
