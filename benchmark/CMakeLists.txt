@@ -50,8 +50,15 @@ endmacro()
 
 add_custom_target(benchmarks)
 macro(add_chart target)
-    metabench_add_chart(${target} ${ARGN} OUTPUT index.html)
-    add_dependencies(benchmarks ${target})
+    cmake_parse_arguments(ARGS "" "" "DATASETS" ${ARGN})
+
+    # If we have no datasets, perhaps they were all disabled in the current
+    # configuration. In this case, we omit the benchmark instead of failing.
+    list(LENGTH ARGS_DATASETS _n_datasets)
+    if (_n_datasets GREATER 0)
+        metabench_add_chart(${target} ${ARGN} OUTPUT index.html)
+        add_dependencies(benchmarks ${target})
+    endif()
 endmacro()
 
 
