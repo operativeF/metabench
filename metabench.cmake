@@ -176,7 +176,7 @@ function(metabench_add_dataset target path_to_template range)
 endfunction()
 
 # metabench_add_benchmark(target [ALL]
-#                         [ASPECT COMPILATION_TIME]
+#                         [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]
 #                         [TITLE title]
 #                         [SUBTITLE subtitle]
 #                         [XLABEL label] [YLABEL label]
@@ -204,7 +204,7 @@ endfunction()
 #       target. This is the same behaviour as `add_custom_target` used with
 #       the `ALL` keyword.
 #
-#   [ASPECT COMPILATION_TIME]:
+#   [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]:
 #       The aspect of the datasets to display on the chart. When this argument
 #       is provided, the chart will adopt reasonable default values for the
 #       axis labels and other similar settings. However, any setting set
@@ -272,6 +272,7 @@ function(metabench_add_benchmark target)
             -e "options[:SUBTITLE] = '${ARGS_SUBTITLE}'"
             -e "options[:XLABEL] = '${ARGS_XLABEL}'"
             -e "options[:YLABEL] = '${ARGS_YLABEL}'"
+            -e "aspect = '${ARGS_ASPECT}'"
             -e "data = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
@@ -434,30 +435,18 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "    <svg id='chart'></svg>                                                                               \n"
 "    <script type='text/javascript'>                                                                      \n"
 "      var customSettings = <%= options.to_json %>;                                                       \n"
+"      var aspect = '<%= aspect %>';                                                                      \n"
 "      var data = <%= data.to_json %>;                                                                    \n"
 "                                                                                                         \n"
-"      var settings = {                                                                                   \n"
-"          x: function(datum){return datum.n}                                                             \n"
-"        , y: function(datum){return datum.time}                                                          \n"
-"        , useInteractiveGuideline: true                                                                  \n"
-"        , color: d3.scale.category10().range()                                                           \n"
-"        , margin: {left: 75, bottom: 50}                                                                 \n"
-"        , forceX: [0]                                                                                    \n"
-"        , forceY: [0]                                                                                    \n"
-"      };                                                                                                 \n"
-"      var xAxis = { axisLabel: 'Number of elements', tickFormat: d3.format('.0f') };                     \n"
-"      var yAxis = { axisLabel: 'Time', tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }};\n"
-"                                                                                                         \n"
-"      if (customSettings.XLABEL)                                                                         \n"
-"        xAxis.axisLabel = customSettings.XLABEL;                                                         \n"
-"      if (customSettings.YLABEL)                                                                         \n"
-"        yAxis.axisLabel = customSettings.YLABEL;                                                         \n"
+"      /* setup the title */                                                                              \n"
 "      d3.select('#chart')                                                                                \n"
 "        .append('text')                                                                                  \n"
 "        .style('font-size', '20px').style('font-family', 'arial')                                        \n"
 "        .attr('text-anchor', 'middle')                                                                   \n"
 "        .attr('x', '50%').attr('y', '1.2em')                                                             \n"
 "        .text(customSettings.TITLE || '');                                                               \n"
+"                                                                                                         \n"
+"      /* setup the subtitle */                                                                           \n"
 "      d3.select('#chart')                                                                                \n"
 "        .append('text')                                                                                  \n"
 "        .style('font-size', '16px').style('font-family', 'arial')                                        \n"
@@ -465,9 +454,33 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "        .attr('x', '50%').attr('y', '3em')                                                               \n"
 "        .text(customSettings.SUBTITLE || '');                                                            \n"
 "                                                                                                         \n"
-"      var chart = nv.models.lineChart().options(settings);                                               \n"
-"      chart.xAxis.options(xAxis);                                                                        \n"
-"      chart.yAxis.options(yAxis);                                                                        \n"
+"      /* setup the chart and its options */                                                              \n"
+"      var chart = nv.models.lineChart()                                                                  \n"
+"                    .useInteractiveGuideline(true)                                                       \n"
+"                    .color(d3.scale.category10().range())                                                \n"
+"                    .margin({left: 75, bottom: 50})                                                      \n"
+"                    .forceX([0]).forceY([0])                                                             \n"
+"                    ;                                                                                    \n"
+"      chart.xAxis.options({                                                                              \n"
+"        axisLabel: customSettings.XLABEL || 'Number of elements',                                        \n"
+"        tickFormat: d3.format('.0f')                                                                     \n"
+"      });                                                                                                \n"
+"      if (aspect == 'COMPILATION_TIME') {                                                                \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.time; })                                                   \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Time',                                               \n"
+"               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
+"      else if (aspect == 'EXECUTABLE_SIZE') {                                                            \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.size; })                                                   \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Executable size',                                    \n"
+"               tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                         \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
 "      d3.select('#chart').datum(data).call(chart);                                                       \n"
 "      /* ensure the chart is responsive */                                                               \n"
 "      nv.utils.windowResize(function(){setTimeout(chart.update, 0)});                                    \n"
