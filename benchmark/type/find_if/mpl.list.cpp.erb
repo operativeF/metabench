@@ -1,0 +1,31 @@
+// Copyright Louis Dionne 2013-2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+<% if n > 20 %>
+    #define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+    #define BOOST_MPL_LIMIT_LIST_SIZE <%= ((n + 9) / 10) * 10 %>
+<% end %>
+
+#include <boost/mpl/find_if.hpp>
+#include <boost/mpl/list.hpp>
+
+#include <type_traits>
+namespace mpl = boost::mpl;
+
+
+struct is_last {
+    template <typename N>
+    struct apply
+        : std::integral_constant<bool, N::type::value == <%= n %>>
+    { };
+};
+
+using list = mpl::list<
+    <%= (1..n).map { |i| "std::integral_constant<int, #{i}>" }.join(', ') %>
+>;
+
+using result = mpl::find_if<list, is_last>::type;
+
+
+int main() { }
