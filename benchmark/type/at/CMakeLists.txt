@@ -10,5 +10,4 @@ add_dataset(datasets dataset.type.at.metal.list     metal.list.cpp.erb      "(1.
 add_dataset(datasets dataset.type.at.mpl.list       mpl.list.cpp.erb        "(1..50).step(1)")
 add_dataset(datasets dataset.type.at.mpl.vector     mpl.vector.cpp.erb      "(1..50).step(1)")
 
-metabench_add_benchmark(benchmark.type.at DATASETS ${datasets} OUTPUT index)
-add_dependencies(benchmarks benchmark.type.at)
+add_benchmark(benchmark.type.at DATASETS ${datasets})

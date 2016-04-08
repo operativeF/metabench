@@ -9,19 +9,17 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
 metabench_add_dataset(dummy "dummy.cpp.erb" "[1, 2, 3]")
-metabench_add_benchmark(check DATASETS dummy OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/my/fancy/output)
+metabench_add_benchmark(check DATASETS dummy OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/my/fancy/output.html)
 
 enable_testing()
 
-add_test(NAME generate_files
+add_test(NAME generate_chart
     COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --target check)
 
-add_test(NAME check_generated_files
+add_test(NAME check_generated_chart
     COMMAND ${RUBY_EXECUTABLE}
-        -e "json = '${CMAKE_CURRENT_BINARY_DIR}/my/fancy/output.json'"
         -e "html = '${CMAKE_CURRENT_BINARY_DIR}/my/fancy/output.html'"
-        -e "raise \"file #{json} is missing\" if !File.exist?(json)"
         -e "raise \"file #{html} is missing\" if !File.exist?(html)"
 )
 
-set_tests_properties(check_generated_files PROPERTIES DEPENDS generate_files)
+set_tests_properties(check_generated_chart PROPERTIES DEPENDS generate_chart)

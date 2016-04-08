@@ -117,11 +117,14 @@ script:
       git clone https://ldionne:${GITHUB_TOKEN}@github.com/ldionne/metabench --depth 1 --branch=gh-pages tmp &>/dev/null
       for collection in hetero type; do
         rm -rf tmp/_${collection}/${COMPILER}
-        rsync -am --include '*/' --include '*.html' --exclude '*' build/benchmark/${collection}/ tmp/_${collection}/${COMPILER}
+        rsync -am --include '*/' --include '*.html' --include '*.json' --exclude '*' build/benchmark/${collection}/ tmp/_${collection}/${COMPILER}
 
-        # Add a YAML front matter to every chart (for Jekyll).
+        # Add a YAML front matter to every chart and every JSON file (for Jekyll).
         for chart in tmp/_${collection}/${COMPILER}/*/*.html; do
           sed -i -e "1i---" -e "1itimestamp: $(date '+%a, %-d %b %Y')" -e "1icompiler: ${COMPILER}" -e "1i---" ${chart}
+        done
+        for dataset in tmp/_${collection}/${COMPILER}/*/*.json; do
+          sed -i -e "1i---" -e "1i---" ${dataset}
         done
       done
 
