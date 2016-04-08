@@ -175,12 +175,20 @@ function(metabench_add_dataset target path_to_template range)
     )
 endfunction()
 
-# metabench_add_benchmark(target [ALL] DATASETS dataset1 [dataset2 [dataset3 [...]]] [CHART path/to/json] [OUTPUT path/to/file])
+# metabench_add_benchmark(target [ALL]
+#                         [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]
+#                         [TITLE title]
+#                         [SUBTITLE subtitle]
+#                         [XLABEL label] [YLABEL label]
+#                         DATASETS dataset1 [dataset2 [dataset3 [...]]]
+#                         [OUTPUT path/to/file])
 #
 #   Creates a target for running a compile-time benchmark. After issuing this
 #   command, running the target named `target` will cause each `dataset` to be
 #   generated. A HTML chart is also generated, allowing the datasets to be
-#   visualized.
+#   visualized. Several aspects of the compilation are measured, such as
+#   compilation time and executable size. The aspect being plotted on the
+#   generated chart can be controled via the `ASPECT` argument.
 #
 #   Additionally, a JSON file containing information for rendering the
 #   chart may also be specified. This can be used to set the chart's
@@ -196,12 +204,31 @@ endfunction()
 #       target. This is the same behaviour as `add_custom_target` used with
 #       the `ALL` keyword.
 #
+#   [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]:
+#       The aspect of the datasets to display on the chart. When this argument
+#       is provided, the chart will adopt reasonable default values for the
+#       axis labels and other similar settings. However, any setting set
+#       explicitly using arguments like `TITLE` or `XLABEL` will have priority
+#       over anything defaulted by the choice of an `ASPECT`. When no aspect
+#       is provided, it defaults to `COMPILATION_TIME`.
+#
+#   [TITLE title]:
+#       A title to use for the generated chart. If this is not provided, the
+#       chart has no title.
+#
+#   [SUBTITLE subtitle]:
+#       A subtitle to use for the generated chart. The subtitle will appear
+#       just below the title, in a smaller font. If this is not provided, the
+#       chart has no subtitle.
+#
+#   [XLABEL label]:
+#       The label to use for the X axis.
+#
+#   [YLABEL label]:
+#       The label to use for the Y axis.
+#
 #   DATASETS dataset1 [dataset2 [dataset3 [...]]]:
 #       A list of datasets from which the benchmark is generated.
-#
-#   [CHART path/to/json]:
-#       The path to a JSON file containing data for rendering the chart in the
-#       format specified by NVD3.
 #
 #   [OUTPUT path/to/file]:
 #       The path of the resulting HTML file containing the chart. If a
@@ -211,16 +238,16 @@ endfunction()
 #       binary directory.
 function(metabench_add_benchmark target)
     set(options ALL)
-    set(one_value_args CHART OUTPUT)
+    set(one_value_args OUTPUT ASPECT TITLE SUBTITLE XLABEL YLABEL)
     set(multi_value_args DATASETS)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
-    if(NOT ARGS_DATASETS)
-        message(FATAL_ERROR "metabench_add_benchmark requires at least one dataset.")
+    if (NOT ARGS_ASPECT)
+        set(ARGS_ASPECT "COMPILATION_TIME")
     endif()
 
-    if(ARGS_CHART AND NOT IS_ABSOLUTE ${ARGS_CHART})
-        set(ARGS_CHART "${CMAKE_CURRENT_SOURCE_DIR}/${ARGS_CHART}")
+    if(NOT ARGS_DATASETS)
+        message(FATAL_ERROR "metabench_add_benchmark requires at least one dataset.")
     endif()
 
     if (NOT ARGS_OUTPUT)
@@ -240,9 +267,13 @@ function(metabench_add_benchmark target)
     add_custom_command(
         OUTPUT "${ARGS_OUTPUT}"
         COMMAND ${RUBY_EXECUTABLE} -r erb -r json -r fileutils
-            -e "chart = {}"
-            -e "chart = JSON.parse(IO.read('${ARGS_CHART}')) if File.file?('${ARGS_CHART}')"
-            -e "chart[:data] = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
+            -e "options = {}"
+            -e "options[:TITLE] = '${ARGS_TITLE}'"
+            -e "options[:SUBTITLE] = '${ARGS_SUBTITLE}'"
+            -e "options[:XLABEL] = '${ARGS_XLABEL}'"
+            -e "options[:YLABEL] = '${ARGS_YLABEL}'"
+            -e "aspect = '${ARGS_ASPECT}'"
+            -e "data = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
             -e "IO.write('${ARGS_OUTPUT}', html)"
@@ -372,106 +403,92 @@ file(WRITE ${MEASURE_RB_PATH}
 ################################################################################
 set(CHART_HTML_ERB_PATH ${METABENCH_DIR}/chart.html.erb)
 file(WRITE ${CHART_HTML_ERB_PATH}
-"<!DOCTYPE html>                                                             \n"
-"<html>                                                                      \n"
-"  <head>                                                                    \n"
-"    <meta charset='utf-8'>                                                  \n"
-"    <style><%= IO.read('${METABENCH_DIR}/nvd3.css') %></style>              \n"
-"    <style>                                                                 \n"
-"      * {                                                                   \n"
-"        box-sizing: border-box;                                             \n"
-"      }                                                                     \n"
-"      html, body {                                                          \n"
-"        position: relative;                                                 \n"
-"        height: 100%;                                                       \n"
-"        width: 100%;                                                        \n"
-"        border: 0;                                                          \n"
-"        margin: 0;                                                          \n"
-"        padding: 0;                                                         \n"
-"        font-size: 0;                                                       \n"
-"      }                                                                     \n"
-"      g {                                                                   \n"
-"        clip-path: none;                                                    \n"
-"      }                                                                     \n"
-"      .nv-axislabel {                                                       \n"
-"        font-size: 16px !important;                                         \n"
-"      }                                                                     \n"
-"    </style>                                                                \n"
-"    <script><%= IO.read('${METABENCH_DIR}/d3.js') %></script>               \n"
-"    <script><%= IO.read('${METABENCH_DIR}/nvd3.js') %></script>             \n"
-"  </head>                                                                   \n"
-"  <body>                                                                    \n"
-"    <svg id='chart'></svg>                                                  \n"
-"    <script type='text/javascript'>                                         \n"
-"      var chart = <%= chart.to_json %>;                                     \n"
-"      (function () {                                                        \n"
-"        /* data accessors may not be overwritten  */                        \n"
-"        chart.x = function(datum){return datum.n};                          \n"
-"        chart.y = function(datum){return datum.time};                       \n"
-"        /* configure the chart */                                           \n"
-"        if(typeof chart.useInteractiveGuideline == 'undefined')             \n"
-"          chart.useInteractiveGuideline = true;                             \n"
-"        if(typeof chart.color == 'undefined')                               \n"
-"          chart.color = d3.scale.category10().range();                      \n"
-"        if(typeof chart.margin == 'undefined')                              \n"
-"          chart.margin = {left: 75, bottom: 50};                            \n"
-"        if(typeof chart.forceX == 'undefined')                              \n"
-"          chart.forceX = [0];                                               \n"
-"        if(typeof chart.forceY == 'undefined')                              \n"
-"          chart.forceY = [0];                                               \n"
-"        /* configure the x axis */                                          \n"
-"        var xAxis = chart.xAxis || {};                                      \n"
-"        delete(chart.xAxis);                                                \n"
-"        if(typeof xAxis.axisLabel == 'undefined')                           \n"
-"          xAxis.axisLabel = 'Number of Elements'                            \n"
-"        if(typeof xAxis.tickFormat == 'undefined')                          \n"
-"          xAxis.tickFormat = function(val){                                 \n"
-"            return d3.format('.0f')(val);                                   \n"
-"          };                                                                \n"
-"        /* configure the y axis */                                          \n"
-"        var yAxis = chart.yAxis || {};                                      \n"
-"        delete(chart.yAxis);                                                \n"
-"        if(typeof yAxis.axisLabel == 'undefined')                           \n"
-"          yAxis.axisLabel = 'Time'                                          \n"
-"        if(typeof yAxis.tickFormat == 'undefined')                          \n"
-"          yAxis.tickFormat = function(val){                                 \n"
-"            return d3.format('.2f')(val) + 's';                             \n"
-"          };                                                                \n"
-"        /* configure the tooltip */                                         \n"
-"        var tooltip = chart.tooltip || {};                                  \n"
-"        delete(chart.tooltip);                                              \n"
-"        /* configure the legend */                                          \n"
-"        var legend = chart.legend || {};                                    \n"
-"        delete(chart.legend);                                               \n"
-"        /* extract data */                                                  \n"
-"        var data = chart.data || [];                                        \n"
-"        delete(chart.data);                                                 \n"
-"        var obj = nv.models.lineChart().options(chart);                     \n"
-"        obj.xAxis.options(xAxis);                                           \n"
-"        obj.yAxis.options(yAxis);                                           \n"
-"        obj.tooltip.options(tooltip);                                       \n"
-"        obj.legend.options(legend);                                         \n"
-"        d3.select('#chart').datum(data).call(obj);                          \n"
-"        /* add a title */                                                   \n"
-"        d3.select('#chart')                                                 \n"
-"            .append('text')                                                 \n"
-"            .style('font-size', '20px').style('font-family', 'arial')       \n"
-"            .attr('text-anchor', 'middle')                                  \n"
-"            .attr('x', '50%').attr('y', '1.2em')                            \n"
-"            .text(chart.title || '');                                       \n"
-"        /* ... and a subtitle */                                            \n"
-"        d3.select('#chart')                                                 \n"
-"            .append('text')                                                 \n"
-"            .style('font-size', '16px').style('font-family', 'arial')       \n"
-"            .attr('text-anchor', 'middle')                                  \n"
-"            .attr('x', '50%').attr('y', '3em')                              \n"
-"            .text(chart.subtitle || '');                                    \n"
-"        /* ensure the chart is responsive */                                \n"
-"        nv.utils.windowResize(function(){setTimeout(obj.update, 0)});       \n"
-"      })();                                                                 \n"
-"    </script>                                                               \n"
-"  </body>                                                                   \n"
-"</html>                                                                     \n"
+"<!DOCTYPE html>                                                                                          \n"
+"<html>                                                                                                   \n"
+"  <head>                                                                                                 \n"
+"    <meta charset='utf-8'>                                                                               \n"
+"    <style><%= IO.read('${METABENCH_DIR}/nvd3.css') %></style>                                           \n"
+"    <style>                                                                                              \n"
+"      * {                                                                                                \n"
+"        box-sizing: border-box;                                                                          \n"
+"      }                                                                                                  \n"
+"      html, body {                                                                                       \n"
+"        position: relative;                                                                              \n"
+"        height: 100%;                                                                                    \n"
+"        width: 100%;                                                                                     \n"
+"        border: 0;                                                                                       \n"
+"        margin: 0;                                                                                       \n"
+"        padding: 0;                                                                                      \n"
+"        font-size: 0;                                                                                    \n"
+"      }                                                                                                  \n"
+"      g {                                                                                                \n"
+"        clip-path: none;                                                                                 \n"
+"      }                                                                                                  \n"
+"      .nv-axislabel {                                                                                    \n"
+"        font-size: 16px !important;                                                                      \n"
+"      }                                                                                                  \n"
+"    </style>                                                                                             \n"
+"    <script><%= IO.read('${METABENCH_DIR}/d3.js') %></script>                                            \n"
+"    <script><%= IO.read('${METABENCH_DIR}/nvd3.js') %></script>                                          \n"
+"  </head>                                                                                                \n"
+"  <body>                                                                                                 \n"
+"    <svg id='chart'></svg>                                                                               \n"
+"    <script type='text/javascript'>                                                                      \n"
+"      var customSettings = <%= options.to_json %>;                                                       \n"
+"      var aspect = '<%= aspect %>';                                                                      \n"
+"      var data = <%= data.to_json %>;                                                                    \n"
+"                                                                                                         \n"
+"      /* setup the chart and its options */                                                              \n"
+"      var chart = nv.models.lineChart()                                                                  \n"
+"                    .useInteractiveGuideline(true)                                                       \n"
+"                    .color(d3.scale.category10().range())                                                \n"
+"                    .margin({left: 75, bottom: 50})                                                      \n"
+"                    .forceX([0]).forceY([0])                                                             \n"
+"                    ;                                                                                    \n"
+"      chart.xAxis.options({                                                                              \n"
+"        axisLabel: customSettings.XLABEL || 'Number of elements',                                        \n"
+"        tickFormat: d3.format('.0f')                                                                     \n"
+"      });                                                                                                \n"
+"      if (aspect == 'COMPILATION_TIME') {                                                                \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.time; })                                                   \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Time',                                               \n"
+"               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
+"      else if (aspect == 'EXECUTABLE_SIZE') {                                                            \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.size; })                                                   \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Executable size',                                    \n"
+"               tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                         \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
+"                                                                                                         \n"
+"      d3.select('#chart').datum(data).call(chart);                                                       \n"
+"                                                                                                         \n"
+"      /* setup the title */                                                                              \n"
+"      d3.select('#chart')                                                                                \n"
+"        .append('text')                                                                                  \n"
+"        .style('font-size', '20px').style('font-family', 'arial')                                        \n"
+"        .attr('text-anchor', 'middle')                                                                   \n"
+"        .attr('x', '50%').attr('y', '2em')                                                               \n"
+"        .text(customSettings.TITLE || '');                                                               \n"
+"                                                                                                         \n"
+"      /* setup the subtitle */                                                                           \n"
+"      d3.select('#chart')                                                                                \n"
+"        .append('text')                                                                                  \n"
+"        .style('font-size', '16px').style('font-family', 'arial')                                        \n"
+"        .attr('text-anchor', 'middle')                                                                   \n"
+"        .attr('x', '50%').attr('y', '4em')                                                               \n"
+"        .text(customSettings.SUBTITLE || '');                                                            \n"
+"                                                                                                         \n"
+"      /* ensure the chart is responsive */                                                               \n"
+"      nv.utils.windowResize(function(){setTimeout(chart.update, 0)});                                    \n"
+"    </script>                                                                                            \n"
+"  </body>                                                                                                \n"
+"</html>                                                                                                  \n"
 )
 ################################################################################
 # end chart.html.erb
