@@ -16,4 +16,4 @@ target_compile_definitions(dummy1 PUBLIC -DDUMMY1)
 metabench_add_dataset(dummy2 dummy.cpp.erb "[3, 4, 5]")
 target_compile_definitions(dummy2 PUBLIC -DDUMMY2)
 
-metabench_add_benchmark(check DATASETS dummy1 dummy2)
+metabench_add_chart(check DATASETS dummy1 dummy2)

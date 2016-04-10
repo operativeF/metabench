@@ -8,4 +8,4 @@ add_dataset(datasets dataset.hetero.transform.fusion.vector    fusion.vector.cpp
 add_dataset(datasets dataset.hetero.transform.hana.basic_tuple hana.basic_tuple.cpp.erb   "(0..500).step(10)")
 add_dataset(datasets dataset.hetero.transform.hana.tuple       hana.tuple.cpp.erb         "(0..500).step(10)")
 
-add_benchmark(benchmark.hetero.transform DATASETS ${datasets})
+add_chart(benchmark.hetero.transform DATASETS ${datasets})

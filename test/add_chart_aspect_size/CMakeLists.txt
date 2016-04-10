@@ -3,7 +3,7 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 # This test makes sure that using the EXECUTABLE_SIZE aspect with
-# metabench_add_benchmark produces a graph of the executable size.
+# metabench_add_chart produces a graph of the executable size.
 # The test does not actually check anything; this must be done by
 # manual inspection.
 
@@ -12,4 +12,4 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
 metabench_add_dataset(dummy "dummy.cpp.erb" "[1, 2, 3]")
-metabench_add_benchmark(check ASPECT EXECUTABLE_SIZE DATASETS dummy)
+metabench_add_chart(check ASPECT EXECUTABLE_SIZE DATASETS dummy)

@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 metabench_add_dataset(example.std_tuple make_tuple/std_tuple.cpp.erb "(0...50).step(5)" NAME std::tuple)
 metabench_add_dataset(example.recursive_tuple make_tuple/recursive_tuple.cpp.erb "(0...50).step(5)" NAME "recursive tuple")
-metabench_add_benchmark(example.make_tuple
+metabench_add_chart(example.make_tuple
     TITLE "Creating a heterogeneous container with n elements"
     SUBTITLE "(smaller is better)"
     DATASETS example.std_tuple example.recursive_tuple
@@ -15,7 +15,7 @@ metabench_add_benchmark(example.make_tuple
 
 metabench_add_dataset(example.std_decay decay/std_decay.cpp.erb "(0...500).step(100)" NAME std::decay)
 metabench_add_dataset(example.my_decay decay/my_decay.cpp.erb "(0...500).step(100)" NAME "my decay")
-metabench_add_benchmark(example.decay
+metabench_add_chart(example.decay
     TITLE "Calling a decay metafunction on n different types"
     SUBTITLE "(smaller is better)"
     XLABEL "Number of types"

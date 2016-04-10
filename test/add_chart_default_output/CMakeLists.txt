@@ -4,14 +4,14 @@
 
 # This test makes sure that we generate a HTML file containing the chart in
 # the current CMake binary directory, and that the name of the file is the
-# target passed to `metabench_add_benchmark`.
+# target passed to `metabench_add_chart`.
 
 cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
 metabench_add_dataset(dummy dummy.cpp.erb "[1, 2, 3]")
-metabench_add_benchmark(check DATASETS dummy)
+metabench_add_chart(check DATASETS dummy)
 
 enable_testing()
 

@@ -11,7 +11,7 @@ include(metabench)
 
 metabench_add_dataset(dummy1 dummy1.cpp.erb "[1, 2, 3]")
 metabench_add_dataset(dummy2 dummy2.cpp.erb "[1, 2, 3]")
-metabench_add_benchmark(check DATASETS dummy1 dummy2)
+metabench_add_chart(check DATASETS dummy1 dummy2)
 
 target_compile_definitions(dummy1 PUBLIC -DCUSTOM_DEFINITION_DUMMY1=1234)
 target_compile_definitions(dummy2 PUBLIC -DCUSTOM_DEFINITION_DUMMY2=5678)

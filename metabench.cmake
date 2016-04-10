@@ -32,9 +32,9 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #
 #   Note that building the `target` target itself is not supported. To
 #   trigger the generation of the dataset, one must either add the dataset
-#   to a benchmark using `metabench_add_benchmark`, or create a custom CMake
-#   target that depends on the JSON file itself. When that target is built,
-#   the dataset will be generated if and only if it is outdated.
+#   to a chart using `metabench_add_chart`, or create a custom CMake target
+#   that depends on the JSON file itself. When that target is built, the
+#   dataset will be generated if and only if it is outdated.
 #
 #   Additionally, a CTest target with the same name is also created. When run,
 #   this CTest target will run the benchmark for only the first and last
@@ -127,9 +127,9 @@ function(metabench_add_dataset target path_to_template range)
     # of `n`, and collect compilation statistics each time. Compiling
     # through CMake allows us to be portable without additional work.
     #
-    # Also, metabench_add_benchmark needs to be able to find the JSON
-    # file containing the benchmark data from the name of the executable
-    # target, so we store it in a custom property.
+    # Also, metabench_add_chart needs to be able to find the JSON file
+    # containing the benchmark data from the name of the executable target,
+    # so we store it in a custom property.
     file(WRITE ${METABENCH_DIR}/${path_to}/${target}.cpp "")
     add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${path_to}/${target}.cpp)
     set_target_properties(${target} PROPERTIES
@@ -175,34 +175,30 @@ function(metabench_add_dataset target path_to_template range)
     )
 endfunction()
 
-# metabench_add_benchmark(target [ALL]
-#                         [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]
-#                         [TITLE title]
-#                         [SUBTITLE subtitle]
-#                         [XLABEL label] [YLABEL label]
-#                         DATASETS dataset1 [dataset2 [dataset3 [...]]]
-#                         [OUTPUT path/to/file])
+# metabench_add_chart(target [ALL]
+#                     [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]
+#                     [TITLE title]
+#                     [SUBTITLE subtitle]
+#                     [XLABEL label] [YLABEL label]
+#                     DATASETS dataset1 [dataset2 [dataset3 [...]]]
+#                     [OUTPUT path/to/file])
 #
-#   Creates a target for running a compile-time benchmark. After issuing this
-#   command, running the target named `target` will cause each `dataset` to be
-#   generated. A HTML chart is also generated, allowing the datasets to be
-#   visualized. Several aspects of the compilation are measured, such as
+#   Creates a target which generates a chart displaying compile-time benchmarks.
+#   After issuing this command, running the target named `target` will cause
+#   each `dataset` to be generated and a HTML chart to be generated from those
+#   datasets. Several aspects of the compilation can be displayed, such as
 #   compilation time and executable size. The aspect being plotted on the
 #   generated chart can be controled via the `ASPECT` argument.
-#
-#   Additionally, a JSON file containing information for rendering the
-#   chart may also be specified. This can be used to set the chart's
-#   title, axis labels, etc.
 #
 #   Parameters
 #   ----------
 #   target:
-#       The name of the target associated to this benchmark.
+#       The name of the target associated to this chart.
 #
 #   [ALL]:
-#       If `ALL` is provided, the benchmark will be added to the default
-#       target. This is the same behaviour as `add_custom_target` used with
-#       the `ALL` keyword.
+#       If `ALL` is provided, the target will be added to the default target.
+#       This is the same behaviour as `add_custom_target` used with the `ALL`
+#       keyword.
 #
 #   [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]:
 #       The aspect of the datasets to display on the chart. When this argument
@@ -236,7 +232,7 @@ endfunction()
 #       to the current CMake binary directory. This defaults to `target.html`,
 #       so that the output file will be `target.html` in the current CMake
 #       binary directory.
-function(metabench_add_benchmark target)
+function(metabench_add_chart target)
     set(options ALL)
     set(one_value_args OUTPUT ASPECT TITLE SUBTITLE XLABEL YLABEL)
     set(multi_value_args DATASETS)
@@ -247,7 +243,7 @@ function(metabench_add_benchmark target)
     endif()
 
     if(NOT ARGS_DATASETS)
-        message(FATAL_ERROR "metabench_add_benchmark requires at least one dataset.")
+        message(FATAL_ERROR "metabench_add_chart requires at least one dataset.")
     endif()
 
     if (NOT ARGS_OUTPUT)

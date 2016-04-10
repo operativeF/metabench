@@ -13,5 +13,5 @@ add_custom_target(check) # dummy 'check' target run by tools/run_tests.sh
 
 enable_testing()
 metabench_add_dataset(dummy dummy.cpp.erb "[1, 2, 3]")
-metabench_add_benchmark(my_benchmark DATASETS dummy)
+metabench_add_chart(my_benchmark DATASETS dummy)
 set_tests_properties(dummy PROPERTIES WILL_FAIL TRUE)

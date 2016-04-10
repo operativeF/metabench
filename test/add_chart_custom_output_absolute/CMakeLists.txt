@@ -2,15 +2,14 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-# This test makes sure that metabench_add_benchmark places the generated HTML
-# file at the place specified by the OUTPUT argument.
+# Same as the `add_chart_custom_output` test, but with an absolute OUTPUT.
 
 cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
 metabench_add_dataset(dummy "dummy.cpp.erb" "[1, 2, 3]")
-metabench_add_benchmark(check DATASETS dummy OUTPUT my/fancy/output.html)
+metabench_add_chart(check DATASETS dummy OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/my/fancy/output.html)
 
 enable_testing()
 

@@ -2,7 +2,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-# This test makes sure that providing the ALL keyword to `metabench_add_benchmark`
+# This test makes sure that providing the ALL keyword to `metabench_add_chart`
 # causes the benchmark target to be added to the default target.
 
 cmake_minimum_required(VERSION 3.1)
@@ -12,7 +12,7 @@ add_custom_target(check) # dummy 'check' target run by tools/run_tests.sh
 
 include(metabench)
 metabench_add_dataset(dummy a_template_file_with_a_very_unique_name.cpp.erb "[1, 2, 3]")
-metabench_add_benchmark(my_benchmark ALL DATASETS dummy)
+metabench_add_chart(my_benchmark ALL DATASETS dummy)
 
 enable_testing()
 

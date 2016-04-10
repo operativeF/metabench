@@ -18,10 +18,9 @@ Metabench requires [CMake][] 3.1 or higher and [Ruby][] 2.1 or higher.
 To use Metabench, make sure you have the dependencies listed above and simply
 drop the `metabench.cmake` file somewhere in your CMake search path for modules.
 Then, use `include(metabench)` to include the module in your CMake file, add
-individual datasets to be benchmarked using `metabench_add_dataset` and finally
-specify which datasets should be put together to comprise a benchmark via
-`metabench_add_benchmark`. For example, a minimal CMake file using Metabench
-would look like:
+individual datasets to be benchmarked using `metabench_add_dataset`, and finally
+specify which datasets should be put together into a chart via `metabench_add_chart`.
+For example, a minimal CMake file using Metabench would look like:
 
 ```CMake
 # Make sure Metabench can be found when writing include(metabench)
@@ -35,14 +34,14 @@ metabench_add_dataset(dataset1 "path/to/dataset1.cpp.erb" "[1, 5, 10]")
 metabench_add_dataset(dataset2 "path/to/dataset2.cpp.erb" "(1...15)")
 metabench_add_dataset(dataset3 "path/to/dataset3.cpp.erb" "(1...20).step(5)")
 
-# Add a new benchmark
-metabench_add_benchmark(benchmark DATASETS dataset1 dataset2 dataset3)
+# Add a new chart
+metabench_add_chart(chart DATASETS dataset1 dataset2 dataset3)
 ```
 
-This will create a target named `benchmark`, which, when run, will gather
-benchmark data from each `dataset` and output JSON files for easy integration
-with other tools. Additionally, a HTML file is generated for easy visualization
-of the benchmark data as a [NVD3][] chart.
+This will create a target named `chart`, which, when run, will gather benchmark
+data from each `dataset` and output JSON files for easy integration with other
+tools. A HTML file is generated for easy visualization of the datasets as a
+[NVD3][] chart.
 
 #### The principle
 Benchmarking the compilation time of a single `.cpp` file is rather useless,
@@ -100,7 +99,7 @@ The `.cpp` file will be compiled (to benchmark it) as if it were located
 in the directory containing the `.cpp.erb` file, so that relative include
 paths can be used. Furthermore, it will be compiled as if the `.cpp` file
 were part of a CMake executable added in the same directory as the call to
-`metabench_add_benchmark`. This way, any variable or property set in CMake
+`metabench_add_dataset`. This way, any variable or property set in CMake
 will also apply to the benchmark of the file.
 
 TODO: Finish this

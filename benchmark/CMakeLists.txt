@@ -49,8 +49,8 @@ macro(add_dataset datasets dataset path_to_template range)
 endmacro()
 
 add_custom_target(benchmarks)
-macro(add_benchmark target)
-    metabench_add_benchmark(${target} ${ARGN} OUTPUT index.html)
+macro(add_chart target)
+    metabench_add_chart(${target} ${ARGN} OUTPUT index.html)
     add_dependencies(benchmarks ${target})
 endmacro()
 
