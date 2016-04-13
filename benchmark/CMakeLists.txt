@@ -10,11 +10,12 @@ option(METABENCH_METAL      "Benchmark Metal"   ON)
 option(METABENCH_MPL        "Benchmark MPL"     ON)
 
 
-include(benchmark/dependencies/boost)
 include(benchmark/dependencies/brigand)
+include(benchmark/dependencies/fusion)
 include(benchmark/dependencies/hana)
 include(benchmark/dependencies/meta)
 include(benchmark/dependencies/metal)
+include(benchmark/dependencies/mpl)
 include(benchmark/dependencies/std)
 
 
