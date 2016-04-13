@@ -3,7 +3,9 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 if (METABENCH_METAL AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
-                             CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19"))
+                             CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19")
+                    AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+                             CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9"))
     find_package(Metal QUIET)
     if (Metal_FOUND)
         message(STATUS "Local Metal installation found - version ${Metal_VERSION}")
