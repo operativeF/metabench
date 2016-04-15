@@ -368,7 +368,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "    end                                                                                                \n"
 "    return data                                                                                        \n"
 "  ensure                                                                                               \n"
-"    STDERR.write(\"\n\") # Otherwise the output of the next CMake command appears on the same line     \n"
+"    STDERR.write(\"\\n\") # Otherwise the output of the next CMake command appears on the same line    \n"
 "    IO.write(measure_file, '')                                                                         \n"
 "  end                                                                                                  \n"
 "end                                                                                                    \n"
