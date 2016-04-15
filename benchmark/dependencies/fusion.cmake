@@ -17,7 +17,7 @@ if (METABENCH_FUSION AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
     endif()
 endif()
 
-if (NOT Fusion_add_dataset)
+if (NOT COMMAND Fusion_add_dataset)
     function(Fusion_add_dataset)
     endfunction()
 endif()
