@@ -134,11 +134,11 @@ function(metabench_add_dataset target path_to_template range)
     # Also, metabench_add_chart needs to be able to find the JSON file
     # containing the benchmark data from the name of the executable target,
     # so we store it in a custom property.
-    file(WRITE ${METABENCH_DIR}/${path_to}/${target}.cpp "")
-    add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${path_to}/${target}.cpp)
+    file(WRITE ${METABENCH_DIR}/${target}.cpp "")
+    add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${target}.cpp)
     set_target_properties(${target} PROPERTIES
         RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${MEASURE_RB_PATH}\""
-        RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}/${path_to}"
+        RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}"
         METABENCH_DATASET_PATH "${ARGS_OUTPUT}"
     )
     target_include_directories(${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${path_to}")
@@ -150,8 +150,8 @@ function(metabench_add_dataset target path_to_template range)
         COMMAND ${RUBY_EXECUTABLE} -r json -r fileutils -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "env = (${ARGS_ENV})"
-            -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
-            -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
+            -e "measure_file = '${METABENCH_DIR}/${target}.cpp'"
+            -e "exe_file = '${METABENCH_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = {}"
             -e "data['key'] = '${ARGS_NAME}'"
@@ -171,8 +171,8 @@ function(metabench_add_dataset target path_to_template range)
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "env = (${ARGS_ENV})"
-            -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
-            -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
+            -e "measure_file = '${METABENCH_DIR}/${target}.cpp'"
+            -e "exe_file = '${METABENCH_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
             -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = measure('${path_to_template}', range, measure_file, exe_file, command, env, 1)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
