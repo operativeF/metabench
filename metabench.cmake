@@ -92,6 +92,13 @@ function(metabench_add_dataset target path_to_template range)
     set(multi_value_args)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
+    if (NOT IS_ABSOLUTE ${path_to_template})
+        set(path_to_template "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}")
+    endif()
+    if (NOT EXISTS ${path_to_template})
+        message(FATAL_ERROR "The file specified to metabench_add_dataset (${path_to_template}) does not exist.")
+    endif()
+
     if (NOT ARGS_NAME)
         set(ARGS_NAME ${target})
     endif()
@@ -111,20 +118,6 @@ function(metabench_add_dataset target path_to_template range)
         set(ARGS_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_OUTPUT}")
     endif()
 
-    # Transform any absolute path to a relative path from the current source directory.
-    if (IS_ABSOLUTE ${path_to_template})
-        file(RELATIVE_PATH path_to_template ${CMAKE_CURRENT_SOURCE_DIR} ${path_to_template})
-    endif()
-    get_filename_component(path_to ${path_to_template} DIRECTORY)
-    get_filename_component(template ${path_to_template} NAME_WE)
-
-    if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template})
-        message(FATAL_ERROR
-            "The file specified to metabench_add_dataset (${path_to_template}) "
-            "does not exist."
-        )
-    endif()
-
 
     # Add a dummy executable that will be used to collect the dataset.
     # We'll build this executable multiple times for different values
@@ -141,7 +134,8 @@ function(metabench_add_dataset target path_to_template range)
         RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}"
         METABENCH_DATASET_PATH "${ARGS_OUTPUT}"
     )
-    target_include_directories(${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${path_to}")
+    get_filename_component(template_dir ${path_to_template} DIRECTORY)
+    target_include_directories(${target} PUBLIC "${template_dir}")
 
 
     # Add a command to generate the JSON file that will contain the measurements
@@ -155,8 +149,8 @@ function(metabench_add_dataset target path_to_template range)
             -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
             -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${path_to_template}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         VERBATIM USES_TERMINAL
     )
 
@@ -169,7 +163,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "env = (${ARGS_ENV})"
             -e "data = measure('${target}', '${path_to_template}', range, env, 1)"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 endfunction()
 
@@ -301,6 +295,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "require 'erb'                                                                                      \n"
 "require 'fileutils'                                                                                \n"
 "require 'open3'                                                                                    \n"
+"require 'pathname'                                                                                 \n"
 "require 'time'                                                                                     \n"
 "                                                                                                   \n"
 "def median(values)                                                                                 \n"
@@ -356,13 +351,14 @@ file(WRITE ${METABENCH_RB_PATH}
 "end                                                                                                \n"
 "                                                                                                   \n"
 "def measure(target, erb_template, range, env, median_reps)                                         \n"
+"  erb_template = Pathname.new(erb_template)                                                        \n"
 "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                     \n"
 "  data = []                                                                                        \n"
 "  range = range.to_a                                                                               \n"
 "  range.each_with_index do |n, index|                                                              \n"
 "    # Write the progress of the benchmark to STDERR                                                \n"
 "    percentage = (index+1) * 100 / range.size                                                      \n"
-"    STDERR.write(%{\\r==> #{percentage}% #{erb_template} (n = #{n})})                              \n"
+"    STDERR.write(%{\\r==> #{percentage}% #{erb_template.relative_path_from(Pathname.getwd)} (n = #{n})})\n"
 "                                                                                                   \n"
 "    # Render the ERB template and write it to the source file                                      \n"
 "    code = render(erb_template, n, env)                                                            \n"
