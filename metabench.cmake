@@ -92,6 +92,13 @@ function(metabench_add_dataset target path_to_template range)
     set(multi_value_args)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
+    if (NOT IS_ABSOLUTE ${path_to_template})
+        set(path_to_template "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}")
+    endif()
+    if (NOT EXISTS ${path_to_template})
+        message(FATAL_ERROR "The file specified to metabench_add_dataset (${path_to_template}) does not exist.")
+    endif()
+
     if (NOT ARGS_NAME)
         set(ARGS_NAME ${target})
     endif()
@@ -111,20 +118,6 @@ function(metabench_add_dataset target path_to_template range)
         set(ARGS_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_OUTPUT}")
     endif()
 
-    # Transform any absolute path to a relative path from the current source directory.
-    if (IS_ABSOLUTE ${path_to_template})
-        file(RELATIVE_PATH path_to_template ${CMAKE_CURRENT_SOURCE_DIR} ${path_to_template})
-    endif()
-    get_filename_component(path_to ${path_to_template} DIRECTORY)
-    get_filename_component(template ${path_to_template} NAME_WE)
-
-    if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template})
-        message(FATAL_ERROR
-            "The file specified to metabench_add_dataset (${path_to_template}) "
-            "does not exist."
-        )
-    endif()
-
 
     # Add a dummy executable that will be used to collect the dataset.
     # We'll build this executable multiple times for different values
@@ -134,14 +127,15 @@ function(metabench_add_dataset target path_to_template range)
     # Also, metabench_add_chart needs to be able to find the JSON file
     # containing the benchmark data from the name of the executable target,
     # so we store it in a custom property.
-    file(WRITE ${METABENCH_DIR}/${path_to}/${target}.cpp "")
-    add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${path_to}/${target}.cpp)
+    file(WRITE ${METABENCH_DIR}/${target}.cpp "")
+    add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${target}.cpp)
     set_target_properties(${target} PROPERTIES
         RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${MEASURE_RB_PATH}\""
-        RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}/${path_to}"
+        RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}"
         METABENCH_DATASET_PATH "${ARGS_OUTPUT}"
     )
-    target_include_directories(${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${path_to}")
+    get_filename_component(template_dir ${path_to_template} DIRECTORY)
+    target_include_directories(${target} PUBLIC "${template_dir}")
 
 
     # Add a command to generate the JSON file that will contain the measurements
@@ -150,16 +144,13 @@ function(metabench_add_dataset target path_to_template range)
         COMMAND ${RUBY_EXECUTABLE} -r json -r fileutils -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "env = (${ARGS_ENV})"
-            -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
-            -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
-            -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = {}"
             -e "data['key'] = '${ARGS_NAME}'"
-            -e "data['values'] = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env, ${ARGS_MEDIAN_OF})"
+            -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
             -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${path_to_template}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         VERBATIM USES_TERMINAL
     )
 
@@ -171,11 +162,8 @@ function(metabench_add_dataset target path_to_template range)
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "env = (${ARGS_ENV})"
-            -e "measure_file = '${METABENCH_DIR}/${path_to}/${target}.cpp'"
-            -e "exe_file = '${METABENCH_DIR}/${path_to}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
-            -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = Metabench.measure('${path_to_template}', range, measure_file, exe_file, command, env, 1)"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            -e "data = measure('${target}', '${path_to_template}', range, env, 1)"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 endfunction()
 
@@ -304,74 +292,94 @@ endfunction()
 ################################################################################
 set(METABENCH_RB_PATH ${METABENCH_DIR}/metabench.rb)
 file(WRITE ${METABENCH_RB_PATH}
-"require 'erb'                                                                                          \n"
-"require 'fileutils'                                                                                    \n"
-"require 'open3'                                                                                        \n"
-"require 'time'                                                                                         \n"
-"                                                                                                       \n"
-"module Metabench                                                                                       \n"
-"  def self.median(values)                                                                              \n"
-"    values = values.sort                                                                               \n"
-"    if values.length.even?                                                                             \n"
-"       return (values[values.length / 2 - 1] + values[values.length / 2])/2                            \n"
-"    else                                                                                               \n"
-"      return values[values.length / 2]                                                                 \n"
-"    end                                                                                                \n"
-"  end                                                                                                  \n"
-"                                                                                                       \n"
-"  def self.measure(erb_template, range, measure_file, exe_file, command, env, median_reps)             \n"
-"    data = []                                                                                          \n"
-"    range = range.to_a                                                                                 \n"
-"    range.each_with_index do |n, index|                                                                \n"
-"      # This writes the progress of the benchmark to STDERR                                            \n"
-"      percentage = (index+1) * 100 / range.size                                                        \n"
-"      STDERR.write(\"\\r==> #{percentage}% #{erb_template} (n = #{n})\")                               \n"
-"                                                                                                       \n"
-"      # Evaluate the ERB template with the given environment, and save the                             \n"
-"      # result in a temporary file.                                                                    \n"
-"      code = ERB.new(File.read(erb_template)).result(binding)                                          \n"
-"      IO.write(measure_file, code)                                                                     \n"
-"      datum = {'n' => n}                                                                               \n"
-"                                                                                                       \n"
-"      timings = median_reps.times.map do                                                               \n"
-"        # Compile the file and get timing statistics. The timing statistics                            \n"
-"        # are output to stdout when we compile the file, because we use the                            \n"
-"        # `measure.rb` script below to launch the compiler with CMake.                                 \n"
-"        # We change the timestamp of the measure file to make sure CMake                               \n"
-"        # considers the target as outdated.                                                            \n"
-"        FileUtils.touch measure_file, mtime: Time.now+1                                                \n"
-"        stdout, stderr, status = Open3.capture3(*command)                                              \n"
-"        command_line = stdout.match(/\\[command line: (.+)\\]/i)                                       \n"
-"                                                                                                       \n"
-"        error_string = <<-EOS                                                                          \n"
-"compilation error: #{command_line && command_line.captures[0]}                                         \n"
-"                                                                                                       \n"
-"stdout                                                                                                 \n"
-"#{'-'*80}                                                                                              \n"
-"#{stdout}                                                                                              \n"
-"                                                                                                       \n"
-"stderr                                                                                                 \n"
-"#{'-'*80}                                                                                              \n"
-"#{stderr}                                                                                              \n"
-"                                                                                                       \n"
-"code                                                                                                   \n"
-"#{'-'*80}                                                                                              \n"
-"#{code}                                                                                                \n"
+"require 'erb'                                                                                      \n"
+"require 'fileutils'                                                                                \n"
+"require 'open3'                                                                                    \n"
+"require 'pathname'                                                                                 \n"
+"require 'time'                                                                                     \n"
+"                                                                                                   \n"
+"def median(values)                                                                                 \n"
+"  values = values.sort                                                                             \n"
+"  if values.length.even?                                                                           \n"
+"     return (values[values.length / 2 - 1] + values[values.length / 2])/2                          \n"
+"  else                                                                                             \n"
+"    return values[values.length / 2]                                                               \n"
+"  end                                                                                              \n"
+"end                                                                                                \n"
+"                                                                                                   \n"
+"# Build the specified CMake target and return the benchmark information that                       \n"
+"# was gathered.                                                                                    \n"
+"def build(target)                                                                                  \n"
+"  command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', target]             \n"
+"  exe_file = %{${METABENCH_DIR}/#{target}${CMAKE_EXECUTABLE_SUFFIX}}                               \n"
+"  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                     \n"
+"                                                                                                   \n"
+"  stdout, stderr, status = Open3.capture3(*command)                                                \n"
+"  command_line = stdout.match(/\\[command line: (.+)\\]/i)                                         \n"
+"                                                                                                   \n"
+"  if not status.success?                                                                           \n"
+"    raise <<-EOS                                                                                   \n"
+"compilation error: #{command_line && command_line.captures[0]}                                     \n"
+"                                                                                                   \n"
+"stdout                                                                                             \n"
+"#{'-'*80}                                                                                          \n"
+"#{stdout}                                                                                          \n"
+"                                                                                                   \n"
+"stderr                                                                                             \n"
+"#{'-'*80}                                                                                          \n"
+"#{stderr}                                                                                          \n"
+"                                                                                                   \n"
+"code                                                                                               \n"
+"#{'-'*80}                                                                                          \n"
+"#{IO.read(cpp_file)}                                                                               \n"
 "EOS\n"
-"        raise error_string if not status.success?                                                      \n"
-"        stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                                 \n"
-"      end                                                                                              \n"
-"      datum['time'] = median(timings)                                                                  \n"
-"      # Size of the generated executable in KB                                                         \n"
-"      datum['size'] = File.size(exe_file).to_f / 1000                                                  \n"
-"      data << datum                                                                                    \n"
-"    end                                                                                                \n"
-"    return data                                                                                        \n"
-"  ensure                                                                                               \n"
-"    STDERR.write(\"\\n\") # Otherwise the output of the next CMake command appears on the same line    \n"
-"    IO.write(measure_file, '')                                                                         \n"
-"  end                                                                                                  \n"
-"end                                                                                                    \n"
+"  end                                                                                              \n"
+"                                                                                                   \n"
+"  # Compilation time in seconds. It is output to stdout because we use the                         \n"
+"  # `measure.rb` script below to launch the compiler with CMake.                                   \n"
+"  time = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                            \n"
+"                                                                                                   \n"
+"  # Size of the generated executable in KB                                                         \n"
+"  size = File.size(exe_file).to_f / 1000                                                           \n"
+"                                                                                                   \n"
+"  return time, size                                                                                \n"
+"end                                                                                                \n"
+"                                                                                                   \n"
+"# Render the ERB template and return the generated code.                                           \n"
+"def render(erb_template, n, env)                                                                   \n"
+"  ERB.new(File.read(erb_template)).result(binding)                                                 \n"
+"end                                                                                                \n"
+"                                                                                                   \n"
+"def measure(target, erb_template, range, env, median_reps)                                         \n"
+"  erb_template = Pathname.new(erb_template)                                                        \n"
+"  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                     \n"
+"  data = []                                                                                        \n"
+"  range = range.to_a                                                                               \n"
+"  range.each_with_index do |n, index|                                                              \n"
+"    # Write the progress of the benchmark to STDERR                                                \n"
+"    percentage = (index+1) * 100 / range.size                                                      \n"
+"    STDERR.write(%{\\r==> #{percentage}% #{erb_template.relative_path_from(Pathname.getwd)} (n = #{n})})\n"
+"                                                                                                   \n"
+"    # Render the ERB template and write it to the source file                                      \n"
+"    code = render(erb_template, n, env)                                                            \n"
+"    IO.write(cpp_file, code)                                                                       \n"
+"    datum = {'n' => n}                                                                             \n"
+"                                                                                                   \n"
+"    results = median_reps.times.map do                                                             \n"
+"      # We change the timestamp of the source file to make sure CMake                              \n"
+"      # considers the target as outdated.                                                          \n"
+"      FileUtils.touch(cpp_file, mtime: Time.now+1)                                                 \n"
+"      build(target)                                                                                \n"
+"    end                                                                                            \n"
+"    datum['time'] = median(results.map { |time, size| time })                                      \n"
+"    datum['size'] = results.map { |time, size| size }.first                                        \n"
+"    data << datum                                                                                  \n"
+"  end                                                                                              \n"
+"  return data                                                                                      \n"
+"ensure                                                                                             \n"
+"  STDERR.write(%{\\n}) # Otherwise the output of the next CMake command appears on the same line   \n"
+"  IO.write(cpp_file, '')                                                                           \n"
+"end                                                                                                \n"
 )
 ################################################################################
 # end metabench.rb
@@ -387,8 +395,8 @@ file(WRITE ${MEASURE_RB_PATH}
 "require 'benchmark'                                                               \n"
 "command = ARGV.map { |arg| arg.match(/\\s/) ? '\"' + arg + '\"' : arg }.join(' ') \n"
 "time = Benchmark.realtime { `#{command}` }                                        \n"
-"puts \"[command line: #{command}]\"                                               \n"
-"puts \"[compilation time: #{time}]\"                                              \n"
+"puts %{[command line: #{command}]}                                                \n"
+"puts %{[compilation time: #{time}]}                                               \n"
 )
 ################################################################################
 # end measure.rb
