@@ -19,5 +19,8 @@ int main() {
     constexpr auto tuple = hana::make_basic_tuple(
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     hana::unpack(tuple, f{});
+#endif
 }

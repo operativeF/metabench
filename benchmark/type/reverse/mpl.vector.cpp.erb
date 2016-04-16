@@ -14,10 +14,10 @@ namespace mpl = boost::mpl;
 
 template <int> struct x;
 
-typedef mpl::reverse<
-    mpl::vector<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %> >
->::type result;
+using xs = mpl::vector<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
 
+#if defined(METABENCH)
+using result = mpl::reverse<xs>::type;
+#endif
 
 int main() { }
-

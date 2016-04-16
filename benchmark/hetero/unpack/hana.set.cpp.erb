@@ -25,5 +25,8 @@ int main() {
     constexpr auto set = hana::make_set(
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     hana::unpack(set, f{});
+#endif
 }

@@ -12,7 +12,8 @@ using list = meta::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = meta::at_c<list, <%= n - 1 %>>;
-
+#endif
 
 int main() { }

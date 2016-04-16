@@ -15,6 +15,7 @@ int main() {
         <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
     >{};
 
+#if defined(METABENCH)
     constexpr auto result = hana::at_c<<%= n - 1 %>>(xs);
-    (void)result;
+#endif
 }

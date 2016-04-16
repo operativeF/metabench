@@ -24,12 +24,11 @@ template <int i>
 struct x { };
 
 int main() {
-    (void)fusion::as_vector(
-        fusion::transform(
-            fusion::make_vector(
-                <%= (1..n).map { |n| "x<#{n}>()" }.join(', ') %>
-            ),
-            f()
-        )
+    auto xs = fusion::make_vector(
+        <%= (1..n).map { |n| "x<#{n}>()" }.join(', ') %>
     );
+
+#if defined(METABENCH)
+    auto result = fusion::as_vector(fusion::transform(xs, f{}));
+#endif
 }

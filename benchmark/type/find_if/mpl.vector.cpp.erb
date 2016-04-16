@@ -25,7 +25,8 @@ using vector = mpl::vector<
     <%= (1..n).map { |i| "std::integral_constant<int, #{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = mpl::find_if<vector, is_last>::type;
-
+#endif
 
 int main() { }

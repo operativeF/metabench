@@ -21,6 +21,7 @@ int main() {
         <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
     >{};
 
+#if defined(METABENCH)
     auto result = hana::replace_if(types, is_odd{}, hana::type<void>{});
-    (void)result;
+#endif
 }

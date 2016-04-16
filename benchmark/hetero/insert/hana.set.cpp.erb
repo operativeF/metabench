@@ -13,6 +13,8 @@ int main() {
         <%= (1..n).map { |i| "hana::int_c<#{i}>" }.join(', ') %>
     );
     constexpr auto next = hana::int_c< <%= n + 1 %> >;
+
+#if defined(METABENCH)
     constexpr auto result = hana::insert(set, next);
-    (void)result;
+#endif
 }

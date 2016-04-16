@@ -21,6 +21,8 @@ int main() {
     constexpr auto tuple = hana::make_basic_tuple(
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::fold_right(tuple, state{}, f{});
-    (void)result;
+#endif
 }

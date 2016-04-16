@@ -19,6 +19,8 @@ using list = meta::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = meta::reverse_fold<list, state, f>;
+#endif
 
 int main() { }

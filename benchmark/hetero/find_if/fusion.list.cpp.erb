@@ -25,6 +25,7 @@ int main() {
         <%= (1..n).map { |i| "std::integral_constant<int, #{i}>{}" }.join(', ') %>
     );
 
+#if defined(METABENCH)
     auto result = fusion::find_if<is_last>(ints);
-    (void)result;
+#endif
 }

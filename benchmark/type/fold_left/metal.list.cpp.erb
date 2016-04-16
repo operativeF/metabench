@@ -21,6 +21,8 @@ using list = metal::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = metal::fold_t<list, state, metal::lambda<f>>;
+#endif
 
 int main() { }

@@ -12,6 +12,8 @@ int main() {
     constexpr auto tuple = std::make_tuple(
         <%= (1..n).map { |n| "x<#{n}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = std::get<<%= n - 1 %>>(tuple);
-    (void)result;
+#endif
 }

@@ -10,8 +10,9 @@ template <int i>
 struct x { };
 
 int main() {
+#if defined(METABENCH)
     constexpr auto xs = hana::make_basic_tuple(
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
-    (void)xs;
+#endif
 }

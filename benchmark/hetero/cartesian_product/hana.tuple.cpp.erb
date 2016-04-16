@@ -18,6 +18,8 @@ int main() {
             <%= (1..n).map{ |i| "x<2#{i}>{}" }.join(', ') %>
         )
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::cartesian_product(tuple);
-    (void)result;
+#endif
 }

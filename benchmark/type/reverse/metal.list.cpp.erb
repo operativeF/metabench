@@ -11,6 +11,8 @@ using xs = metal::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = metal::reverse_t<xs>;
+#endif
 
 int main() { }

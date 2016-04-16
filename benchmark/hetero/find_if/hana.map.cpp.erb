@@ -23,6 +23,8 @@ int main() {
             "hana::make_pair(std::integral_constant<int, #{i}>{}, undefined{})"
         }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::find_if(map, is_last{});
-    (void)result;
+#endif
 }

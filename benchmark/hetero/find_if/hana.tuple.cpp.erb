@@ -19,6 +19,8 @@ int main() {
     constexpr auto tuple = hana::make_tuple(
         <%= (1..n).map { |i| "std::integral_constant<int, #{i}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::find_if(tuple, is_last{});
-    (void)result;
+#endif
 }

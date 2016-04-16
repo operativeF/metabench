@@ -17,6 +17,8 @@ using list = brigand::list<
     <%= (1..n).map { |i| "brigand::int32_t<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = brigand::find<list, is_last>;
+#endif
 
 int main() { }

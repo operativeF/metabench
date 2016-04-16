@@ -13,6 +13,8 @@ int main() {
     constexpr auto tuple = hana::make_basic_tuple(
         <%= (1..n).map { |n| "x<#{n}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::get_impl<<%= n - 1 %>>(tuple);
-    (void)result;
+#endif
 }

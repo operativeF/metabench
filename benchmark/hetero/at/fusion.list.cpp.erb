@@ -15,9 +15,11 @@ template <int>
 struct x { };
 
 int main() {
-    (void)fusion::at_c<<%= n - 1 %>>(
-        fusion::make_list(
-            <%= (1..n).map { |n| "x<#{n}>()" }.join(', ') %>
-        )
+    auto xs = fusion::make_list(
+        <%= (1..n).map { |n| "x<#{n}>()" }.join(', ') %>
     );
+
+#if defined(METABENCH)
+    fusion::at_c<<%= n - 1 %>>(xs);
+#endif
 }

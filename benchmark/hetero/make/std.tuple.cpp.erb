@@ -8,8 +8,9 @@ template <int i>
 struct x { };
 
 int main() {
+#if defined(METABENCH)
     constexpr auto xs = std::make_tuple(
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
-    (void)xs;
+#endif
 }

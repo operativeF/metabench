@@ -23,6 +23,8 @@ using list = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = brigand::fold<list, state, f>;
+#endif
 
 int main() { }
