@@ -150,12 +150,9 @@ function(metabench_add_dataset target path_to_template range)
         COMMAND ${RUBY_EXECUTABLE} -r json -r fileutils -r ${METABENCH_RB_PATH}
             -e "range = (${range}).to_a"
             -e "env = (${ARGS_ENV})"
-            -e "measure_file = '${METABENCH_DIR}/${target}.cpp'"
-            -e "exe_file = '${METABENCH_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
-            -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
             -e "data = {}"
             -e "data['key'] = '${ARGS_NAME}'"
-            -e "data['values'] = measure('${path_to_template}', range, measure_file, exe_file, command, env, ${ARGS_MEDIAN_OF})"
+            -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
             -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}
@@ -171,10 +168,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "env = (${ARGS_ENV})"
-            -e "measure_file = '${METABENCH_DIR}/${target}.cpp'"
-            -e "exe_file = '${METABENCH_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}'"
-            -e "command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', '${target}']"
-            -e "data = measure('${path_to_template}', range, measure_file, exe_file, command, env, 1)"
+            -e "data = measure('${target}', '${path_to_template}', range, env, 1)"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endfunction()
@@ -318,7 +312,10 @@ file(WRITE ${METABENCH_RB_PATH}
 "  end                                                                                              \n"
 "end                                                                                                \n"
 "                                                                                                   \n"
-"def measure(erb_template, range, measure_file, exe_file, command, env, median_reps)                \n"
+"def measure(target, erb_template, range, env, median_reps)                                         \n"
+"  measure_file = \"${METABENCH_DIR}/#{target}.cpp\"                                                \n"
+"  exe_file = \"${METABENCH_DIR}/#{target}${CMAKE_EXECUTABLE_SUFFIX}\"                              \n"
+"  command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', target]             \n"
 "  data = []                                                                                        \n"
 "  range = range.to_a                                                                               \n"
 "  range.each_with_index do |n, index|                                                              \n"
