@@ -27,5 +27,8 @@ int main() {
     auto xs = fusion::make_list(
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     fusion::invoke(f{}, xs);
+#endif
 }

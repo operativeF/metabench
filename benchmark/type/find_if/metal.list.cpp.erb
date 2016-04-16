@@ -14,6 +14,8 @@ using list = metal::list<
     <%= (1..n).map { |i| "metal::integer<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = metal::find_if_t<list, metal::lambda<is_last>>;
+#endif
 
 int main() { }

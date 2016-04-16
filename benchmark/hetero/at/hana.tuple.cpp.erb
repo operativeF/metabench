@@ -14,6 +14,8 @@ int main() {
     constexpr auto tuple = hana::make_tuple(
         <%= (1..n).map { |n| "x<#{n}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::at_c<<%= n - 1 %>>(tuple);
-    (void)result;
+#endif
 }

@@ -19,6 +19,8 @@ int main() {
     constexpr auto set = hana::make_set(
         <%= (1..n).map { |i| "std::integral_constant<int, #{i}>{}" }.join(', ') %>
     );
+
+#if defined(METABENCH)
     constexpr auto result = hana::find_if(set, is_last{});
-    (void)result;
+#endif
 }

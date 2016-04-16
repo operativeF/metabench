@@ -14,7 +14,9 @@ template <int i>
 struct x { };
 
 int main() {
-    (void)fusion::make_vector(
+#if defined(METABENCH)
+    auto xs = fusion::make_vector(
         <%= (1..n).map { |i| "x<#{i}>()" }.join(', ') %>
     );
+#endif
 }

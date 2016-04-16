@@ -26,6 +26,7 @@ int main() {
         <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
 
+#if defined(METABENCH)
     auto result = fusion::reverse_fold(xs, state{}, f{});
-    (void)result;
+#endif
 }

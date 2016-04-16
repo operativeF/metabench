@@ -19,6 +19,7 @@ int main() {
         <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
     >{};
 
+#if defined(METABENCH)
     constexpr auto result = hana::transform(xs, hana::metafunction<f>);
-    (void)result;
+#endif
 }

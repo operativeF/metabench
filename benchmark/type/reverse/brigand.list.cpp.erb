@@ -11,6 +11,8 @@ using xs = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = brigand::reverse<xs>;
+#endif
 
 int main() { }

@@ -16,6 +16,9 @@ int main() {
         }.join(', ') %>
     );
     constexpr auto next = hana::int_c< <%= n + 1 %> >;
-    constexpr auto result = hana::insert(map, hana::make_pair(next, next));
-    (void)result;
+    constexpr auto pair = hana::make_pair(next, next);
+
+#if defined(METABENCH)
+    constexpr auto result = hana::insert(map, pair);
+#endif
 }

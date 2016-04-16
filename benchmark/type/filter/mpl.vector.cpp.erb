@@ -23,7 +23,9 @@ using vector = mpl::vector<
     <%= (1..n).map { |i| "std::integral_constant<int, #{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = mpl::copy_if<vector, is_even>::type;
+#endif
 
 
 int main() { }

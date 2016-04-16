@@ -10,6 +10,8 @@ using xs = meta::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = meta::reverse<xs>;
+#endif
 
 int main() { }

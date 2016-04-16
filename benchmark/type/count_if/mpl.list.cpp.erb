@@ -24,6 +24,8 @@ using list = mpl::list<
     <%= (1..n).map { |i| "std::integral_constant<int, #{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = mpl::count_if<list, mpl::quote1<is_even>>::type;
+#endif
 
 int main() { }

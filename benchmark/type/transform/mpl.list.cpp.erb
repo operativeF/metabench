@@ -18,10 +18,10 @@ struct f { typedef X type; };
 
 template <int> struct x;
 
-typedef mpl::transform<
-    mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %> >,
-    mpl::quote1<f>
->::type result;
+using xs = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
 
+#if defined(METABENCH)
+using result = mpl::transform<xs, mpl::quote1<f>>::type;
+#endif
 
 int main() { }

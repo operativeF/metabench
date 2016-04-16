@@ -23,6 +23,8 @@ using xs = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
+#if defined(METABENCH)
 using result = brigand::replace_if<xs, is_odd, void>;
+#endif
 
 int main() { }
