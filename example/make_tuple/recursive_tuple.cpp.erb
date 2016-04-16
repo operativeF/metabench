@@ -24,5 +24,7 @@ tuple<typename std::decay<T>::type...> make_tuple(T&& ...t) {
 }
 
 int main() {
+#if defined(METABENCH)
     auto tuple = make_tuple(<%= (1..n).to_a.join(', ') %>);
+#endif
 }

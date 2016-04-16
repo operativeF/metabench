@@ -1,6 +1,7 @@
 #include <type_traits>
 using std::decay;
 
+#if defined(METABENCH)
 <% (0..n).each do |i| %>
     struct T<%= i %> { };
     typedef decay<T<%= i %>>::type             foo1_<%= i %>;
@@ -10,5 +11,6 @@ using std::decay;
     typedef decay<T<%= i %> volatile>::type    foo5_<%= i %>;
     typedef decay<T<%= i %> [3]>::type         foo6_<%= i %>;
 <% end %>
+#endif
 
 int main() { }
