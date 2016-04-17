@@ -1,0 +1,26 @@
+// Copyright Bruno Dutra 2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+#include <metal/list/list.hpp>
+#include <metal/list/fold.hpp>
+#include <metal/lambda/lambda.hpp>
+
+template<typename, typename X>
+struct f
+{
+    using type = X;
+};
+
+struct state { };
+
+template<int i>
+struct x { };
+
+using list = metal::list<
+    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+>;
+
+using result = metal::fold_t<list, state, metal::lambda<f>>;
+
+int main() { }
