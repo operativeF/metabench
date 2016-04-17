@@ -1,0 +1,22 @@
+// Copyright Bruno Dutra 2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+#include <brigand/sequences/list.hpp>
+#include <brigand/algorithms/find.hpp>
+#include <brigand/types/bool.hpp>
+#include <brigand/types/integer.hpp>
+
+struct is_last
+{
+    template<typename N>
+    using apply = brigand::bool_<N::type::value == <%= n %>>;
+};
+
+using list = brigand::list<
+    <%= (1..n).map { |i| "brigand::int32_t<#{i}>" }.join(', ') %>
+>;
+
+using result = brigand::find<list, is_last>;
+
+int main() { }
