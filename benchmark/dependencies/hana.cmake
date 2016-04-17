@@ -29,7 +29,7 @@ if (METABENCH_HANA
     endif()
 
     function(Hana_add_dataset dataset)
-        metabench_add_dataset(${dataset} ${ARGN})
+        metabench_add_dataset(${dataset} ${ARGN} MEDIAN_OF 3)
         target_include_directories(${dataset} PUBLIC ${Hana_INCLUDE_DIRS})
         add_dependencies(${dataset} Hana)
     endfunction()

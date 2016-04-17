@@ -25,7 +25,7 @@ if (METABENCH_BRIGAND)
     endif()
 
     function(Brigand_add_dataset dataset)
-        metabench_add_dataset(${dataset} ${ARGN})
+        metabench_add_dataset(${dataset} ${ARGN} MEDIAN_OF 3)
         target_include_directories(${dataset} PUBLIC ${Brigand_INCLUDE_DIRS})
         add_dependencies(${dataset} Brigand)
     endfunction()

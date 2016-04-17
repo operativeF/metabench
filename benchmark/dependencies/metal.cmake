@@ -28,7 +28,7 @@ if (METABENCH_METAL AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
     endif()
 
     function(Metal_add_dataset dataset)
-        metabench_add_dataset(${dataset} ${ARGN})
+        metabench_add_dataset(${dataset} ${ARGN} MEDIAN_OF 3)
         target_include_directories(${dataset} PUBLIC ${METAL_INCLUDE_DIRS})
         add_dependencies(${dataset} Metal)
     endfunction()

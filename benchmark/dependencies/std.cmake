@@ -9,6 +9,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION
     endfunction()
 else()
     function(Std_add_dataset dataset)
-        metabench_add_dataset(${dataset} ${ARGN})
+        metabench_add_dataset(${dataset} ${ARGN} MEDIAN_OF 3)
     endfunction()
 endif()
