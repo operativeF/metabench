@@ -20,7 +20,7 @@ struct is_even {
 };
 
 using vector = mpl::vector<
-    <%= (1..n).map { |i| "std::integral_constant<int, #{n}>" }.join(', ') %>
+    <%= (1..n).map { |i| "std::integral_constant<int, #{i}>" }.join(', ') %>
 >;
 
 using result = mpl::copy_if<vector, is_even>::type;
