@@ -17,9 +17,6 @@ environment:
       - MSVC: "14.0"
         CMAKE_GENERATOR: "Ninja"
 
-      - MSVC: "12.0"
-        CMAKE_GENERATOR: "Ninja"
-
 install:
   - if "%CMAKE_GENERATOR%" equ "Ninja" (choco install ninja)
 
