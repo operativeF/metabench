@@ -375,6 +375,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "      return datum                                                                                 \n"
 "    }                                                                                              \n"
 "    base = compile[code]                                                                           \n"
+"    sleep 2                                                                                      \n"
 "    datum = compile[%{#define METABENCH\\n} + code]                                                \n"
 "    datum['time'] = datum['time'] - base['time']                                                   \n"
 "    data << datum                                                                                  \n"
