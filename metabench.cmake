@@ -311,7 +311,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "  code = render(erb_template, n, env)                                                              \n"
 "  IO.write(cpp_file, code)                                                                         \n"
 "  100.times do |i|                                                                                 \n"
-"    puts %{#{i}th time}                                                                            \n"
+"    puts %{#{i+1}th time}                                                                          \n"
 "    FileUtils.touch(cpp_file, mtime: Time.now+1)                                                   \n"
 "    stdout, stderr, status = Open3.capture3(*command)                                              \n"
 "    raise stderr if not status.success?                                                            \n"
