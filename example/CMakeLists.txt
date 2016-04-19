@@ -20,7 +20,7 @@ metabench_add_chart(example.decay
     SUBTITLE "(smaller is better)"
     XLABEL "Number of types"
     YLABEL "Time"
-    DATASETS example.std_decay example.my_decay
+    DATASETS example.my_decay
 )
 
 add_custom_target(examples ALL DEPENDS example.decay example.make_tuple)
