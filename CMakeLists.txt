@@ -11,6 +11,7 @@ add_custom_target(make_main
     COMMAND ${RUBY_EXECUTABLE} -r time -r fileutils
         -e "100.times do |i|"
         -e "  puts %{#{i+1}th time}"
+        -e "  `\"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target clean` if i == 25"
         -e "  FileUtils.touch('main.cpp', mtime: Time.now+1)"
         -e "  output = `\"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target main`"
         -e "  raise output if not $?.success?"
