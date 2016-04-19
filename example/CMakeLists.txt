@@ -14,7 +14,12 @@ metabench_add_chart(example.make_tuple
 )
 
 metabench_add_dataset(example.std_decay decay/std_decay.cpp.erb "(0...500).step(100)" NAME std::decay)
+
 metabench_add_dataset(example.my_decay decay/my_decay.cpp.erb "(0...500).step(100)" NAME "my decay")
+add_custom_target(should_trigger_the_bug
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/example.my_decay.json)
+
+
 metabench_add_chart(example.decay
     TITLE "Calling a decay metafunction on n different types"
     SUBTITLE "(smaller is better)"
