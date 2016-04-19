@@ -146,7 +146,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "env = (${ARGS_ENV})"
             -e "data = {}"
             -e "data['key'] = '${ARGS_NAME}'"
-            -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})"
+            -e "data['values'] = measure('${target}', '${path_to_template}', range, env)"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
             -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
         DEPENDS ${path_to_template}
@@ -162,7 +162,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "env = (${ARGS_ENV})"
-            -e "data = measure('${target}', '${path_to_template}', range, env, 1)"
+            -e "data = measure('${target}', '${path_to_template}', range, env)"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 endfunction()
@@ -303,7 +303,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "  ERB.new(File.read(erb_template)).result(binding)                                                 \n"
 "end                                                                                                \n"
 "                                                                                                   \n"
-"def measure(target, erb_template, range, env, median_reps)                                         \n"
+"def measure(target, erb_template, range, env)                                                      \n"
 "  erb_template = Pathname.new(erb_template)                                                        \n"
 "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                     \n"
 "  range = range.to_a                                                                               \n"
