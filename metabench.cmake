@@ -313,6 +313,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "    puts %{#{i+1}th time}                                                                          \n"
 "    FileUtils.touch(cpp_file, mtime: Time.now+1)                                                   \n"
 "    `\"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target #{target} -- -v`                \n"
+"    File.delete('${CMAKE_BINARY_DIR}/.ninja_log')                                                  \n"
 "    if not $?.success?                                                                             \n"
 "      raise 'ouch'                                                                                 \n"
 "    end                                                                                            \n"
