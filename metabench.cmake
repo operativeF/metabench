@@ -306,7 +306,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "def measure(target, erb_template, range, env)                                                      \n"
 "  erb_template = Pathname.new(erb_template)                                                        \n"
 "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                     \n"
-"  command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', target]             \n"
+"  command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', target, '--', '-v'] \n"
 "  n = 10                                                                                           \n"
 "  code = render(erb_template, n, env)                                                              \n"
 "  IO.write(cpp_file, code)                                                                         \n"
