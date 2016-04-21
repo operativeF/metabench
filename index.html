@@ -171,7 +171,7 @@ compilers:
                     <span class="link pull-right"><a class="octicon octicon-link-external" href="{{ site.baseurl }}{{ benchmark.url }}"></a></span>
                   </div>
                   <div id="chart{{ forloop.index }}" class="panel-collapse collapse">
-                    <iframe class="panel-body" data-src="{{ site.baseurl }}{{ benchmark.url }}"></iframe>
+                    <div class="chart-iframe" data-src="{{ site.baseurl }}{{ benchmark.url }}"></div>
                     <div class="panel-footer text-muted">Last updated on {{ benchmark.timestamp }}</div>
                   </div>
                 </div>
@@ -210,17 +210,6 @@ compilers:
     <script src="{{ site.baseurl }}/public/js/jquery-1.11.3.min.js"></script>
     <script src="{{ site.baseurl }}/public/js/bootstrap.min.js"></script>
     <script>
-      function load(charts){
-        var iframes = $(charts).find("iframe:not([src])[data-src]");
-
-        if(iframes.length <= 0)
-          return;
-
-        iframes.each(function(idx, iframe){
-          $(iframe).attr("src", $(iframe).attr("data-src")).removeAttr("data-src");
-        });
-      }
-
       $(function(){
         $(".index > .collection").on("click", function(){
           var compiler = $(".index > .compilers .compiler.active").attr("data-compiler");
@@ -236,8 +225,17 @@ compilers:
           $(".chart[data-compiler='" + $(this).attr("data-compiler") + "'][data-collection='" + collection + "']").fadeIn();
         });
 
+        // Replace the div by an iframe, but only the first time we click on it.
+        // This avoids overloading the page with many iframes, which is slow at
+        // least on Safari.
         $(".chart").on("click", function(){
-          load(this);
+          var div = $(this).find(".chart-iframe");
+          if (div.length > 0) {
+            var iframe = document.createElement('iframe');
+            $(iframe).attr("src", $(div).attr("data-src"));
+            $(iframe).addClass("panel-body");
+            $(div).replaceWith(iframe);
+          }
         });
 
         $(".chart .link").on("click", function(e){
