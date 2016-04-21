@@ -11,9 +11,14 @@ cmake_minimum_required(VERSION 3.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 include(metabench)
 
-# Test MEDIAN_OF with values from 1 to 4
+# Test MEDIAN_OF with some values
 metabench_add_dataset(dummy1 dummy.cpp.erb "[1, 2, 3, 4]" MEDIAN_OF 1)
 metabench_add_dataset(dummy2 dummy.cpp.erb "[1, 2, 3, 4]" MEDIAN_OF 2)
 metabench_add_dataset(dummy3 dummy.cpp.erb "[1, 2, 3, 4]" MEDIAN_OF 3)
 metabench_add_dataset(dummy4 dummy.cpp.erb "[1, 2, 3, 4]" MEDIAN_OF 4)
-metabench_add_chart(check DATASETS dummy1 dummy2 dummy3 dummy4)
+
+# On Windows, Ninja used to error out for high values of MEDIAN_OF, so test this.
+# See https://github.com/ldionne/metabench/issues/115 for details.
+metabench_add_dataset(dummy5 dummy.cpp.erb "[1, 2, 3, 4]" MEDIAN_OF 15)
+
+metabench_add_chart(check DATASETS dummy1 dummy2 dummy3 dummy4 dummy5)
