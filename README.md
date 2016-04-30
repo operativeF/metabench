@@ -127,7 +127,7 @@ of the code with a preprocessor `#if`:
 
 int main() {
 #if defined(METABENCH)
-    auto tuple = std::make_tuple(1, 2, 3, ..., n);
+    auto tuple = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
 #endif
 }
 ```
