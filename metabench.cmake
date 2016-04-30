@@ -374,7 +374,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "      datum['size'] = results.map { |time, size| size }.first                                      \n"
 "      return datum                                                                                 \n"
 "    }                                                                                              \n"
-"    compile[code] if index == 0 # Fill the cahce on the first iteration                            \n"
+"    compile[code] if index == 0 # Fill the cache on the first iteration                            \n"
 "    base = compile[code]                                                                           \n"
 "    datum = compile[%{#define METABENCH\\n} + code]                                                \n"
 "    datum['time'] = datum['time'] - base['time']                                                   \n"
