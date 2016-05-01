@@ -74,11 +74,11 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #       dataset in more complex ways.
 #
 #   [MEDIAN_OF n]:
-#       The number of times to compile the ERB template when gathering timing
-#       information. The compilation is done `n` times, and the median of these
-#       `n` values is retained. This can help reduce variability at the cost
-#       of longer benchmarking times. By default, the compilation is done only
-#       once. `n` must be a positive (non-zero) integer.
+#       The number of times to compile and run the ERB template when gathering
+#       timing information. The timings are taken `n` times, and the median of
+#       these `n` values is retained. This can help reduce variability at the
+#       cost of longer benchmarking times. By default, the timings are taken
+#       only once. `n` must be a positive (non-zero) integer.
 #
 #   [OUTPUT path/to/file]:
 #       The path of the resulting JSON file containing the benchmark data. If
@@ -168,7 +168,7 @@ function(metabench_add_dataset target path_to_template range)
 endfunction()
 
 # metabench_add_chart(target [ALL]
-#                     [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]
+#                     [ASPECT COMPILATION_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]
 #                     [TITLE title]
 #                     [SUBTITLE subtitle]
 #                     [XLABEL label] [YLABEL label]
@@ -192,7 +192,7 @@ endfunction()
 #       This is the same behaviour as `add_custom_target` used with the `ALL`
 #       keyword.
 #
-#   [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]:
+#   [ASPECT COMPILATION_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]:
 #       The aspect of the datasets to display on the chart. When this argument
 #       is provided, the chart will adopt reasonable default values for the
 #       axis labels and other similar settings. However, any setting set
@@ -292,6 +292,7 @@ endfunction()
 ################################################################################
 set(METABENCH_RB_PATH ${METABENCH_DIR}/metabench.rb)
 file(WRITE ${METABENCH_RB_PATH}
+"require 'benchmark'                                                                                \n"
 "require 'erb'                                                                                      \n"
 "require 'fileutils'                                                                                \n"
 "require 'open3'                                                                                    \n"
@@ -342,7 +343,29 @@ file(WRITE ${METABENCH_RB_PATH}
 "  # Size of the generated executable in KB                                                         \n"
 "  size = File.size(exe_file).to_f / 1000                                                           \n"
 "                                                                                                   \n"
-"  return time, size                                                                                \n"
+"  # Execution time of the generated executable in seconds                                          \n"
+"  exec_time = Benchmark.realtime {                                                                 \n"
+"    stdout, stderr, status = Open3.capture3(exe_file)                                              \n"
+"  }                                                                                                \n"
+"  if not status.success?                                                                           \n"
+"    raise <<-EOS                                                                                   \n"
+"execution error: #{exe_file}                                                                       \n"
+"                                                                                                   \n"
+"stdout                                                                                             \n"
+"#{'-'*80}                                                                                          \n"
+"#{stdout}                                                                                          \n"
+"                                                                                                   \n"
+"stderr                                                                                             \n"
+"#{'-'*80}                                                                                          \n"
+"#{stderr}                                                                                          \n"
+"                                                                                                   \n"
+"code                                                                                               \n"
+"#{'-'*80}                                                                                          \n"
+"#{IO.read(cpp_file)}                                                                               \n"
+"EOS\n"
+"  end                                                                                              \n"
+"                                                                                                   \n"
+"  return {'time' => time, 'size' => size, 'execution_time' => exec_time}                           \n"
 "end                                                                                                \n"
 "                                                                                                   \n"
 "# Render the ERB template and return the generated code.                                           \n"
@@ -370,8 +393,9 @@ file(WRITE ${METABENCH_RB_PATH}
 "        FileUtils.touch(cpp_file, mtime: Time.now+1)                                               \n"
 "        build(target)                                                                              \n"
 "      end                                                                                          \n"
-"      datum['time'] = median(results.map { |time, size| time })                                    \n"
-"      datum['size'] = results.map { |time, size| size }.first                                      \n"
+"      datum['time'] = median(results.map { |r| r['time'] })                                        \n"
+"      datum['size'] = results.map { |r| r['size'] }.first                                          \n"
+"      datum['execution_time'] = median(results.map { |r| r['execution_time'] })                    \n"
 "      return datum                                                                                 \n"
 "    }                                                                                              \n"
 "    compile[code] if index == 0 # Fill the cache on the first iteration                            \n"
@@ -476,6 +500,14 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "             .yAxis.options({                                                                            \n"
 "               axisLabel: customSettings.YLABEL || 'Executable size',                                    \n"
 "               tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                         \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
+"      else if (aspect == 'EXECUTION_TIME') {                                                             \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.execution_time; })                                         \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Execution time',                                     \n"
+"               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
 "             });                                                                                         \n"
 "      }                                                                                                  \n"
 "                                                                                                         \n"

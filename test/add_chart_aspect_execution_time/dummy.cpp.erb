@@ -1,0 +1,11 @@
+#include <algorithm>
+#include <cstdlib>
+#include <vector>
+
+
+int main() {
+    for (int iteration = 0; iteration < 1 << 10; ++iteration) {
+        std::vector<int> ints(<%= n %>);
+        std::generate_n(ints.begin(), <%= n %>, std::rand);
+    }
+}
