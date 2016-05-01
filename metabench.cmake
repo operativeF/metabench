@@ -74,7 +74,7 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #       dataset in more complex ways.
 #
 #   [MEDIAN_OF n]:
-#       The number of times to compile and run the ERB template when gathering
+#       The number of times to build and run the ERB template when gathering
 #       timing information. The timings are taken `n` times, and the median of
 #       these `n` values is retained. This can help reduce variability at the
 #       cost of longer benchmarking times. By default, the timings are taken
@@ -130,7 +130,8 @@ function(metabench_add_dataset target path_to_template range)
     file(WRITE ${METABENCH_DIR}/${target}.cpp "")
     add_executable(${target} EXCLUDE_FROM_ALL ${METABENCH_DIR}/${target}.cpp)
     set_target_properties(${target} PROPERTIES
-        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${MEASURE_RB_PATH}\""
+        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${COMPILE_RB_PATH}\""
+        RULE_LAUNCH_LINK "${RUBY_EXECUTABLE} -- \"${LINK_RB_PATH}\""
         RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}"
         METABENCH_DATASET_PATH "${ARGS_OUTPUT}"
     )
@@ -168,7 +169,7 @@ function(metabench_add_dataset target path_to_template range)
 endfunction()
 
 # metabench_add_chart(target [ALL]
-#                     [ASPECT COMPILATION_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]
+#                     [ASPECT COMPILATION_TIME|LINK_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]
 #                     [TITLE title]
 #                     [SUBTITLE subtitle]
 #                     [XLABEL label] [YLABEL label]
@@ -192,7 +193,7 @@ endfunction()
 #       This is the same behaviour as `add_custom_target` used with the `ALL`
 #       keyword.
 #
-#   [ASPECT COMPILATION_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]:
+#   [ASPECT COMPILATION_TIME|LINK_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]:
 #       The aspect of the datasets to display on the chart. When this argument
 #       is provided, the chart will adopt reasonable default values for the
 #       axis labels and other similar settings. However, any setting set
@@ -323,18 +324,23 @@ file(WRITE ${METABENCH_RB_PATH}
 "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                     \n"
 "                                                                                                   \n"
 "  stdout, stderr, status = Open3.capture3(*command)                                                \n"
-"  command_line = stdout.match(/\\[command line: (.+)\\]/i)                                         \n"
-"  command_line = command_line ? command_line.captures[0] : '(unavailable)'                         \n"
+"  compile_cli = stdout.match(/\\[compilation command: (.+)\\]/i)                                   \n"
+"  compile_cli = compile_cli ? compile_cli.captures[0] : '(unavailable)'                            \n"
+"  link_cli = stdout.match(/\\[link command: (.+)\\]/i)                                             \n"
+"  link_cli = link_cli ? link_cli.captures[0] : '(unavailable)'                                     \n"
 "                                                                                                   \n"
 "  if not status.success?                                                                           \n"
-"    report_error(command_line, stdout, stderr, IO.read(cpp_file))                                  \n"
+"    cli = %{compile: #{compile_cli}\\nlink: #{link_cli}}                                           \n"
+"    report_error(cli, stdout, stderr, IO.read(cpp_file))                                           \n"
 "  end                                                                                              \n"
 "                                                                                                   \n"
 "  result = {}                                                                                      \n"
 "                                                                                                   \n"
-"  # Compilation time in seconds. It is output to stdout because we use the                         \n"
-"  # `measure.rb` script below to launch the compiler with CMake.                                   \n"
+"  # Compilation and link times in seconds. They are output to stdout because                       \n"
+"  # we use the `compile.rb` and `link.rb` scripts below to launch the compiler                     \n"
+"  # and linker with CMake.                                                                         \n"
 "  result['compilation_time'] = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f      \n"
+"  result['link_time'] = stdout.match(/\\[link time: (.+)\\]/i).captures[0].to_f                    \n"
 "                                                                                                   \n"
 "  # Size of the generated executable in KB                                                         \n"
 "  result['executable_size'] = File.size(exe_file).to_f / 1000                                      \n"
@@ -377,6 +383,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "        build(target)                                                                              \n"
 "      end                                                                                          \n"
 "      datum['compilation_time'] = median(results.map { |r| r['compilation_time'] })                \n"
+"      datum['link_time'] = median(results.map { |r| r['link_time'] })                              \n"
 "      datum['executable_size'] = results.map { |r| r['executable_size'] }.first                    \n"
 "      datum['execution_time'] = median(results.map { |r| r['execution_time'] })                    \n"
 "      return datum                                                                                 \n"
@@ -385,6 +392,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "    base = compile[code]                                                                           \n"
 "    datum = compile[%{#define METABENCH\\n} + code]                                                \n"
 "    datum['compilation_time'] = datum['compilation_time'] - base['compilation_time']               \n"
+"    datum['link_time'] = datum['link_time'] - base['link_time']                                    \n"
 "    data << datum                                                                                  \n"
 "  end                                                                                              \n"
 "  return data                                                                                      \n"
@@ -398,20 +406,37 @@ file(WRITE ${METABENCH_RB_PATH}
 ################################################################################
 
 ################################################################################
-# measure.rb
+# compile.rb
 #
 # This script is used to launch the compiler and measure the compilation time.
 ################################################################################
-set(MEASURE_RB_PATH ${METABENCH_DIR}/measure.rb)
-file(WRITE ${MEASURE_RB_PATH}
+set(COMPILE_RB_PATH ${METABENCH_DIR}/compile.rb)
+file(WRITE ${COMPILE_RB_PATH}
 "require 'benchmark'                                                               \n"
 "command = ARGV.map { |arg| arg.match(/\\s/) ? '\"' + arg + '\"' : arg }.join(' ') \n"
 "time = Benchmark.realtime { `#{command}` }                                        \n"
-"puts %{[command line: #{command}]}                                                \n"
+"puts %{[compilation command: #{command}]}                                         \n"
 "puts %{[compilation time: #{time}]}                                               \n"
 )
 ################################################################################
-# end measure.rb
+# end compile.rb
+################################################################################
+
+################################################################################
+# link.rb
+#
+# This script is used to launch the link and measure the link time.
+################################################################################
+set(LINK_RB_PATH ${METABENCH_DIR}/link.rb)
+file(WRITE ${LINK_RB_PATH}
+"require 'benchmark'                                                               \n"
+"command = ARGV.map { |arg| arg.match(/\\s/) ? '\"' + arg + '\"' : arg }.join(' ') \n"
+"time = Benchmark.realtime { `#{command}` }                                        \n"
+"puts %{[link command: #{command}]}                                                \n"
+"puts %{[link time: #{time}]}                                                      \n"
+)
+################################################################################
+# end link.rb
 ################################################################################
 
 ################################################################################
@@ -490,6 +515,14 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "             .y(function(datum){ return datum.execution_time; })                                         \n"
 "             .yAxis.options({                                                                            \n"
 "               axisLabel: customSettings.YLABEL || 'Execution time',                                     \n"
+"               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
+"      else if (aspect == 'LINK_TIME') {                                                                  \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.link_time; })                                              \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Link time',                                          \n"
 "               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
 "             });                                                                                         \n"
 "      }                                                                                                  \n"
