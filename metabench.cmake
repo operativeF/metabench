@@ -414,11 +414,15 @@ file(WRITE ${METABENCH_RB_PATH}
 ################################################################################
 set(COMPILE_RB_PATH ${METABENCH_DIR}/compile.rb)
 file(WRITE ${COMPILE_RB_PATH}
-"require 'benchmark'                                                               \n"
-"command = ARGV.map { |arg| arg.match(/\\s/) ? '\"' + arg + '\"' : arg }.join(' ') \n"
-"time = Benchmark.realtime { `#{command}` }                                        \n"
-"puts %{[compilation command: #{command}]}                                         \n"
-"puts %{[compilation time: #{time}]}                                               \n"
+"require 'benchmark'                                                            \n"
+"require 'open3'                                                                \n"
+"stdout = stderr = status = nil                                                 \n"
+"time = Benchmark.realtime { stdout, stderr, status = Open3.capture3(*ARGV) }   \n"
+"$stdout.puts(stdout)                                                           \n"
+"$stdout.puts(%{[compilation command: #{ARGV.join(' ')}]})                      \n"
+"$stdout.puts(%{[compilation time: #{time}]})                                   \n"
+"$stderr.puts(stderr)                                                           \n"
+"exit(status.success?)                                                          \n"
 )
 ################################################################################
 # end compile.rb
@@ -431,11 +435,15 @@ file(WRITE ${COMPILE_RB_PATH}
 ################################################################################
 set(LINK_RB_PATH ${METABENCH_DIR}/link.rb)
 file(WRITE ${LINK_RB_PATH}
-"require 'benchmark'                                                               \n"
-"command = ARGV.map { |arg| arg.match(/\\s/) ? '\"' + arg + '\"' : arg }.join(' ') \n"
-"time = Benchmark.realtime { `#{command}` }                                        \n"
-"puts %{[link command: #{command}]}                                                \n"
-"puts %{[link time: #{time}]}                                                      \n"
+"require 'benchmark'                                                            \n"
+"require 'open3'                                                                \n"
+"stdout = stderr = status = nil                                                 \n"
+"time = Benchmark.realtime { stdout, stderr, status = Open3.capture3(*ARGV) }   \n"
+"$stdout.puts(stdout)                                                           \n"
+"$stdout.puts(%{[link command: #{ARGV.join(' ')}]})                             \n"
+"$stdout.puts(%{[link time: #{time}]})                                          \n"
+"$stderr.puts(stderr)                                                           \n"
+"exit(status.success?)                                                          \n"
 )
 ################################################################################
 # end link.rb
