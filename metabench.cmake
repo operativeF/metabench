@@ -74,11 +74,11 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #       dataset in more complex ways.
 #
 #   [MEDIAN_OF n]:
-#       The number of times to compile the ERB template when gathering timing
-#       information. The compilation is done `n` times, and the median of these
-#       `n` values is retained. This can help reduce variability at the cost
-#       of longer benchmarking times. By default, the compilation is done only
-#       once. `n` must be a positive (non-zero) integer.
+#       The number of times to compile and run the ERB template when gathering
+#       timing information. The timings are taken `n` times, and the median of
+#       these `n` values is retained. This can help reduce variability at the
+#       cost of longer benchmarking times. By default, the timings are taken
+#       only once. `n` must be a positive (non-zero) integer.
 #
 #   [OUTPUT path/to/file]:
 #       The path of the resulting JSON file containing the benchmark data. If
@@ -168,7 +168,7 @@ function(metabench_add_dataset target path_to_template range)
 endfunction()
 
 # metabench_add_chart(target [ALL]
-#                     [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]
+#                     [ASPECT COMPILATION_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]
 #                     [TITLE title]
 #                     [SUBTITLE subtitle]
 #                     [XLABEL label] [YLABEL label]
@@ -192,7 +192,7 @@ endfunction()
 #       This is the same behaviour as `add_custom_target` used with the `ALL`
 #       keyword.
 #
-#   [ASPECT COMPILATION_TIME|EXECUTABLE_SIZE]:
+#   [ASPECT COMPILATION_TIME|EXECUTION_TIME|EXECUTABLE_SIZE]:
 #       The aspect of the datasets to display on the chart. When this argument
 #       is provided, the chart will adopt reasonable default values for the
 #       axis labels and other similar settings. However, any setting set
@@ -292,6 +292,7 @@ endfunction()
 ################################################################################
 set(METABENCH_RB_PATH ${METABENCH_DIR}/metabench.rb)
 file(WRITE ${METABENCH_RB_PATH}
+"require 'benchmark'                                                                                \n"
 "require 'erb'                                                                                      \n"
 "require 'fileutils'                                                                                \n"
 "require 'open3'                                                                                    \n"
@@ -307,6 +308,13 @@ file(WRITE ${METABENCH_RB_PATH}
 "  end                                                                                              \n"
 "end                                                                                                \n"
 "                                                                                                   \n"
+"def report_error(command_line, stdout, stderr, code)                                               \n"
+"  raise [%{\\ncommand line: #{command_line}},                                                      \n"
+"         %{stdout\\n#{'-'*80}\\n#{stdout}},                                                        \n"
+"         %{stderr\\n#{'-'*80}\\n#{stderr}},                                                        \n"
+"         %{code\\n#{'-'*80}\\n#{code}}].join(%{\\n\\n})                                            \n"
+"end                                                                                                \n"
+"                                                                                                   \n"
 "# Build the specified CMake target and return the benchmark information that                       \n"
 "# was gathered.                                                                                    \n"
 "def build(target)                                                                                  \n"
@@ -316,33 +324,31 @@ file(WRITE ${METABENCH_RB_PATH}
 "                                                                                                   \n"
 "  stdout, stderr, status = Open3.capture3(*command)                                                \n"
 "  command_line = stdout.match(/\\[command line: (.+)\\]/i)                                         \n"
+"  command_line = command_line ? command_line.captures[0] : '(unavailable)'                         \n"
 "                                                                                                   \n"
 "  if not status.success?                                                                           \n"
-"    raise <<-EOS                                                                                   \n"
-"compilation error: #{command_line && command_line.captures[0]}                                     \n"
-"                                                                                                   \n"
-"stdout                                                                                             \n"
-"#{'-'*80}                                                                                          \n"
-"#{stdout}                                                                                          \n"
-"                                                                                                   \n"
-"stderr                                                                                             \n"
-"#{'-'*80}                                                                                          \n"
-"#{stderr}                                                                                          \n"
-"                                                                                                   \n"
-"code                                                                                               \n"
-"#{'-'*80}                                                                                          \n"
-"#{IO.read(cpp_file)}                                                                               \n"
-"EOS\n"
+"    report_error(command_line, stdout, stderr, IO.read(cpp_file))                                  \n"
 "  end                                                                                              \n"
+"                                                                                                   \n"
+"  result = {}                                                                                      \n"
 "                                                                                                   \n"
 "  # Compilation time in seconds. It is output to stdout because we use the                         \n"
 "  # `measure.rb` script below to launch the compiler with CMake.                                   \n"
-"  time = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f                            \n"
+"  result['compilation_time'] = stdout.match(/\\[compilation time: (.+)\\]/i).captures[0].to_f      \n"
 "                                                                                                   \n"
 "  # Size of the generated executable in KB                                                         \n"
-"  size = File.size(exe_file).to_f / 1000                                                           \n"
+"  result['executable_size'] = File.size(exe_file).to_f / 1000                                      \n"
 "                                                                                                   \n"
-"  return time, size                                                                                \n"
+"  # Execution time of the generated executable in seconds                                          \n"
+"  result['execution_time'] = Benchmark.realtime {                                                  \n"
+"    stdout, stderr, status = Open3.capture3('\"' + exe_file + '\"')                                \n"
+"  }                                                                                                \n"
+"                                                                                                   \n"
+"  if not status.success?                                                                           \n"
+"    report_error(exe_file, stdout, stderr, IO.read(cpp_file))                                      \n"
+"  end                                                                                              \n"
+"                                                                                                   \n"
+"  return result                                                                                    \n"
 "end                                                                                                \n"
 "                                                                                                   \n"
 "# Render the ERB template and return the generated code.                                           \n"
@@ -370,14 +376,15 @@ file(WRITE ${METABENCH_RB_PATH}
 "        FileUtils.touch(cpp_file, mtime: Time.now+1)                                               \n"
 "        build(target)                                                                              \n"
 "      end                                                                                          \n"
-"      datum['time'] = median(results.map { |time, size| time })                                    \n"
-"      datum['size'] = results.map { |time, size| size }.first                                      \n"
+"      datum['compilation_time'] = median(results.map { |r| r['compilation_time'] })                \n"
+"      datum['executable_size'] = results.map { |r| r['executable_size'] }.first                    \n"
+"      datum['execution_time'] = median(results.map { |r| r['execution_time'] })                    \n"
 "      return datum                                                                                 \n"
 "    }                                                                                              \n"
 "    compile[code] if index == 0 # Fill the cache on the first iteration                            \n"
 "    base = compile[code]                                                                           \n"
 "    datum = compile[%{#define METABENCH\\n} + code]                                                \n"
-"    datum['time'] = datum['time'] - base['time']                                                   \n"
+"    datum['compilation_time'] = datum['compilation_time'] - base['compilation_time']               \n"
 "    data << datum                                                                                  \n"
 "  end                                                                                              \n"
 "  return data                                                                                      \n"
@@ -464,7 +471,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "      });                                                                                                \n"
 "      if (aspect == 'COMPILATION_TIME') {                                                                \n"
 "        chart.x(function(datum){ return datum.n; })                                                      \n"
-"             .y(function(datum){ return datum.time; })                                                   \n"
+"             .y(function(datum){ return datum.compilation_time; })                                       \n"
 "             .yAxis.options({                                                                            \n"
 "               axisLabel: customSettings.YLABEL || 'Time',                                               \n"
 "               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
@@ -472,10 +479,18 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "      }                                                                                                  \n"
 "      else if (aspect == 'EXECUTABLE_SIZE') {                                                            \n"
 "        chart.x(function(datum){ return datum.n; })                                                      \n"
-"             .y(function(datum){ return datum.size; })                                                   \n"
+"             .y(function(datum){ return datum.executable_size; })                                        \n"
 "             .yAxis.options({                                                                            \n"
 "               axisLabel: customSettings.YLABEL || 'Executable size',                                    \n"
 "               tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                         \n"
+"             });                                                                                         \n"
+"      }                                                                                                  \n"
+"      else if (aspect == 'EXECUTION_TIME') {                                                             \n"
+"        chart.x(function(datum){ return datum.n; })                                                      \n"
+"             .y(function(datum){ return datum.execution_time; })                                         \n"
+"             .yAxis.options({                                                                            \n"
+"               axisLabel: customSettings.YLABEL || 'Execution time',                                     \n"
+"               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
 "             });                                                                                         \n"
 "      }                                                                                                  \n"
 "                                                                                                         \n"
