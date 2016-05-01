@@ -341,7 +341,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "                                                                                                   \n"
 "  # Execution time of the generated executable in seconds                                          \n"
 "  result['execution_time'] = Benchmark.realtime {                                                  \n"
-"    stdout, stderr, status = Open3.capture3(exe_file)                                              \n"
+"    stdout, stderr, status = Open3.capture3('\"' + exe_file + '\"')                                \n"
 "  }                                                                                                \n"
 "                                                                                                   \n"
 "  if not status.success?                                                                           \n"
