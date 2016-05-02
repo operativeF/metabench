@@ -1,5 +1,5 @@
 ---
-timestamp: Sun, 1 May 2016
+timestamp: Mon, 2 May 2016
 compiler: g++-4.9
 ---
 <!DOCTYPE html>                                                                                          
@@ -45,7 +45,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
     <script type='text/javascript'>                                                                      
       var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"fusion.list","values":[{"n":0,"time":0.03585153399999996,"size":36.582},{"n":10,"time":0.19390326800000002,"size":212.09},{"n":20,"time":0.37916133499999993,"size":487.904},{"n":30,"time":0.55651574,"size":866.744},{"n":40,"time":0.7732558960000001,"size":1348.623},{"n":50,"time":1.012588526,"size":1925.316}]},{"key":"fusion.vector","values":[{"n":0,"time":0.024452476999999972,"size":29.214},{"n":10,"time":0.19159171899999994,"size":264.427},{"n":20,"time":0.382926981,"size":702.924},{"n":30,"time":0.626020729,"size":1380.961},{"n":40,"time":0.934827672,"size":2315.04},{"n":50,"time":1.29621303,"size":3555.841}]}];                                                                    
+      var data = [{"key":"fusion.list","values":[{"n":0,"compilation_time":-0.06303010200000003,"link_time":0.0009909290000000015,"executable_size":36.582,"execution_time":0.001657279},{"n":10,"compilation_time":0.11161542199999996,"link_time":0.006047139,"executable_size":212.09,"execution_time":0.001733252},{"n":20,"compilation_time":0.38080037199999994,"link_time":0.012864904,"executable_size":487.904,"execution_time":0.00169104},{"n":30,"compilation_time":0.612872003,"link_time":0.020633844000000002,"executable_size":866.744,"execution_time":0.001708213},{"n":40,"compilation_time":0.8247173599999998,"link_time":0.024533489000000002,"executable_size":1348.623,"execution_time":0.001792088},{"n":50,"compilation_time":0.953249544,"link_time":0.03330823,"executable_size":1925.316,"execution_time":0.001829189}]},{"key":"fusion.vector","values":[{"n":0,"compilation_time":0.011823827000000064,"link_time":0.0005374559999999987,"executable_size":29.214,"execution_time":0.001636365},{"n":10,"compilation_time":0.160561524,"link_time":0.003947595000000002,"executable_size":264.427,"execution_time":0.001604231},{"n":20,"compilation_time":0.3886380719999999,"link_time":0.012159097,"executable_size":702.924,"execution_time":0.001637018},{"n":30,"compilation_time":0.611936839,"link_time":0.021763444000000003,"executable_size":1380.961,"execution_time":0.001937445},{"n":40,"compilation_time":0.9520145270000001,"link_time":0.037833249,"executable_size":2315.04,"execution_time":0.00219775},{"n":50,"compilation_time":1.331009607,"link_time":0.051626426,"executable_size":3555.841,"execution_time":0.00195973}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
@@ -60,7 +60,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
       });                                                                                                
       if (aspect == 'COMPILATION_TIME') {                                                                
         chart.x(function(datum){ return datum.n; })                                                      
-             .y(function(datum){ return datum.time; })                                                   
+             .y(function(datum){ return datum.compilation_time; })                                       
              .yAxis.options({                                                                            
                axisLabel: customSettings.YLABEL || 'Time',                                               
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
@@ -68,10 +68,26 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
       }                                                                                                  
       else if (aspect == 'EXECUTABLE_SIZE') {                                                            
         chart.x(function(datum){ return datum.n; })                                                      
-             .y(function(datum){ return datum.size; })                                                   
+             .y(function(datum){ return datum.executable_size; })                                        
              .yAxis.options({                                                                            
                axisLabel: customSettings.YLABEL || 'Executable size',                                    
                tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                         
+             });                                                                                         
+      }                                                                                                  
+      else if (aspect == 'EXECUTION_TIME') {                                                             
+        chart.x(function(datum){ return datum.n; })                                                      
+             .y(function(datum){ return datum.execution_time; })                                         
+             .yAxis.options({                                                                            
+               axisLabel: customSettings.YLABEL || 'Execution time',                                     
+               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
+             });                                                                                         
+      }                                                                                                  
+      else if (aspect == 'LINK_TIME') {                                                                  
+        chart.x(function(datum){ return datum.n; })                                                      
+             .y(function(datum){ return datum.link_time; })                                              
+             .yAxis.options({                                                                            
+               axisLabel: customSettings.YLABEL || 'Link time',                                          
+               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
                                                                                                          
