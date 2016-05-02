@@ -1,5 +1,5 @@
 ---
-timestamp: Sun, 1 May 2016
+timestamp: Mon, 2 May 2016
 compiler: clang++-3.8
 ---
 <!DOCTYPE html>                                                                                          
@@ -45,7 +45,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
     <script type='text/javascript'>                                                                      
       var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"hana.tuple","values":[{"n":0,"time":0.012474482000000009,"size":8.732},{"n":5,"time":0.176615046,"size":8.732},{"n":10,"time":0.689299812,"size":8.732},{"n":15,"time":1.705490102,"size":8.732},{"n":20,"time":3.086590284,"size":8.732},{"n":25,"time":4.490453777,"size":8.732},{"n":30,"time":6.590594597,"size":8.732}]}];                                                                    
+      var data = [{"key":"hana.tuple","values":[{"n":0,"compilation_time":-0.0006724990000000208,"link_time":-0.0015783850000000016,"executable_size":8.732,"execution_time":0.004021536},{"n":5,"compilation_time":0.295335401,"link_time":-0.009875619000000002,"executable_size":8.732,"execution_time":0.004207884},{"n":10,"compilation_time":0.9330238099999999,"link_time":0.0015715189999999934,"executable_size":8.732,"execution_time":0.004492671},{"n":15,"compilation_time":2.421141344,"link_time":-0.015281631000000004,"executable_size":8.732,"execution_time":0.004331837},{"n":20,"compilation_time":4.039121601000001,"link_time":0.030708841,"executable_size":8.732,"execution_time":0.004614193},{"n":25,"compilation_time":6.8870471669999995,"link_time":0.004780375000000003,"executable_size":8.732,"execution_time":0.00450308},{"n":30,"compilation_time":9.532987491,"link_time":0.017610857000000008,"executable_size":8.732,"execution_time":0.004597499}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
@@ -60,7 +60,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
       });                                                                                                
       if (aspect == 'COMPILATION_TIME') {                                                                
         chart.x(function(datum){ return datum.n; })                                                      
-             .y(function(datum){ return datum.time; })                                                   
+             .y(function(datum){ return datum.compilation_time; })                                       
              .yAxis.options({                                                                            
                axisLabel: customSettings.YLABEL || 'Time',                                               
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
@@ -68,10 +68,26 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
       }                                                                                                  
       else if (aspect == 'EXECUTABLE_SIZE') {                                                            
         chart.x(function(datum){ return datum.n; })                                                      
-             .y(function(datum){ return datum.size; })                                                   
+             .y(function(datum){ return datum.executable_size; })                                        
              .yAxis.options({                                                                            
                axisLabel: customSettings.YLABEL || 'Executable size',                                    
                tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                         
+             });                                                                                         
+      }                                                                                                  
+      else if (aspect == 'EXECUTION_TIME') {                                                             
+        chart.x(function(datum){ return datum.n; })                                                      
+             .y(function(datum){ return datum.execution_time; })                                         
+             .yAxis.options({                                                                            
+               axisLabel: customSettings.YLABEL || 'Execution time',                                     
+               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
+             });                                                                                         
+      }                                                                                                  
+      else if (aspect == 'LINK_TIME') {                                                                  
+        chart.x(function(datum){ return datum.n; })                                                      
+             .y(function(datum){ return datum.link_time; })                                              
+             .yAxis.options({                                                                            
+               axisLabel: customSettings.YLABEL || 'Link time',                                          
+               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
                                                                                                          
