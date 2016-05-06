@@ -508,7 +508,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "        chart.x(function(datum){ return datum.n; })                                                      \n"
 "             .y(function(datum){ return datum.compilation_time; })                                       \n"
 "             .yAxis.options({                                                                            \n"
-"               axisLabel: customSettings.YLABEL || 'Time',                                               \n"
+"               axisLabel: customSettings.YLABEL || 'Compilation time',                                   \n"
 "               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
 "             });                                                                                         \n"
 "      }                                                                                                  \n"
