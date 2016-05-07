@@ -1,5 +1,5 @@
 ---
-timestamp: Fri, 6 May 2016
+timestamp: Sat, 7 May 2016
 compiler: clang++-3.7
 ---
 <!DOCTYPE html>                                                                                          
@@ -45,7 +45,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
     <script type='text/javascript'>                                                                      
       var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"hana.tuple","values":[{"n":0,"compilation_time":0.004617559000000021,"link_time":0.0006813160000000013,"executable_size":8.764,"execution_time":0.002752283},{"n":5,"compilation_time":0.17150915600000002,"link_time":0.0005622789999999989,"executable_size":8.764,"execution_time":0.002822727},{"n":10,"compilation_time":0.6695513359999999,"link_time":0.0020344019999999977,"executable_size":8.764,"execution_time":0.002780438},{"n":15,"compilation_time":1.497380418,"link_time":0.0005316720000000039,"executable_size":8.764,"execution_time":0.002765376},{"n":20,"compilation_time":2.665213097,"link_time":-0.0011191720000000016,"executable_size":8.764,"execution_time":0.002789764},{"n":25,"compilation_time":4.2584068760000005,"link_time":0.0023943670000000014,"executable_size":8.764,"execution_time":0.00289972},{"n":30,"compilation_time":6.3218401339999994,"link_time":0.001161479,"executable_size":8.764,"execution_time":0.00296694}]}];                                                                    
+      var data = [{"key":"hana.tuple","values":[{"n":0,"compilation_time":0.00442361799999999,"link_time":-0.0011287279999999955,"executable_size":8.764,"execution_time":0.002717967},{"n":5,"compilation_time":0.171035529,"link_time":-0.0004034600000000013,"executable_size":8.764,"execution_time":0.002770317},{"n":10,"compilation_time":0.67411778,"link_time":0.0006355600000000003,"executable_size":8.764,"execution_time":0.002773824},{"n":15,"compilation_time":1.4934513950000001,"link_time":0.00013896799999999626,"executable_size":8.764,"execution_time":0.002759406},{"n":20,"compilation_time":2.693922689,"link_time":0.000697587999999999,"executable_size":8.764,"execution_time":0.002743942},{"n":25,"compilation_time":4.227163356,"link_time":0.0005900159999999988,"executable_size":8.764,"execution_time":0.002813373},{"n":30,"compilation_time":6.2691263269999995,"link_time":0.00012974999999999792,"executable_size":8.764,"execution_time":0.002846668}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
@@ -62,7 +62,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
         chart.x(function(datum){ return datum.n; })                                                      
              .y(function(datum){ return datum.compilation_time; })                                       
              .yAxis.options({                                                                            
-               axisLabel: customSettings.YLABEL || 'Time',                                               
+               axisLabel: customSettings.YLABEL || 'Compilation time',                                   
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
