@@ -1,5 +1,5 @@
 ---
-timestamp: Fri, 6 May 2016
+timestamp: Sat, 7 May 2016
 compiler: g++-4.8
 ---
 <!DOCTYPE html>                                                                                          
@@ -45,7 +45,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
     <script type='text/javascript'>                                                                      
       var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"fusion.vector","values":[{"n":0,"compilation_time":0.008683847000000022,"link_time":3.015199999999857e-05,"executable_size":21.572,"execution_time":0.001583041},{"n":10,"compilation_time":0.13400445800000005,"link_time":0.015001982,"executable_size":155.238,"execution_time":0.002272434},{"n":20,"compilation_time":0.24302783700000008,"link_time":0.019325420999999995,"executable_size":377.974,"execution_time":0.00227746},{"n":30,"compilation_time":0.39741446800000013,"link_time":0.024636468,"executable_size":686.006,"execution_time":0.00216245},{"n":40,"compilation_time":0.540077612,"link_time":0.029438013,"executable_size":1087.144,"execution_time":0.00223433},{"n":50,"compilation_time":0.6984130869999999,"link_time":0.037741919,"executable_size":1573.19,"execution_time":0.002221915}]}];                                                                    
+      var data = [{"key":"fusion.vector","values":[{"n":0,"compilation_time":0.015632314999999952,"link_time":0.0005077609999999989,"executable_size":21.572,"execution_time":0.001481671},{"n":10,"compilation_time":0.15454884000000002,"link_time":0.01699373,"executable_size":155.238,"execution_time":0.002228497},{"n":20,"compilation_time":0.10867430700000003,"link_time":0.018721641999999997,"executable_size":377.974,"execution_time":0.002255122},{"n":30,"compilation_time":0.619199721,"link_time":0.026701172999999998,"executable_size":686.006,"execution_time":0.002204937},{"n":40,"compilation_time":0.45617536000000003,"link_time":0.027160294,"executable_size":1087.144,"execution_time":0.002159033},{"n":50,"compilation_time":0.6821506239999999,"link_time":0.035264250999999996,"executable_size":1573.19,"execution_time":0.002145976}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
@@ -62,7 +62,7 @@ return y},set:function(a){y=a}},clipEdge:{get:function(){return A},set:function(
         chart.x(function(datum){ return datum.n; })                                                      
              .y(function(datum){ return datum.compilation_time; })                                       
              .yAxis.options({                                                                            
-               axisLabel: customSettings.YLABEL || 'Time',                                               
+               axisLabel: customSettings.YLABEL || 'Compilation time',                                   
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
