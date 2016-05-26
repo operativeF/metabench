@@ -18,8 +18,10 @@ the `metabench.cmake` module. The benchmarks measure the compile-time performanc
 of various algorithms provided by different metaprogramming libraries, and the
 results are gathered into pretty charts at http://ldionne.github.io/metabench.
 
-### Dependencies
+### Requirements
 Metabench requires [CMake][] 3.1 or higher and [Ruby][] 2.1 or higher.
+Metabench is known to work with CMake's _Unix Makefiles_ and _Ninja_
+generators.
 
 ### Usage
 To use Metabench, make sure you have the dependencies listed above and simply
