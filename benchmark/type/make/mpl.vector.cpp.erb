@@ -1,0 +1,21 @@
+// Copyright Louis Dionne 2013-2016
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+
+<% if n > 20 %>
+    #define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+    #define BOOST_MPL_LIMIT_VECTOR_SIZE <%= ((n + 9) / 10) * 10 %>
+<% end %>
+
+#include <boost/mpl/vector.hpp>
+namespace mpl = boost::mpl;
+
+
+template <int i>
+struct x { };
+
+#if defined(METABENCH)
+using xs = mpl::vector<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+#endif
+
+int main() { }
