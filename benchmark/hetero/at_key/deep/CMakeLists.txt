@@ -3,7 +3,7 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(datasets)
-add_dataset(datasets dataset.hetero.at_key-deep.fusion.map fusion.map.cpp.erb "(0..150).step(10).to_a" ENV "{range: (0..150).to_a}")
+add_dataset(datasets dataset.hetero.at_key-deep.fusion.map fusion.map.cpp.erb "(0..100).step(10).to_a" ENV "{range: (0..150).to_a}")
 add_dataset(datasets dataset.hetero.at_key-deep.hana.map   hana.map.cpp.erb   "(0..150).step(10).to_a" ENV "{range: (0..150).to_a}")
 add_dataset(datasets dataset.hetero.at_key-deep.hana.tuple hana.tuple.cpp.erb "(0..150).step(10).to_a" ENV "{range: (0..150).to_a}")
 
