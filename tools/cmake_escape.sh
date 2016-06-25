@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 #
 # Copyright Bruno Dutra 2016
 # Distributed under the Boost Software License, Version 1.0.
@@ -15,7 +15,6 @@ curl -ILfSs $1 > /dev/null || exit 2
 
 curl -Ls $1 \
     | perl \
-        -pe 's/(.{79})/\1\n/g;' \
         -pe 's/\\/\\\\/g;' \
         -pe 's/"/\\"/g;' \
         -pe 's/@/\\@/g;' \
