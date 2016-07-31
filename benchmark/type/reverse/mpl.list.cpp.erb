@@ -11,13 +11,14 @@
 #include <boost/mpl/reverse.hpp>
 namespace mpl = boost::mpl;
 
+template<int> struct x;
 
-template <int> struct x;
-
-using xs = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using list = mpl::list<
+    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+>;
 
 #if defined(METABENCH)
-using result = mpl::reverse<xs>::type;
+using result = mpl::reverse<list>::type;
 #endif
 
 int main() { }

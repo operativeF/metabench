@@ -5,23 +5,21 @@
 #include <brigand/sequences/list.hpp>
 #include <brigand/algorithms/transform.hpp>
 
-struct f
-{
+struct f {
     template<typename X>
-    struct apply
-    {
+    struct apply {
         using type = X;
     };
 };
 
 template<int> struct x;
 
-using xs = brigand::list<
+using list = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = brigand::transform<xs, f>;
+using result = brigand::transform<list, f>;
 #endif
 
 int main() { }

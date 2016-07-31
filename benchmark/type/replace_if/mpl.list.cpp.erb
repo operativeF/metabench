@@ -9,27 +9,21 @@
 
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/replace_if.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/mpl/int.hpp>
 namespace mpl = boost::mpl;
 
-
-template <int> struct x;
-
-struct is_odd
-{
-    template<typename>
-    struct apply;
-
-    template<int i>
-    struct apply<x<i>>
-        : mpl::int_<i%2>
-    {};
+struct is_even {
+    template<typename N>
+    using apply = mpl::bool_<N::type::value % 2 == 0>;
 };
 
-using xs = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using list = mpl::list<
+    <%= (1..n).map { |i| "mpl::int_<#{i}>" }.join(', ') %>
+>;
 
 #if defined(METABENCH)
-using result = mpl::replace_if<xs, is_odd, void>::type;
+using result = mpl::replace_if<list, is_even, void>::type;
 #endif
 
 int main() { }

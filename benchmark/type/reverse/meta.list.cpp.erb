@@ -4,14 +4,14 @@
 
 #include <meta/meta.hpp>
 
-template <int> struct x;
+template<int> struct x;
 
-using xs = meta::list<
+using list = meta::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = meta::reverse<xs>;
+using result = meta::reverse<list>;
 #endif
 
 int main() { }

@@ -4,8 +4,7 @@
 
 #include <meta/meta.hpp>
 
-struct is_last
-{
+struct is_last {
     template<typename N>
     using invoke = meta::bool_<N::type::value == <%= n %>>;
 };

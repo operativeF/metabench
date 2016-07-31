@@ -7,8 +7,7 @@
 #include <brigand/types/bool.hpp>
 #include <brigand/types/integer.hpp>
 
-struct is_last
-{
+struct is_last {
     template<typename N>
     using apply = brigand::bool_<N::type::value == <%= n %>>;
 };

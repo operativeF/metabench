@@ -8,20 +8,24 @@
 <% end %>
 
 #include <boost/mpl/list.hpp>
-#include <boost/mpl/quote.hpp>
 #include <boost/mpl/transform.hpp>
 namespace mpl = boost::mpl;
 
+struct f {
+    template<typename X>
+    struct apply {
+        using type = X;
+    };
+};
 
-template <typename X>
-struct f { typedef X type; };
+template<int> struct x;
 
-template <int> struct x;
-
-using xs = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using list = mpl::list<
+    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+>;
 
 #if defined(METABENCH)
-using result = mpl::transform<xs, mpl::quote1<f>>::type;
+using result = mpl::transform<list, f>::type;
 #endif
 
 int main() { }

@@ -4,6 +4,7 @@
 
 set(datasets)
 add_dataset(datasets dataset.type.make.meta.list  meta.list.cpp.erb  "(0..50).step(10).to_a + (100..500).step(100).to_a")
+add_dataset(datasets dataset.type.make.metal.list metal.list.cpp.erb "(0..50).step(10).to_a + (100..500).step(100).to_a")
 add_dataset(datasets dataset.type.make.mpl.list   mpl.list.cpp.erb   "(0..50).step(10).to_a")
 add_dataset(datasets dataset.type.make.mpl.vector mpl.vector.cpp.erb "(0..50).step(10).to_a")
 

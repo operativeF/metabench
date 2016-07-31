@@ -4,25 +4,17 @@
 
 #include <meta/meta.hpp>
 
-template <int> struct x;
-
-struct is_odd
-{
-    template<typename>
-    struct invoke;
-
-    template<int i>
-    struct invoke<x<i>>
-        : meta::int_<i%2>
-    {};
+struct is_even {
+    template<typename N>
+    using invoke = meta::bool_<N::type::value % 2 == 0>;
 };
 
-using xs = meta::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+using list = meta::list<
+    <%= (1..n).map { |i| "meta::int_<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = meta::replace_if<xs, is_odd, void>;
+using result = meta::replace_if<list, is_even, void>;
 #endif
 
 int main() { }

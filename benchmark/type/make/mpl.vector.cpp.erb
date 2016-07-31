@@ -10,12 +10,10 @@
 #include <boost/mpl/vector.hpp>
 namespace mpl = boost::mpl;
 
-
-template <int i>
-struct x { };
+template<int> struct x;
 
 #if defined(METABENCH)
-using xs = mpl::vector<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using vector = mpl::vector<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
 #endif
 
 int main() { }

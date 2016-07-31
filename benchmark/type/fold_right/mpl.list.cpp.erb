@@ -11,16 +11,16 @@
 #include <boost/mpl/reverse_fold.hpp>
 namespace mpl = boost::mpl;
 
-
 struct f {
-    template <typename State, typename X>
-    struct apply { using type = X; };
+    template<typename, typename X>
+    struct apply {
+        using type = X;
+    };
 };
 
-struct state { };
+struct state;
 
-template <int i>
-struct x { };
+template<int> struct x;
 
 using list = mpl::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>

@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 #include <boost/hana/ext/std/integer_sequence.hpp>
+#include <boost/hana/integral_constant.hpp>
 #include <boost/hana/find_if.hpp>
 
 #include <type_traits>
@@ -11,9 +12,8 @@ namespace hana = boost::hana;
 
 
 struct is_last {
-    template <typename N>
-    constexpr std::integral_constant<bool, N::value == <%= n %>>
-    operator()(N const&) const;
+    template<typename N>
+    constexpr hana::bool_<N::value == <%= n %>> operator()(N const&) const;
 };
 
 int main() {

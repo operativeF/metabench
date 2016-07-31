@@ -7,23 +7,23 @@
     #define BOOST_MPL_LIMIT_VECTOR_SIZE <%= ((n + 9) / 10) * 10 %>
 <% end %>
 
-#include <boost/mpl/integral_c.hpp>
-#include <boost/mpl/partition.hpp>
 #include <boost/mpl/vector.hpp>
+#include <boost/mpl/partition.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/int.hpp>
 namespace mpl = boost::mpl;
 
-
 struct is_even {
-    template <typename N>
-    using apply = mpl::integral_c<bool, N::type::value % 2 == 0>;
+    template<typename N>
+    using apply = mpl::bool_<N::type::value % 2 == 0>;
 };
 
-using xs = mpl::vector<
-    <%= (1..n).map { |i| "mpl::integral_c<int, #{i}>" }.join(', ') %>
+using vector = mpl::vector<
+    <%= (1..n).map { |i| "mpl::int_<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = mpl::partition<xs, is_even>::type;
+using result = mpl::partition<vector, is_even>::type;
 #endif
 
 int main() { }

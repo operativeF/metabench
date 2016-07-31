@@ -4,9 +4,7 @@
 
 #include <meta/meta.hpp>
 
-
-template <int>
-struct x;
+template<int> struct x;
 
 using list = meta::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>

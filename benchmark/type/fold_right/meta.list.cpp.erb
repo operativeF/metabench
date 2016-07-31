@@ -4,16 +4,14 @@
 
 #include <meta/meta.hpp>
 
-struct f
-{
+struct f {
     template<typename, typename X>
     using invoke = X;
 };
 
-struct state { };
+struct state;
 
-template<int i>
-struct x { };
+template<int> struct x;
 
 using list = meta::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>

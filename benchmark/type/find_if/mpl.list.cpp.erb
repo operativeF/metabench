@@ -7,22 +7,19 @@
     #define BOOST_MPL_LIMIT_LIST_SIZE <%= ((n + 9) / 10) * 10 %>
 <% end %>
 
-#include <boost/mpl/find_if.hpp>
 #include <boost/mpl/list.hpp>
-
-#include <type_traits>
+#include <boost/mpl/find_if.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/int.hpp>
 namespace mpl = boost::mpl;
 
-
 struct is_last {
-    template <typename N>
-    struct apply
-        : std::integral_constant<bool, N::type::value == <%= n %>>
-    { };
+    template<typename N>
+    using apply = mpl::bool_<N::type::value == <%= n %>>;
 };
 
 using list = mpl::list<
-    <%= (1..n).map { |i| "std::integral_constant<int, #{i}>" }.join(', ') %>
+    <%= (1..n).map { |i| "mpl::int_<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)

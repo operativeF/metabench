@@ -4,27 +4,20 @@
 
 #include <brigand/sequences/list.hpp>
 #include <brigand/algorithms/replace.hpp>
-#include <type_traits>
+#include <brigand/types/bool.hpp>
+#include <brigand/types/integer.hpp>
 
-template <int> struct x;
-
-struct is_odd
-{
-    template<typename>
-    struct apply;
-
-    template<int i>
-    struct apply<x<i>>
-        : std::integral_constant<int, i%2>
-    {};
+struct is_even {
+    template<typename N>
+    using apply = brigand::bool_<N::type::value % 2 == 0>;
 };
 
-using xs = brigand::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+using list = brigand::list<
+    <%= (1..n).map { |i| "brigand::int32_t<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = brigand::replace_if<xs, is_odd, void>;
+using result = brigand::replace_if<list, is_even, void>;
 #endif
 
 int main() { }

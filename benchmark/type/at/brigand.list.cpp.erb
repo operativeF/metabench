@@ -4,18 +4,16 @@
 
 #include <brigand/sequences/at.hpp>
 #include <brigand/sequences/list.hpp>
-#include <type_traits>
+#include <brigand/types/integer.hpp>
 
-
-template <int>
-struct x { };
+template<int> struct x;
 
 using list = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = brigand::at<list, std::integral_constant<int, <%= n - 1 %>>>;
+using result = brigand::at<list, brigand::int32_t<<%= n - 1 %>>>;
 #endif
 
 int main() { }

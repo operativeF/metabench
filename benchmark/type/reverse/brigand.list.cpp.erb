@@ -5,14 +5,14 @@
 #include <brigand/sequences/list.hpp>
 #include <brigand/algorithms/reverse.hpp>
 
-template <int> struct x;
+template<int> struct x;
 
-using xs = brigand::list<
+using list = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = brigand::reverse<xs>;
+using result = brigand::reverse<list>;
 #endif
 
 int main() { }

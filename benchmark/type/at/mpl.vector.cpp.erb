@@ -7,18 +7,18 @@
     #define BOOST_MPL_LIMIT_VECTOR_SIZE <%= ((n + 9) / 10) * 10 %>
 <% end %>
 
-#include <boost/mpl/at.hpp>
 #include <boost/mpl/vector.hpp>
+#include <boost/mpl/at.hpp>
 namespace mpl = boost::mpl;
 
+template<int> struct x;
 
-template <int>
-struct x;
-
-using xs = mpl::vector<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using vector = mpl::vector<
+    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+>;
 
 #if defined(METABENCH)
-using result = mpl::at_c<xs, <%= n - 1 %>>::type;
+using result = mpl::at_c<vector, <%= n - 1 %>>::type;
 #endif
 
 int main() { }

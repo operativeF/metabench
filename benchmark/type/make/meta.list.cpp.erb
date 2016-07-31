@@ -4,12 +4,10 @@
 
 #include <meta/meta.hpp>
 
-
-template <int>
-struct x;
+template<int> struct x;
 
 #if defined(METABENCH)
-using xs = meta::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using list = meta::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
 #endif
 
 int main() { }

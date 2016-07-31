@@ -10,12 +10,10 @@
 #include <boost/mpl/list.hpp>
 namespace mpl = boost::mpl;
 
-
-template <int i>
-struct x { };
+template<int> struct x;
 
 #if defined(METABENCH)
-using xs = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using list = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
 #endif
 
 int main() { }

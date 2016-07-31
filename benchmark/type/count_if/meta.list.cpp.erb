@@ -4,8 +4,7 @@
 
 #include <meta/meta.hpp>
 
-struct is_even
-{
+struct is_even {
     template<typename N>
     using invoke = meta::bool_<N::type::value % 2 == 0>;
 };

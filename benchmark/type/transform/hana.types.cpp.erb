@@ -7,12 +7,12 @@
 #include <boost/hana/type.hpp>
 namespace hana = boost::hana;
 
+template<typename>
+struct f {
+    struct type;
+};
 
-template <typename>
-struct f { struct type; };
-
-template <int> struct x;
-
+template<int> struct x;
 
 int main() {
     constexpr auto xs = hana::experimental::types<

@@ -8,20 +8,17 @@
 #include <boost/hana/type.hpp>
 namespace hana = boost::hana;
 
-
-template <int> struct x;
-
-struct is_odd {
-    template <int i>
-    hana::bool_<i % 2 != 0> operator()(hana::basic_type<x<i>> const&) const;
+struct is_even {
+    template<int i>
+    hana::bool_<i % 2 == 0> operator()(hana::basic_type<hana::int_<i>> const&) const;
 };
 
 int main() {
     auto types = hana::experimental::types<
-        <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+        <%= (1..n).map { |i| "hana::int_<#{i}>" }.join(', ') %>
     >{};
 
 #if defined(METABENCH)
-    auto result = hana::replace_if(types, is_odd{}, hana::type<void>{});
+    auto result = hana::replace_if(types, is_even{}, hana::type<void>{});
 #endif
 }

@@ -5,19 +5,16 @@
 #include <brigand/sequences/list.hpp>
 #include <brigand/algorithms/fold.hpp>
 
-struct f
-{
+struct f {
     template<typename, typename X>
-    struct apply
-    {
+    struct apply {
         using type = X;
     };
 };
 
-struct state { };
+struct state;
 
-template<int i>
-struct x { };
+template<int> struct x;
 
 using list = brigand::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
