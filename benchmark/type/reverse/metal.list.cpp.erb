@@ -2,17 +2,16 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-#include <metal/list/list.hpp>
-#include <metal/list/reverse.hpp>
+#include <metal.hpp>
 
-template <int> struct x;
+template<int> struct x;
 
-using xs = metal::list<
+using list = metal::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = metal::reverse_t<xs>;
+using result = metal::reverse<list>;
 #endif
 
 int main() { }

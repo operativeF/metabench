@@ -2,21 +2,19 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-#include <metal/list/list.hpp>
-#include <metal/list/transform.hpp>
-#include <metal/lambda/lambda.hpp>
+#include <metal.hpp>
 
-template<typename>
-struct f { struct type; };
+template<typename X>
+using f = X;
 
-template <int> struct x;
+template<int> struct x;
 
-using xs = metal::list<
+using list = metal::list<
     <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = metal::transform_t<metal::lambda<f>, xs>;
+using result = metal::transform<metal::lambda<f>, list>;
 #endif
 
 int main() { }

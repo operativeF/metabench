@@ -1,17 +1,18 @@
-// Copyright Louis Dionne 2016
+// Copyright Bruno Dutra 2016
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 #include <metal.hpp>
 
-template<int> struct x;
+template<typename N>
+using is_even = metal::bool_<N::type::value % 2 == 0>;
 
 using list = metal::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+    <%= (1..n).map { |i| "metal::int_<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = metal::at<list, metal::int_<<%= n - 1 %>>>;
+using result = metal::partition<list, metal::lambda<is_even>>;
 #endif
 
 int main() { }
