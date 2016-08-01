@@ -1,3 +1,0 @@
----
----
-{"key":"hana.set","values":[{"n":0,"compilation_time":0.002901419999999988,"link_time":0.040240436,"executable_size":8.744,"execution_time":0.002770768},{"n":10,"compilation_time":0.11401722199999997,"link_time":0.041267252,"executable_size":8.744,"execution_time":0.002865691},{"n":20,"compilation_time":0.35040435000000003,"link_time":0.039989988,"executable_size":8.744,"execution_time":0.002951138},{"n":30,"compilation_time":0.756126981,"link_time":0.04141594,"executable_size":8.744,"execution_time":0.002966732},{"n":40,"compilation_time":1.350217392,"link_time":0.050203937,"executable_size":8.744,"execution_time":0.003018613},{"n":50,"compilation_time":2.2599756479999997,"link_time":0.052913095,"executable_size":8.744,"execution_time":0.003430751}]}
