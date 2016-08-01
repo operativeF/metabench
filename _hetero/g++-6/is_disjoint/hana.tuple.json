@@ -1,3 +1,0 @@
----
----
-{"key":"hana.tuple","values":[{"n":0,"compilation_time":0.013402417,"link_time":0.026201427,"executable_size":13.159,"execution_time":0.001589214},{"n":10,"compilation_time":0.19173365200000003,"link_time":0.025070113,"executable_size":13.7,"execution_time":0.001646393},{"n":20,"compilation_time":0.600279266,"link_time":0.02517639,"executable_size":14.25,"execution_time":0.001654511},{"n":30,"compilation_time":1.215357714,"link_time":0.025309478,"executable_size":14.8,"execution_time":0.001621809},{"n":40,"compilation_time":2.182168302,"link_time":0.025286711,"executable_size":15.35,"execution_time":0.001614413},{"n":50,"compilation_time":3.7081514949999996,"link_time":0.02543538,"executable_size":15.9,"execution_time":0.001782739}]}
