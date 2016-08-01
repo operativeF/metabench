@@ -1,3 +1,0 @@
----
----
-{"key":"mpl.list","values":[{"n":0,"compilation_time":0.00517367199999999,"link_time":0.023380794,"executable_size":8.527,"execution_time":0.001729547},{"n":10,"compilation_time":0.033515653000000006,"link_time":0.024032047,"executable_size":8.527,"execution_time":0.001685813},{"n":20,"compilation_time":0.03409875399999998,"link_time":0.023426077,"executable_size":8.527,"execution_time":0.001724894},{"n":30,"compilation_time":0.059512337000000026,"link_time":0.023731717,"executable_size":8.527,"execution_time":0.001875739},{"n":40,"compilation_time":0.06958236100000004,"link_time":0.02359122,"executable_size":8.527,"execution_time":0.001734606},{"n":50,"compilation_time":0.079504397,"link_time":0.023563303,"executable_size":8.527,"execution_time":0.001647563}]}
