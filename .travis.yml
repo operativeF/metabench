@@ -16,6 +16,9 @@ addons:
   apt:
     packages:
       - ninja-build
+      - clang-3.6
+      - clang-3.7
+      - clang-3.8
       - g++-4.8
       - g++-4.9
       - g++-5
@@ -23,6 +26,10 @@ addons:
 
     sources:
       - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
+      - llvm-toolchain-precise-3.7
+      - llvm-toolchain-precise-3.8
+      - llvm-toolchain-precise
 
 env:
   global:
@@ -58,20 +65,13 @@ install:
   - mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
   - export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
-  # Install Clang, libc++ and libc++abi if needed
+  # Install libc++ and libc++abi if needed
   - |
     if [[ "${CXX}" == "clang++-3.6" || "${CXX}" == "clang++-3.7" || "${CXX}" == "clang++-3.8" ]]; then
       if   [[ "${CXX}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
       elif [[ "${CXX}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.1";
       elif [[ "${CXX}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.0"; fi
 
-      # Clang
-      CLANG_URL="http://llvm.org/releases/${LLVM_VERSION}/clang+llvm-${LLVM_VERSION}-x86_64-linux-gnu-ubuntu-14.04.tar.xz"
-      mkdir clang && travis_retry wget --quiet -O - ${CLANG_URL} | tar --strip-components=1 -xJ -C clang
-      export PATH="${DEPS_DIR}/clang/bin:${PATH}"
-      export CXX=${DEPS_DIR}/clang/bin/clang++
-
-      # libc++ / libc++abi
       LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
       LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
       LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
