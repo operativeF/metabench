@@ -1,0 +1,3 @@
+---
+---
+{"key":"mpl.vector","values":[{"n":0,"compilation_time":0.0007960270000000047,"link_time":0.039465656,"executable_size":8.634,"execution_time":0.002924625},{"n":10,"compilation_time":0.028492769,"link_time":0.040775848,"executable_size":8.634,"execution_time":0.002972797},{"n":20,"compilation_time":0.016677630000000013,"link_time":0.038067371,"executable_size":8.634,"execution_time":0.002904173},{"n":30,"compilation_time":0.027294131,"link_time":0.039376882,"executable_size":8.634,"execution_time":0.003125126},{"n":40,"compilation_time":0.021559178999999984,"link_time":0.038712515,"executable_size":8.634,"execution_time":0.003008518},{"n":50,"compilation_time":0.03873221300000007,"link_time":0.038103175,"executable_size":8.634,"execution_time":0.003176246}]}

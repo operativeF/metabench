@@ -1,0 +1,3 @@
+---
+---
+{"key":"fusion.list","values":[{"n":0,"compilation_time":0.03327959600000002,"link_time":0.038816019,"executable_size":15.031,"execution_time":0.003037288},{"n":10,"compilation_time":0.35143384999999994,"link_time":0.08251795,"executable_size":70.421,"execution_time":0.00303631},{"n":20,"compilation_time":0.10518320999999997,"link_time":0.04431665,"executable_size":170.435,"execution_time":0.002963578},{"n":30,"compilation_time":0.16642705800000002,"link_time":0.047643266,"executable_size":314.48,"execution_time":0.003065754},{"n":40,"compilation_time":0.136823939,"link_time":0.047159384,"executable_size":502.84,"execution_time":0.002960875},{"n":50,"compilation_time":0.259189491,"link_time":0.051380802,"executable_size":735.277,"execution_time":0.003063194}]}

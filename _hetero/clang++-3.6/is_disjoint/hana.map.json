@@ -1,0 +1,3 @@
+---
+---
+{"key":"hana.map","values":[{"n":0,"compilation_time":0.02907056300000002,"link_time":0.040060664,"executable_size":8.942,"execution_time":0.003052194},{"n":10,"compilation_time":0.18626837400000001,"link_time":0.038901597,"executable_size":8.942,"execution_time":0.002997078},{"n":20,"compilation_time":0.5508571090000001,"link_time":0.04004221,"executable_size":8.942,"execution_time":0.003043065},{"n":30,"compilation_time":1.121798664,"link_time":0.039495386,"executable_size":8.942,"execution_time":0.002991076},{"n":40,"compilation_time":3.1891495990000003,"link_time":0.040210291,"executable_size":8.942,"execution_time":0.003086967},{"n":50,"compilation_time":3.640448774,"link_time":0.038486859,"executable_size":8.942,"execution_time":0.003130577}]}
