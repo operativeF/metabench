@@ -1,0 +1,3 @@
+---
+---
+{"key":"fusion.vector","values":[{"n":0,"compilation_time":-0.519373034,"link_time":0.024485968,"executable_size":14.445,"execution_time":0.001801043},{"n":3,"compilation_time":0.3048555249999998,"link_time":0.038902634,"executable_size":30.984,"execution_time":0.002669276},{"n":6,"compilation_time":-0.02686657800000014,"link_time":0.038993533,"executable_size":52.893,"execution_time":0.002583531},{"n":9,"compilation_time":0.7726969549999999,"link_time":0.039501767,"executable_size":80.806,"execution_time":0.002494991},{"n":12,"compilation_time":0.06411392599999988,"link_time":0.041388169,"executable_size":111.205,"execution_time":0.002612746},{"n":15,"compilation_time":0.207631844,"link_time":0.04086968,"executable_size":143.819,"execution_time":0.002718224}]}
