@@ -5,10 +5,10 @@
 #include <metal.hpp>
 
 template<typename N>
-using is_last = metal::bool_<N::type::value == <%= n %>>;
+using is_last = metal::number<N::type::value == <%= n %>>;
 
 using list = metal::list<
-    <%= (1..n).map { |i| "metal::int_<#{i}>" }.join(', ') %>
+    <%= (1..n).map { |i| "metal::number<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)

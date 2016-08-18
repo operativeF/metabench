@@ -11,7 +11,7 @@ using list = metal::list<
 >;
 
 #if defined(METABENCH)
-using result = metal::at<list, metal::int_<<%= n - 1 %>>>;
+using result = metal::at<list, metal::number<<%= n - 1 %>>>;
 #endif
 
 int main() { }

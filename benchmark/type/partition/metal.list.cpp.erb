@@ -5,10 +5,10 @@
 #include <metal.hpp>
 
 template<typename N>
-using is_even = metal::bool_<N::type::value % 2 == 0>;
+using is_even = metal::number<N::type::value % 2 == 0>;
 
 using list = metal::list<
-    <%= (1..n).map { |i| "metal::int_<#{i}>" }.join(', ') %>
+    <%= (1..n).map { |i| "metal::number<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)

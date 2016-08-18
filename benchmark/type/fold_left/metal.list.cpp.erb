@@ -16,7 +16,7 @@ using list = metal::list<
 >;
 
 #if defined(METABENCH)
-using result = metal::fold<list, state, metal::lambda<f>>;
+using result = metal::fold_left<list, state, metal::lambda<f>>;
 #endif
 
 int main() { }
