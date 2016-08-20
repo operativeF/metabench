@@ -208,6 +208,7 @@ endfunction()
 #                     [TITLE title]
 #                     [SUBTITLE subtitle]
 #                     [XLABEL label] [YLABEL label]
+#                     [INTERPOLATE]
 #                     DATASETS dataset1 [dataset2 [dataset3 [...]]]
 #                     [OUTPUT path/to/file])
 #
@@ -251,6 +252,10 @@ endfunction()
 #   [YLABEL label]:
 #       The label to use for the Y axis.
 #
+#   [INTERPOLATE]:
+#       If `INTERPOLATE` is provided, the datasets will be interpolated into
+#       seemingly continuous smooth lines.
+#
 #   DATASETS dataset1 [dataset2 [dataset3 [...]]]:
 #       A list of datasets from which the benchmark is generated.
 #
@@ -261,13 +266,19 @@ endfunction()
 #       so that the output file will be `target.html` in the current CMake
 #       binary directory.
 function(metabench_add_chart target)
-    set(options ALL)
+    set(options ALL INTERPOLATE)
     set(one_value_args OUTPUT ASPECT TITLE SUBTITLE XLABEL YLABEL)
     set(multi_value_args DATASETS)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if (NOT ARGS_ASPECT)
         set(ARGS_ASPECT "COMPILATION_TIME")
+    endif()
+
+    if (${ARGS_INTERPOLATE})
+        set(ARGS_INTERPOLATE true)
+    else()
+        set(ARGS_INTERPOLATE false)
     endif()
 
     if(NOT ARGS_DATASETS)
@@ -296,6 +307,7 @@ function(metabench_add_chart target)
             -e "options['SUBTITLE'] = '${ARGS_SUBTITLE}'"
             -e "options['XLABEL'] = '${ARGS_XLABEL}'"
             -e "options['YLABEL'] = '${ARGS_YLABEL}'"
+            -e "options['INTERPOLATE'] = ${ARGS_INTERPOLATE}"
             -e "aspect = '${ARGS_ASPECT}'"
             -e "data = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
@@ -529,7 +541,6 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "                                                                                                         \n"
 "      /* setup the chart and its options */                                                              \n"
 "      var chart = nv.models.lineChart()                                                                  \n"
-"                    .useInteractiveGuideline(true)                                                       \n"
 "                    .color(d3.scale.category10().range())                                                \n"
 "                    .margin({left: 75, bottom: 50})                                                      \n"
 "                    .forceX([0]).forceY([0])                                                             \n"
@@ -570,6 +581,11 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          \n"
 "             });                                                                                         \n"
 "      }                                                                                                  \n"
+"                                                                                                         \n"
+"      if (customSettings.INTERPOLATE)                                                                    \n"
+"        chart.interpolate('bundle').interactive(false);                                                  \n"
+"      else                                                                                               \n"
+"        chart.useInteractiveGuideline(true);                                                             \n"
 "                                                                                                         \n"
 "      d3.select('#chart').datum(data).call(chart);                                                       \n"
 "                                                                                                         \n"
