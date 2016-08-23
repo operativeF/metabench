@@ -90,8 +90,8 @@ install:
     fi
 
   # Install Boost headers
-  - BOOST_URL="http://github.com/boostorg/boost.git"
-  - travis_retry git clone --depth 1 --recursive --quiet ${BOOST_URL}
+  - BOOST_URL="https://sourceforge.net/projects/boost/files/latest/download"
+  - mkdir boost && travis_retry wget --no-check-certificate --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xj -C boost
   - (cd boost && ./bootstrap.sh && ./b2 headers)
 
   # Install and use a more recent Ruby
