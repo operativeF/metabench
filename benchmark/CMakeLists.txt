@@ -21,7 +21,7 @@ include(benchmark/dependencies/std)
 
 macro(add_dataset datasets dataset path_to_template range)
     string(REGEX REPLACE "[^.]+[.][^.]+[.][^.]+[.](.*)" "\\1" name ${dataset})
-    set(args ${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json ${ARGN})
+    set(args ${dataset} ${path_to_template} ${range} NAME ${name} OUTPUT ${name}.json ${ARGN} MEDIAN_OF 3)
 
     if(${dataset} MATCHES "brigand\\.")
         Brigand_add_dataset(${args})

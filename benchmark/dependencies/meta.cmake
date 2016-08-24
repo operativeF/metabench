@@ -26,7 +26,7 @@ if (METABENCH_META AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
 
     function(Meta_add_dataset dataset)
         set(color "hsl(118, 41%, 49%)")
-        metabench_add_dataset(${dataset} ${ARGN} COLOR ${color} MEDIAN_OF 3)
+        metabench_add_dataset(${dataset} ${ARGN} COLOR ${color})
         target_include_directories(${dataset} PUBLIC ${Meta_INCLUDE_DIRS})
         add_dependencies(${dataset} Meta)
     endfunction()

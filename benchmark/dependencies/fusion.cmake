@@ -20,7 +20,7 @@ if (METABENCH_FUSION AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
             else()
                 message(FATAL_ERROR "Unknown datatype ${dataset}")
             endif()
-            metabench_add_dataset(${dataset} ${ARGN} COLOR ${color} MEDIAN_OF 3)
+            metabench_add_dataset(${dataset} ${ARGN} COLOR ${color})
             target_include_directories(${dataset} PUBLIC ${Boost_INCLUDE_DIRS})
         endfunction()
     else()

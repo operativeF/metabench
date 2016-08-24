@@ -26,7 +26,7 @@ if (METABENCH_BRIGAND)
 
     function(Brigand_add_dataset dataset)
         set(color "hsl(207, 54%, 47%)")
-        metabench_add_dataset(${dataset} ${ARGN} COLOR ${color} MEDIAN_OF 3)
+        metabench_add_dataset(${dataset} ${ARGN} COLOR ${color})
         target_include_directories(${dataset} PUBLIC ${Brigand_INCLUDE_DIRS})
         add_dependencies(${dataset} Brigand)
     endfunction()

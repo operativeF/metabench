@@ -40,7 +40,7 @@ if (METABENCH_HANA
         else()
             message(FATAL_ERROR "Unknown datatype ${dataset}")
         endif()
-        metabench_add_dataset(${dataset} ${ARGN} COLOR ${color} MEDIAN_OF 3)
+        metabench_add_dataset(${dataset} ${ARGN} COLOR ${color})
         target_include_directories(${dataset} PUBLIC ${Hana_INCLUDE_DIRS})
         add_dependencies(${dataset} Hana)
     endfunction()
