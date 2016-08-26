@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: clang++-3.6
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: clang++-3.6
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"hana.set","color":"hsl(30, 100%, 74%)","values":[{"n":0,"compilation_time":0.04189567100000002,"link_time":0.056040774,"executable_size":8.988,"execution_time":0.003986682},{"n":10,"compilation_time":0.5475910770000001,"link_time":0.071930961,"executable_size":8.988,"execution_time":0.0046199},{"n":20,"compilation_time":1.223764688,"link_time":0.070653009,"executable_size":8.988,"execution_time":0.004598404},{"n":30,"compilation_time":2.2029917510000003,"link_time":0.070374217,"executable_size":8.988,"execution_time":0.00448858},{"n":40,"compilation_time":3.70136599,"link_time":0.047356243,"executable_size":8.988,"execution_time":0.003146146},{"n":50,"compilation_time":6.270730076,"link_time":0.069924664,"executable_size":8.988,"execution_time":0.004381879}]}];                                                                    
+      var data = [{"key":"hana.set","color":"hsl(30, 100%, 74%)","values":[{"n":0,"compilation_time":0.010321737999999997,"link_time":0.043893921,"executable_size":8.988,"execution_time":0.002837336},{"n":10,"compilation_time":0.259135997,"link_time":0.043859512,"executable_size":8.988,"execution_time":0.003017181},{"n":20,"compilation_time":0.755299089,"link_time":0.04398408,"executable_size":8.988,"execution_time":0.002864346},{"n":30,"compilation_time":1.550042879,"link_time":0.044896765,"executable_size":8.988,"execution_time":0.003315366},{"n":40,"compilation_time":2.7319198289999997,"link_time":0.043828382,"executable_size":8.988,"execution_time":0.002897294},{"n":50,"compilation_time":4.102263132,"link_time":0.043370742,"executable_size":8.988,"execution_time":0.002852344}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: clang++-3.6
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          
