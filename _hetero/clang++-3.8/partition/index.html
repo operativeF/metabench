@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: clang++-3.8
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: clang++-3.8
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"hana.tuple","color":"hsl(30, 100%, 50%)","values":[{"n":0,"compilation_time":0.006027835999999981,"link_time":0.053807779,"executable_size":8.732,"execution_time":0.003240793},{"n":10,"compilation_time":0.06748785000000002,"link_time":0.052085712,"executable_size":8.732,"execution_time":0.00296159},{"n":20,"compilation_time":0.09111146300000003,"link_time":0.053828866,"executable_size":8.732,"execution_time":0.002961496},{"n":30,"compilation_time":0.14646752200000002,"link_time":0.052345376,"executable_size":8.732,"execution_time":0.003010777},{"n":40,"compilation_time":0.191349012,"link_time":0.053171535,"executable_size":8.732,"execution_time":0.003096593},{"n":50,"compilation_time":0.240375652,"link_time":0.053775542,"executable_size":8.732,"execution_time":0.003100658},{"n":100,"compilation_time":0.5151553050000001,"link_time":0.053838624,"executable_size":8.732,"execution_time":0.003020018},{"n":200,"compilation_time":1.164340383,"link_time":0.051157141,"executable_size":8.732,"execution_time":0.003005513},{"n":300,"compilation_time":2.435667799,"link_time":0.053840236,"executable_size":8.732,"execution_time":0.003178206},{"n":400,"compilation_time":3.3629672599999996,"link_time":0.053859184,"executable_size":8.732,"execution_time":0.003000908},{"n":500,"compilation_time":4.685838214,"link_time":0.055019715,"executable_size":8.732,"execution_time":0.003341827}]}];                                                                    
+      var data = [{"key":"hana.tuple","color":"hsl(30, 100%, 50%)","values":[{"n":0,"compilation_time":0.00776221299999999,"link_time":0.05338542,"executable_size":8.732,"execution_time":0.002907626},{"n":10,"compilation_time":0.06787885599999999,"link_time":0.05573121,"executable_size":8.732,"execution_time":0.003348193},{"n":20,"compilation_time":0.10213740499999999,"link_time":0.052280352,"executable_size":8.732,"execution_time":0.003159894},{"n":30,"compilation_time":0.149039631,"link_time":0.05294691,"executable_size":8.732,"execution_time":0.003554122},{"n":40,"compilation_time":0.191378099,"link_time":0.057051003,"executable_size":8.732,"execution_time":0.002933588},{"n":50,"compilation_time":0.269891968,"link_time":0.053882009,"executable_size":8.732,"execution_time":0.003053452},{"n":100,"compilation_time":0.627142306,"link_time":0.060876306,"executable_size":8.732,"execution_time":0.003358509},{"n":200,"compilation_time":1.152572465,"link_time":0.052397108,"executable_size":8.732,"execution_time":0.003371795},{"n":300,"compilation_time":2.045919938,"link_time":0.053443367,"executable_size":8.732,"execution_time":0.002928306},{"n":400,"compilation_time":3.2304973419999996,"link_time":0.052668598,"executable_size":8.732,"execution_time":0.003000345},{"n":500,"compilation_time":4.268637747,"link_time":0.05214231,"executable_size":8.732,"execution_time":0.002986484}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: clang++-3.8
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          
