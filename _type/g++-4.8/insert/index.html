@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: g++-4.8
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: g++-4.8
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"mpl.list","color":"hsl(292, 35%, 47%)","values":[{"n":1,"compilation_time":0.005917996000000009,"link_time":0.022479047,"executable_size":8.518,"execution_time":0.001704184},{"n":10,"compilation_time":0.022171067999999988,"link_time":0.02914285,"executable_size":8.518,"execution_time":0.001721235},{"n":20,"compilation_time":0.03890120899999999,"link_time":0.022401571,"executable_size":8.518,"execution_time":0.001692936},{"n":30,"compilation_time":0.10855156799999999,"link_time":0.358339231,"executable_size":8.518,"execution_time":0.001841086},{"n":40,"compilation_time":0.06668034300000003,"link_time":0.022801851,"executable_size":8.518,"execution_time":0.001708767},{"n":50,"compilation_time":0.04841095800000006,"link_time":0.023530104,"executable_size":8.518,"execution_time":0.001749813}]},{"key":"mpl.vector","color":"hsl(292, 35%, 67%)","values":[{"n":1,"compilation_time":0.00787379199999999,"link_time":0.022131714,"executable_size":8.52,"execution_time":0.001666488},{"n":10,"compilation_time":0.023868111999999997,"link_time":0.022400947,"executable_size":8.52,"execution_time":0.00170477},{"n":20,"compilation_time":0.047313621,"link_time":0.022537592,"executable_size":8.52,"execution_time":0.001749837},{"n":30,"compilation_time":0.07443319599999998,"link_time":0.023648844,"executable_size":8.52,"execution_time":0.001728066},{"n":40,"compilation_time":0.08203088300000005,"link_time":0.022856168,"executable_size":8.52,"execution_time":0.001782141},{"n":50,"compilation_time":0.1229725479999999,"link_time":0.022738261,"executable_size":8.52,"execution_time":0.001751522}]}];                                                                    
+      var data = [{"key":"mpl.list","color":"hsl(292, 35%, 47%)","values":[{"n":1,"compilation_time":0.0013919450000000055,"link_time":0.027117222,"executable_size":8.518,"execution_time":0.002134883},{"n":10,"compilation_time":-0.003616651999999998,"link_time":0.022536233,"executable_size":8.518,"execution_time":0.001699567},{"n":20,"compilation_time":0.042984407,"link_time":0.026739639,"executable_size":8.518,"execution_time":0.002038027},{"n":30,"compilation_time":0.0536770339999999,"link_time":0.026800413,"executable_size":8.518,"execution_time":0.002249798},{"n":40,"compilation_time":0.11772119699999983,"link_time":0.022676308,"executable_size":8.518,"execution_time":0.001747029},{"n":50,"compilation_time":0.19919289499999993,"link_time":0.022259646,"executable_size":8.518,"execution_time":0.001759298}]},{"key":"mpl.vector","color":"hsl(292, 35%, 67%)","values":[{"n":1,"compilation_time":0.010881092000000009,"link_time":0.027291938,"executable_size":8.52,"execution_time":0.00200278},{"n":10,"compilation_time":0.026291373000000007,"link_time":0.034610306,"executable_size":8.52,"execution_time":0.001935031},{"n":20,"compilation_time":0.05478723199999999,"link_time":0.02423641,"executable_size":8.52,"execution_time":0.002332715},{"n":30,"compilation_time":0.09677785599999988,"link_time":0.024652067,"executable_size":8.52,"execution_time":0.002036753},{"n":40,"compilation_time":0.317779885,"link_time":0.025195718,"executable_size":8.52,"execution_time":0.002192848},{"n":50,"compilation_time":-0.23349952699999976,"link_time":0.024622575,"executable_size":8.52,"execution_time":0.001922295}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: g++-4.8
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          

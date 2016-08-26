@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: g++-4.8
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: g++-4.8
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":0.034567395000000056,"link_time":0.03786004,"executable_size":36.807,"execution_time":0.002229492},{"n":10,"compilation_time":0.19032860000000007,"link_time":0.04297838,"executable_size":212.315,"execution_time":0.002345914},{"n":20,"compilation_time":0.3153476110000001,"link_time":0.049811398,"executable_size":492.225,"execution_time":0.002476321},{"n":30,"compilation_time":0.548605896,"link_time":0.077745518,"executable_size":871.065,"execution_time":0.002778423},{"n":40,"compilation_time":0.7320992270000001,"link_time":0.068573402,"executable_size":1352.944,"execution_time":0.002394325},{"n":50,"compilation_time":1.001760627,"link_time":0.07998626,"executable_size":1933.733,"execution_time":0.002355326}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.002455879999999966,"link_time":0.03871553,"executable_size":29.481,"execution_time":0.002311148},{"n":10,"compilation_time":0.182762078,"link_time":0.077609164,"executable_size":264.904,"execution_time":0.002499035},{"n":20,"compilation_time":0.395109802,"link_time":0.054947669,"executable_size":707.637,"execution_time":0.002265608},{"n":30,"compilation_time":0.6178576290000001,"link_time":0.256256527,"executable_size":1385.82,"execution_time":0.002428832},{"n":40,"compilation_time":0.902394483,"link_time":0.108182899,"executable_size":2328.231,"execution_time":0.002377649},{"n":50,"compilation_time":1.3710491780000003,"link_time":0.10100526,"executable_size":3569.172,"execution_time":0.002441985}]}];                                                                    
+      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":0.028818001999999954,"link_time":0.037064329,"executable_size":36.807,"execution_time":0.002300558},{"n":10,"compilation_time":0.19705887600000005,"link_time":0.043859166,"executable_size":212.315,"execution_time":0.002329235},{"n":20,"compilation_time":0.31326661199999994,"link_time":0.075038552,"executable_size":492.225,"execution_time":0.002570836},{"n":30,"compilation_time":0.554760765,"link_time":0.057946305,"executable_size":871.065,"execution_time":0.002454426},{"n":40,"compilation_time":0.6791554989999999,"link_time":0.066832395,"executable_size":1352.944,"execution_time":0.002440893},{"n":50,"compilation_time":0.9231132089999998,"link_time":0.07746659,"executable_size":1933.733,"execution_time":0.002401103}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.013496454000000102,"link_time":0.034682505,"executable_size":29.481,"execution_time":0.002233544},{"n":10,"compilation_time":0.188377311,"link_time":0.043316537,"executable_size":264.904,"execution_time":0.002274013},{"n":20,"compilation_time":0.391186629,"link_time":0.049644156,"executable_size":707.637,"execution_time":0.00233437},{"n":30,"compilation_time":0.630669064,"link_time":0.059283257,"executable_size":1385.82,"execution_time":0.002349543},{"n":40,"compilation_time":0.947070619,"link_time":0.076611218,"executable_size":2328.231,"execution_time":0.00236235},{"n":50,"compilation_time":1.339482275,"link_time":0.097442912,"executable_size":3569.172,"execution_time":0.00248844}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: g++-4.8
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          
