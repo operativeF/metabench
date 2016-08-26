@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: g++-4.9
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: g++-4.9
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":0.01592775099999999,"link_time":0.025607248,"executable_size":20.632,"execution_time":0.001874618},{"n":10,"compilation_time":0.02929367500000002,"link_time":0.027603063,"executable_size":113.869,"execution_time":0.001796654},{"n":20,"compilation_time":0.20458884599999994,"link_time":0.033171042,"executable_size":265.579,"execution_time":0.001818317},{"n":30,"compilation_time":0.3050655520000001,"link_time":0.038326009,"executable_size":480.321,"execution_time":0.002004188},{"n":40,"compilation_time":0.22311473800000003,"link_time":0.04129081,"executable_size":758.107,"execution_time":0.001784186},{"n":50,"compilation_time":0.548696302,"link_time":0.17327203,"executable_size":1090.869,"execution_time":0.002306832}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.00875272199999999,"link_time":0.026893771,"executable_size":15.912,"execution_time":0.001703318},{"n":10,"compilation_time":0.06254758799999993,"link_time":0.033633859,"executable_size":172.885,"execution_time":0.00214356},{"n":20,"compilation_time":0.20132088800000003,"link_time":0.047720451,"executable_size":454.809,"execution_time":0.001718447},{"n":30,"compilation_time":0.3385743379999999,"link_time":0.041945524,"executable_size":839.221,"execution_time":0.00182846},{"n":40,"compilation_time":0.48800758999999994,"link_time":0.048377346,"executable_size":1358.991,"execution_time":0.001802309},{"n":50,"compilation_time":0.6422406300000001,"link_time":0.07560209,"executable_size":1966.843,"execution_time":0.001794926}]}];                                                                    
+      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":0.09753110300000001,"link_time":0.099665021,"executable_size":20.632,"execution_time":0.001984916},{"n":10,"compilation_time":0.08417426500000003,"link_time":0.027539679,"executable_size":113.869,"execution_time":0.001612153},{"n":20,"compilation_time":0.12649059900000004,"link_time":0.031896709,"executable_size":265.579,"execution_time":0.001864539},{"n":30,"compilation_time":0.22452239399999996,"link_time":0.036399687,"executable_size":480.321,"execution_time":0.001715005},{"n":40,"compilation_time":0.32996056000000007,"link_time":0.072514237,"executable_size":758.107,"execution_time":0.001680549},{"n":50,"compilation_time":0.507208407,"link_time":0.053512039,"executable_size":1090.869,"execution_time":0.001944046}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.004686814000000039,"link_time":0.024256909,"executable_size":15.912,"execution_time":0.001759264},{"n":10,"compilation_time":0.11961305,"link_time":0.028807125,"executable_size":172.885,"execution_time":0.001816115},{"n":20,"compilation_time":0.17625678999999994,"link_time":0.051180076,"executable_size":454.809,"execution_time":0.001698577},{"n":30,"compilation_time":0.3377149140000001,"link_time":0.039662778,"executable_size":839.221,"execution_time":0.001807898},{"n":40,"compilation_time":0.47519942700000006,"link_time":0.045790115,"executable_size":1358.991,"execution_time":0.001720326},{"n":50,"compilation_time":0.627845905,"link_time":0.056477198,"executable_size":1966.843,"execution_time":0.001773247}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: g++-4.9
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          

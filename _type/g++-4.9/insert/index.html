@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: g++-4.9
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: g++-4.9
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"mpl.list","color":"hsl(292, 35%, 47%)","values":[{"n":1,"compilation_time":0.013100152000000004,"link_time":0.02785737,"executable_size":8.518,"execution_time":0.002261204},{"n":10,"compilation_time":0.012373577999999996,"link_time":0.02655213,"executable_size":8.518,"execution_time":0.001733419},{"n":20,"compilation_time":0.03805279800000003,"link_time":0.026552394,"executable_size":8.518,"execution_time":0.001784924},{"n":30,"compilation_time":0.006876529000000131,"link_time":0.025388622,"executable_size":8.518,"execution_time":0.001686745},{"n":40,"compilation_time":0.06552480700000007,"link_time":0.025079843,"executable_size":8.518,"execution_time":0.001750238},{"n":50,"compilation_time":0.11202286900000002,"link_time":0.024839645,"executable_size":8.518,"execution_time":0.001917659}]},{"key":"mpl.vector","color":"hsl(292, 35%, 67%)","values":[{"n":1,"compilation_time":0.007920838000000013,"link_time":0.026249292,"executable_size":8.52,"execution_time":0.001729347},{"n":10,"compilation_time":0.024468404,"link_time":0.025907541,"executable_size":8.52,"execution_time":0.001731212},{"n":20,"compilation_time":0.04880042499999998,"link_time":0.025715398,"executable_size":8.52,"execution_time":0.001657967},{"n":30,"compilation_time":0.07697778499999997,"link_time":0.024062749,"executable_size":8.52,"execution_time":0.001669227},{"n":40,"compilation_time":0.07663482300000002,"link_time":0.024225313,"executable_size":8.52,"execution_time":0.001737694},{"n":50,"compilation_time":0.10505829300000014,"link_time":0.023998395,"executable_size":8.52,"execution_time":0.001711699}]}];                                                                    
+      var data = [{"key":"mpl.list","color":"hsl(292, 35%, 47%)","values":[{"n":1,"compilation_time":-0.027929282,"link_time":0.029839386,"executable_size":8.518,"execution_time":0.002112714},{"n":10,"compilation_time":-0.03897621700000001,"link_time":0.035209817,"executable_size":8.518,"execution_time":0.002413471},{"n":20,"compilation_time":0.019551824000000023,"link_time":0.039810446,"executable_size":8.518,"execution_time":0.002090604},{"n":30,"compilation_time":0.06215939399999981,"link_time":0.033872831,"executable_size":8.518,"execution_time":0.00240532},{"n":40,"compilation_time":0.22978455200000014,"link_time":0.061871225,"executable_size":8.518,"execution_time":0.001957348},{"n":50,"compilation_time":0.08531510900000017,"link_time":0.029381883,"executable_size":8.518,"execution_time":0.001822223}]},{"key":"mpl.vector","color":"hsl(292, 35%, 67%)","values":[{"n":1,"compilation_time":0.026577835999999994,"link_time":0.055762288,"executable_size":8.52,"execution_time":0.002295414},{"n":10,"compilation_time":0.07615921,"link_time":0.036811,"executable_size":8.52,"execution_time":0.001930081},{"n":20,"compilation_time":0.06476923500000004,"link_time":0.106636953,"executable_size":8.52,"execution_time":0.002457587},{"n":30,"compilation_time":0.2038471529999999,"link_time":0.028472829,"executable_size":8.52,"execution_time":0.002401121},{"n":40,"compilation_time":0.17387700500000003,"link_time":0.035276367,"executable_size":8.52,"execution_time":0.001929582},{"n":50,"compilation_time":0.3844505479999998,"link_time":0.029255345,"executable_size":8.52,"execution_time":0.001910451}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: g++-4.9
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          
