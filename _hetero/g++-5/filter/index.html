@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: g++-5
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: g++-5
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":0.03495419099999997,"link_time":0.024888044,"executable_size":36.59,"execution_time":0.001722863},{"n":10,"compilation_time":0.21963912200000002,"link_time":0.040723851,"executable_size":205.308,"execution_time":0.001824894},{"n":20,"compilation_time":0.385027539,"link_time":0.037158711,"executable_size":470.627,"execution_time":0.001730052},{"n":30,"compilation_time":0.5766099889999999,"link_time":0.046604891,"executable_size":831.715,"execution_time":0.00180337},{"n":40,"compilation_time":0.816798685,"link_time":0.05538591,"executable_size":1284.492,"execution_time":0.001916919},{"n":50,"compilation_time":1.006012964,"link_time":0.080655461,"executable_size":1828.931,"execution_time":0.001932822}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.06860925400000006,"link_time":0.06254239,"executable_size":29.222,"execution_time":0.001708263},{"n":10,"compilation_time":0.15526273599999996,"link_time":0.031944489,"executable_size":264.435,"execution_time":0.001776633},{"n":20,"compilation_time":0.3560600879999999,"link_time":0.043499013,"executable_size":702.932,"execution_time":0.001816339},{"n":30,"compilation_time":0.849631318,"link_time":0.053079605,"executable_size":1380.969,"execution_time":0.001946943},{"n":40,"compilation_time":0.662507152,"link_time":0.062956141,"executable_size":2319.144,"execution_time":0.001769516},{"n":50,"compilation_time":1.303802702,"link_time":0.091906567,"executable_size":3555.849,"execution_time":0.002013048}]}];                                                                    
+      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":0.03573766899999997,"link_time":0.025941246,"executable_size":36.59,"execution_time":0.001722955},{"n":10,"compilation_time":0.344268252,"link_time":0.034596523,"executable_size":205.308,"execution_time":0.002223142},{"n":20,"compilation_time":0.273937867,"link_time":0.03954679,"executable_size":470.627,"execution_time":0.001860307},{"n":30,"compilation_time":0.81942745,"link_time":0.049162147,"executable_size":831.715,"execution_time":0.001750283},{"n":40,"compilation_time":1.100343536,"link_time":0.065644855,"executable_size":1284.492,"execution_time":0.001947116},{"n":50,"compilation_time":1.4312677679999999,"link_time":0.07019764,"executable_size":1828.931,"execution_time":0.002040824}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.020635386000000033,"link_time":0.033759163,"executable_size":29.222,"execution_time":0.001793009},{"n":10,"compilation_time":0.33215639899999994,"link_time":0.13936358,"executable_size":264.435,"execution_time":0.001792743},{"n":20,"compilation_time":0.10668156499999992,"link_time":0.066764815,"executable_size":702.932,"execution_time":0.001715453},{"n":30,"compilation_time":0.6356511910000001,"link_time":0.050877124,"executable_size":1380.969,"execution_time":0.001748962},{"n":40,"compilation_time":1.9890063709999999,"link_time":0.196493981,"executable_size":2319.144,"execution_time":0.002321489},{"n":50,"compilation_time":2.0641781459999997,"link_time":0.093520712,"executable_size":3555.849,"execution_time":0.001959219}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: g++-5
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          

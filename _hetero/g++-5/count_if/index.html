@@ -1,5 +1,5 @@
 ---
-timestamp: Thu, 25 Aug 2016
+timestamp: Fri, 26 Aug 2016
 compiler: g++-5
 ---
 <!DOCTYPE html>                                                                                          
@@ -34,13 +34,12 @@ compiler: g++-5
   <body>                                                                                                 
     <svg id='chart'></svg>                                                                               
     <script type='text/javascript'>                                                                      
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                       
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":"","INTERPOLATE":false};                                                       
       var aspect = 'COMPILATION_TIME';                                                                      
-      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":-0.031874816000000084,"link_time":0.027890809,"executable_size":20.64,"execution_time":0.001809557},{"n":10,"compilation_time":0.086355458,"link_time":0.034052046,"executable_size":108.364,"execution_time":0.001871521},{"n":20,"compilation_time":0.16613469599999997,"link_time":0.033052709,"executable_size":256.651,"execution_time":0.001897235},{"n":30,"compilation_time":0.23758012200000012,"link_time":0.035854122,"executable_size":462.067,"execution_time":0.001790148},{"n":40,"compilation_time":0.43210831799999994,"link_time":0.064654882,"executable_size":720.535,"execution_time":0.00178206},{"n":50,"compilation_time":0.9888516540000001,"link_time":0.049533662,"executable_size":1040.371,"execution_time":0.001858404}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.009163958000000028,"link_time":0.042820943,"executable_size":15.92,"execution_time":0.001813547},{"n":10,"compilation_time":0.08425576899999998,"link_time":0.029761668,"executable_size":165.071,"execution_time":0.001813765},{"n":20,"compilation_time":0.19870934500000004,"link_time":0.033301834,"executable_size":429.827,"execution_time":0.001842748},{"n":30,"compilation_time":0.331754824,"link_time":0.03904204,"executable_size":785.751,"execution_time":0.001792592},{"n":40,"compilation_time":0.474847292,"link_time":0.062897657,"executable_size":1274.937,"execution_time":0.00194819},{"n":50,"compilation_time":0.948147217,"link_time":0.05438838,"executable_size":1837.731,"execution_time":0.001888645}]}];                                                                    
+      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"compilation_time":-0.05076290100000003,"link_time":0.028561956,"executable_size":20.64,"execution_time":0.001682234},{"n":10,"compilation_time":0.02196390700000006,"link_time":0.02951367,"executable_size":108.364,"execution_time":0.001849103},{"n":20,"compilation_time":0.087785844,"link_time":0.03662696,"executable_size":256.651,"execution_time":0.001757427},{"n":30,"compilation_time":0.3482893440000001,"link_time":0.044638307,"executable_size":462.067,"execution_time":0.001982422},{"n":40,"compilation_time":0.28388907500000005,"link_time":0.044514103,"executable_size":720.535,"execution_time":0.002238755},{"n":50,"compilation_time":0.2149904760000001,"link_time":0.052471613,"executable_size":1040.371,"execution_time":0.001785195}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"compilation_time":0.02930339500000001,"link_time":0.051065011,"executable_size":15.92,"execution_time":0.001879347},{"n":10,"compilation_time":0.16806518199999998,"link_time":0.029010705,"executable_size":165.071,"execution_time":0.001793737},{"n":20,"compilation_time":0.21900456499999998,"link_time":0.037835908,"executable_size":429.827,"execution_time":0.001917753},{"n":30,"compilation_time":0.32298563,"link_time":0.039907904,"executable_size":785.751,"execution_time":0.001773246},{"n":40,"compilation_time":0.45388014099999996,"link_time":0.056934325,"executable_size":1274.937,"execution_time":0.002027252},{"n":50,"compilation_time":0.644924025,"link_time":0.059784968,"executable_size":1837.731,"execution_time":0.001846787}]}];                                                                    
                                                                                                          
       /* setup the chart and its options */                                                              
       var chart = nv.models.lineChart()                                                                  
-                    .useInteractiveGuideline(true)                                                       
                     .color(d3.scale.category10().range())                                                
                     .margin({left: 75, bottom: 50})                                                      
                     .forceX([0]).forceY([0])                                                             
@@ -81,6 +80,11 @@ compiler: g++-5
                tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                          
              });                                                                                         
       }                                                                                                  
+                                                                                                         
+      if (customSettings.INTERPOLATE)                                                                    
+        chart.interpolate('bundle').interactive(false);                                                  
+      else                                                                                               
+        chart.useInteractiveGuideline(true);                                                             
                                                                                                          
       d3.select('#chart').datum(data).call(chart);                                                       
                                                                                                          
