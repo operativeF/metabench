@@ -52,20 +52,17 @@ add_custom_target(benchmark)
 macro(add_chart category case)
     cmake_parse_arguments(ARGS "" "" "DATASETS" ${ARGN})
 
-    set(type_target "benchmark.${category}")
-    set(case_target "${type_target}.${case}")
-
-    if (NOT TARGET ${type_target})
-        add_custom_target(${type_target})
+    if (NOT TARGET benchmark.${category})
+        add_custom_target(benchmark.${category})
+        add_dependencies(benchmark benchmark.${category})
     endif()
 
     # If we have no datasets, perhaps they were all disabled in the current
     # configuration. In this case, we omit the benchmark instead of failing.
     list(LENGTH ARGS_DATASETS _n_datasets)
     if (_n_datasets GREATER 0)
-        metabench_add_chart(${case_target} ${ARGN} OUTPUT index.html)
-        add_dependencies(${type_target} ${case_target})
-        add_dependencies(benchmark ${type_target})
+        metabench_add_chart(benchmark.${category}.${case} ${ARGN} OUTPUT index.html)
+        add_dependencies(benchmark.${category} benchmark.${category}.${case})
     endif()
 endmacro()
 
