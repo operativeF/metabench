@@ -113,7 +113,7 @@ script:
   # triggers the nightly build.
   - |
     if [[ "${METABENCH_NIGHTLY_BUILD}" == "true" && "${CMAKE_GENERATOR}" == "Unix Makefiles" ]]; then
-      cmake --build build --target benchmarks &&
+      cmake --build build --target benchmark &&
 
       # Suppress output to avoid leaking the token when the command fails
       git clone https://ldionne:${GITHUB_TOKEN}@github.com/ldionne/metabench --depth 1 --branch=gh-pages tmp &>/dev/null &&

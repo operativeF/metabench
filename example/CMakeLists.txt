@@ -23,4 +23,4 @@ metabench_add_chart(example.decay
     DATASETS example.std_decay example.my_decay
 )
 
-add_custom_target(examples ALL DEPENDS example.decay example.make_tuple)
+add_custom_target(example ALL DEPENDS example.decay example.make_tuple)

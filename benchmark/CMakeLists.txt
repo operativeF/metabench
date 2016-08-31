@@ -48,11 +48,11 @@ macro(add_dataset datasets category case lib datatype path_to_template range)
     endif()
 endmacro()
 
-add_custom_target(benchmarks)
+add_custom_target(benchmark)
 macro(add_chart category case)
     cmake_parse_arguments(ARGS "" "" "DATASETS" ${ARGN})
 
-    set(type_target "benchmarks.${category}")
+    set(type_target "benchmark.${category}")
     set(case_target "${type_target}.${case}")
 
     if (NOT TARGET ${type_target})
@@ -65,7 +65,7 @@ macro(add_chart category case)
     if (_n_datasets GREATER 0)
         metabench_add_chart(${case_target} ${ARGN} OUTPUT index.html)
         add_dependencies(${type_target} ${case_target})
-        add_dependencies(benchmarks ${type_target})
+        add_dependencies(benchmark ${type_target})
     endif()
 endmacro()
 
