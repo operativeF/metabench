@@ -22,7 +22,7 @@ macro(add_dataset datasets category case lib datatype path_to_template range)
     set(name "${lib}.${datatype}")
     set(dataset "dataset.${category}.${case}.${name}")
     set(args ${dataset} ${datatype} ${path_to_template} ${range}
-        NAME ${name} OUTPUT ${name}.json ${ARGN} MEDIAN_OF 3
+        NAME ${name} OUTPUT ${name}.json ${ARGN}
     )
 
     if("${lib}" STREQUAL "brigand")
