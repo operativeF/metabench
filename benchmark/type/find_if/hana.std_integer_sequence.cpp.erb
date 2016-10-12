@@ -17,11 +17,13 @@ struct is_last {
 };
 
 int main() {
-    auto sequence = std::integer_sequence<
-        <%= (["int"] + (1..n).to_a).join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = std::integer_sequence<
+        <%= (["int"] + ((k*n+1)..(k*n+n)).to_a).join(', ') %>
     >{};
 
 #if defined(METABENCH)
-    auto result = hana::find_if(sequence, is_last{});
+    constexpr auto <%= "result#{k}" %> = hana::find_if(<%= "xs#{k}" %>, is_last{});
 #endif
+<% end %>
 }

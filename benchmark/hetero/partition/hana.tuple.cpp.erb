@@ -9,20 +9,21 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
 struct is_even {
-    template <typename N>
+    template<typename N>
     constexpr auto operator()(N n) const {
         return n % hana::int_<2>{} == hana::int_<0>{};
     }
 };
 
 int main() {
-    constexpr auto tuple = hana::make_tuple(
-        <%= (1..n).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = boost::hana::partition(tuple, is_even{});
+    constexpr auto <%= "result#{k}" %> = boost::hana::partition(<%= "xs#{k}" %>, is_even{});
 #endif
+<% end %>
 }

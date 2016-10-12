@@ -7,16 +7,17 @@
 #include <boost/hana/set.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto even = hana::make_set(
-        <%= (1..n).map { |i| "hana::int_<#{i*2}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_set(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i*2}>{}" }.join(', ') %>
     );
-    constexpr auto odd = hana::make_set(
-        <%= (1..n).map { |i| "hana::int_<#{i*2+1}>{}" }.join(', ') %>
+    constexpr auto <%= "ys#{k}" %> = hana::make_set(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i*2+1}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::is_disjoint(even, odd);
+    constexpr auto <%= "result#{k}" %> = hana::is_disjoint(<%= "xs#{k}" %>, <%= "ys#{k}" %>);
 #endif
+<% end %>
 }

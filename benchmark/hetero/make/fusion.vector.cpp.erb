@@ -2,21 +2,17 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-<% if n > 10 %>
-    #define FUSION_MAX_VECTOR_SIZE <%= ((n + 9) / 10) * 10 %>
-<% end %>
-
 #include <boost/fusion/include/make_vector.hpp>
 namespace fusion = boost::fusion;
 
-
-template <int i>
-struct x { };
+template<int> struct x {};
 
 int main() {
+<% env[:k].times do |k| %>
 #if defined(METABENCH)
-    auto xs = fusion::make_vector(
-        <%= (1..n).map { |i| "x<#{i}>()" }.join(', ') %>
+    /*constexpr*/ auto <%= "xs#{k}" %> = fusion::make_vector(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>()" }.join(', ') %>
     );
 #endif
+<% end %>
 }

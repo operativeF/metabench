@@ -7,14 +7,15 @@
 #include <boost/hana/set.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto set = hana::make_set(
-        <%= (1..n).map { |i| "hana::int_c<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_set(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_c<#{i}>" }.join(', ') %>
     );
-    constexpr auto next = hana::int_c< <%= n + 1 %> >;
+    constexpr auto <%= "next#{k}" %> = hana::int_c< <%= n + 1 %> >;
 
 #if defined(METABENCH)
-    constexpr auto result = hana::insert(set, next);
+    constexpr auto <%= "result#{k}" %> = hana::insert(<%= "xs#{k}" %>, <%= "next#{k}" %>);
 #endif
+<% end %>
 }

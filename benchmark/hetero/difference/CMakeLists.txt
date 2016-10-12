@@ -3,6 +3,6 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(datasets)
-add_dataset(datasets hetero difference hana set hana.set.cpp.erb "(0..50).step(10)")
+add_dataset(datasets hetero difference hana set hana.set.cpp.erb "(0..50).step(10)" ENV "{k: 1}")
 
 add_chart(hetero difference DATASETS ${datasets})

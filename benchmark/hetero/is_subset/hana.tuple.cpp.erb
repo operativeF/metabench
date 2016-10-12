@@ -7,16 +7,17 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto even = hana::make_tuple(
-        <%= (1..n).map { |i| "hana::int_<#{i*2}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).step(2).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
     );
-    constexpr auto all = hana::make_tuple(
-        <%= (1..n*2).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
+    constexpr auto <%= "ys#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::is_subset(even, all);
+    constexpr auto <%= "result#{k}" %> = hana::is_subset(<%= "xs#{k}" %>, <%= "ys#{k}" %>);
 #endif
+<% end %>
 }

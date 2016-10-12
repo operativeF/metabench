@@ -11,12 +11,16 @@ struct state;
 
 template<int> struct x;
 
-using list = metal::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+
+using <%= "xs#{k}" %> = metal::list<
+    <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = metal::fold_left<list, state, metal::lambda<f>>;
+using <%= "result#{k}" %> = metal::fold_left<<%= "xs#{k}" %>, state, metal::lambda<f>>;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}

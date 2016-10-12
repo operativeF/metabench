@@ -7,13 +7,14 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto xs = hana::make_tuple(<%=
-        env[:range].map { |i| "hana::int_<#{i}>{}" }.join(', ')
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(<%=
+        ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i}>{}" }.join(', ')
     %>);
 
 #if defined(METABENCH)
-    constexpr auto result = hana::at_key(xs, hana::int_<<%= n %>>{});
+    constexpr auto <%= "result#{k}" %> = hana::at_key(<%= "xs#{k}" %>, hana::int_<<%= (k*n+n) %>>{});
 #endif
+<% end %>
 }

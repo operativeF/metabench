@@ -18,12 +18,16 @@ struct is_even {
     using apply = mpl::bool_<N::type::value % 2 == 0>;
 };
 
-using list = mpl::list<
-    <%= (1..n).map { |i| "mpl::int_<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+
+using <%= "xs#{k}" %> = mpl::list<
+    <%= ((k*n+1)..(k*n+n)).map { |i| "mpl::int_<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = mpl::copy_if<list, is_even>::type;
+using <%= "result#{k}" %> = mpl::copy_if<<%= "xs#{k}" %>, is_even>::type;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}

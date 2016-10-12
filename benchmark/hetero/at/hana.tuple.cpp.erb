@@ -6,16 +6,16 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
-template <int>
-struct x { };
+template<int> struct x {};
 
 int main() {
-    constexpr auto tuple = hana::make_tuple(
-        <%= (1..n).map { |n| "x<#{n}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |n| "x<#{n}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::at_c<<%= n - 1 %>>(tuple);
+    constexpr auto <%= "result#{k}" %> = hana::at_c<<%= n - 1 %>>(<%= "xs#{k}" %>);
 #endif
+<% end %>
 }

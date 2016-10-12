@@ -9,12 +9,16 @@ struct is_last {
     using invoke = meta::bool_<N::type::value == <%= n %>>;
 };
 
-using list = meta::list<
-    <%= (1..n).map { |i| "meta::int_<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+
+using <%= "xs#{k}" %> = meta::list<
+    <%= ((k*n+1)..(k*n+n)).map { |i| "meta::int_<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = meta::find_if<list, is_last>;
+using <%= "result#{k}" %> = meta::find_if<<%= "xs#{k}" %>, is_last>;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}

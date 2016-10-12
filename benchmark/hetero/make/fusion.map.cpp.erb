@@ -5,18 +5,18 @@
 #include <boost/fusion/include/make_map.hpp>
 namespace fusion = boost::fusion;
 
+template<int> struct x {};
 
-template <int i>
-struct x { };
-
-struct undefined { };
+struct undefined {};
 
 int main() {
+<% env[:k].times do |k| %>
 #if defined(METABENCH)
-    auto map = fusion::make_map<<%=
-        (1..n).map { |i| "x<#{i}>" }.join(', ')
+    /*constexpr*/ auto <%= "xs#{k}" %> = fusion::make_map<<%=
+        ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ')
     %>>(<%=
-        (1..n).map { |i| "undefined{}" }.join(', ')
+        ((k*n+1)..(k*n+n)).map { |i| "undefined{}" }.join(', ')
     %>);
 #endif
+<% end %>
 }

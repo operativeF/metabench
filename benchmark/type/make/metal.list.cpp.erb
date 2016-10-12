@@ -6,8 +6,12 @@
 
 template<int> struct x;
 
+<% env[:k].times do |k| %>
+
 #if defined(METABENCH)
-using list = metal::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using <%= "xs#{k}" %> = metal::list<<%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>>;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}

@@ -4,16 +4,16 @@
 
 #include <tuple>
 
-
-template <int>
-struct x { };
+template<int> struct x {};
 
 int main() {
-    constexpr auto tuple = std::make_tuple(
-        <%= (1..n).map { |n| "x<#{n}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = std::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |n| "x<#{n}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = std::get<<%= n - 1 %>>(tuple);
+    constexpr auto <%= "result#{k}" %> = std::get<<%= n - 1 %>>(<%= "xs#{k}" %>);
 #endif
+<% end %>
 }

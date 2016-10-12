@@ -6,21 +6,21 @@
 #include <boost/hana/unpack.hpp>
 namespace hana = boost::hana;
 
-
 struct f {
-    template <typename ...T>
-    constexpr void operator()(T const& ...) const { }
+    template<typename ...T>
+    constexpr void operator()(T const& ...) const {}
 };
 
-template <int i>
-struct x { };
+template<int> struct x {};
 
 int main() {
-    constexpr auto tuple = hana::make_tuple(
-        <%= (1..n).map { |i| "x<#{i}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    hana::unpack(tuple, f{});
+    hana::unpack(<%= "xs#{k}" %>, f{});
 #endif
+<% end %>
 }
