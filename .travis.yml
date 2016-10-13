@@ -106,7 +106,11 @@ before_script:
 
 script:
   - cmake --build build
-  - (cd build && ctest --output-on-failure)
+
+  - |
+    if [[ "${METABENCH_NIGHTLY_BUILD}" != "true" ]]; then
+      (cd build && ctest --output-on-failure)
+    fi
 
   # During nightly builds, we generate the benchmarks and update the gh-pages
   # branch with the data. `METABENCH_NIGHTLY_BUILD` is set by the script that
