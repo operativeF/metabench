@@ -49,10 +49,6 @@ env:
     # Also test on ninja
     - COMPILER=clang++-3.8 CMAKE_GENERATOR="Ninja"
 
-before_install:
-  # IMPORTANT: Keep this step empty, as it is overwritten by the script that
-  #            triggers the nightly build.
-
 install:
   - export CXX=${COMPILER} # Override CXX set by Travis
 
@@ -108,15 +104,14 @@ script:
   - cmake --build build
 
   - |
-    if [[ "${METABENCH_NIGHTLY_BUILD}" != "true" ]]; then
+    if [[ "${TRAVIS_EVENT_TYPE}" != "cron" ]]; then
       (cd build && ctest --output-on-failure)
     fi
 
   # During nightly builds, we generate the benchmarks and update the gh-pages
-  # branch with the data. `METABENCH_NIGHTLY_BUILD` is set by the script that
-  # triggers the nightly build.
+  # branch with the data.
   - |
-    if [[ "${METABENCH_NIGHTLY_BUILD}" == "true" && "${CMAKE_GENERATOR}" == "Unix Makefiles" ]]; then
+    if [[ "${TRAVIS_EVENT_TYPE}" == "cron" && "${CMAKE_GENERATOR}" == "Unix Makefiles" ]]; then
       cmake --build build --target benchmark &&
 
       # Suppress output to avoid leaking the token when the command fails
