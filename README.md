@@ -138,7 +138,25 @@ What Metabench will actually do is compile the file once with the macro defined
 (and hence with the content of the block), and once without it. It will then
 subtract the time for compiling the file without the content of the block to
 the time for compiling the whole file, which should represent a good
-approximation of the time for compiling what's inside the block.
+approximation of the time for compiling what's inside the block. When
+the code inside the measured block is very fast to compile, the uncertainty
+on its timing can lead to a negative duration being registered by Metabench.
+When this happens, a good way of reducing the relative uncertainty is to
+increase the total compilation time of the measured block by repeating the
+same thing (or a similar one) multiple times:
+
+```c++
+#include <tuple>
+
+int main() {
+#if defined(METABENCH)
+    auto tuple1 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+    auto tuple2 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+    auto tuple3 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+    auto tuple4 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+#endif
+}
+```
 
 On the C++ side of things, the `.cpp` file will be compiled (to benchmark it)
 as if it were located in the directory containing the `.cpp.erb` file, so that
