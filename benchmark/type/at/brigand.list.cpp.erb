@@ -14,10 +14,12 @@ using <%= "xs#{k}" %> = brigand::list<
     <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
-#if defined(METABENCH)
-using <%= "result#{k}" %> = brigand::at<<%= "xs#{k}" %>, brigand::int32_t<<%= k*n/env[:k] %>>>;
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+    using <%= "result#{p}#{k}" %> = brigand::at<<%= "xs#{k}" %>, brigand::int32_t<<%= p*100/env[:p] %>>>;
+    #endif
 
+    <% end %>
 <% end %>
 
 int main() {}

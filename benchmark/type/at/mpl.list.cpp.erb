@@ -19,10 +19,11 @@ using <%= "xs#{k}" %> = mpl::list<
     <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
-#if defined(METABENCH)
-using <%= "result#{k}" %> = mpl::at_c<<%= "xs#{k}" %>, <%= k*n/env[:k] %>>::type;
-#endif
-
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+    using <%= "result#{p}#{k}" %> = mpl::at_c<<%= "xs#{k}" %>, <%= p*n/env[:p] %>>::type;
+    #endif
+    <% end %>
 <% end %>
 
-int main() {}
+int main() { }

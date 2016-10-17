@@ -12,10 +12,11 @@ using <%= "xs#{k}" %> = metal::list<
     <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
-#if defined(METABENCH)
-using <%= "result#{k}" %> = metal::at<<%= "xs#{k}" %>, metal::number<<%= k*n/env[:k] %>>>;
-#endif
-
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+    using <%= "result#{p}#{k}" %> = metal::at<<%= "xs#{k}" %>, metal::number<<%= p*100/env[:p] %>>>;
+    #endif
+    <% end %>
 <% end %>
 
 int main() {}

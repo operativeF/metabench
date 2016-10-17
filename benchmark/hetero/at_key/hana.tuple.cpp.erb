@@ -9,12 +9,14 @@ namespace hana = boost::hana;
 
 int main() {
 <% env[:k].times do |k| %>
-    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(<%=
-        ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i}>{}" }.join(', ')
-    %>);
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
+    );
 
-#if defined(METABENCH)
-    constexpr auto <%= "result#{k}" %> = hana::at_key(<%= "xs#{k}" %>, hana::int_<<%= (k*n+n) %>>{});
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+        constexpr auto <%= "result#{p}#{k}" %> = hana::at_key(<%= "xs#{k}" %>, hana::int_<<%= k*n+p*100/env[:p]+1 %>>{});
+    #endif
+    <% end %>
 <% end %>
 }

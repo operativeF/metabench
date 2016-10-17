@@ -14,8 +14,10 @@ int main() {
         <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
     >{};
 
-#if defined(METABENCH)
-    constexpr auto <%= "result#{k}" %> = hana::at_c<<%= k*n/env[:k] %>>(<%= "xs#{k}" %>);
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+        constexpr auto <%= "result#{p}#{k}" %> = hana::at_c<<%= p*100/env[:p] %>>(<%= "xs#{k}" %>);
+    #endif
+    <% end %>
 <% end %>
 }

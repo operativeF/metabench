@@ -11,11 +11,13 @@ template<int> struct x {};
 int main() {
 <% env[:k].times do |k| %>
     /*constexpr*/ auto <%= "xs#{k}" %> = fusion::make_vector(
-        <%= ((k*n+1)..(k*n+n)).map { |n| "x<#{n}>()" }.join(', ') %>
+        <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>()" }.join(', ') %>
     );
 
-#if defined(METABENCH)
-    fusion::at_c<<%= n - 1 %>>(<%= "xs#{k}" %>);
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+        fusion::at_c<<%= p*100/env[:p] %>>(<%= "xs#{k}" %>);
+    #endif
+    <% end %>
 <% end %>
 }

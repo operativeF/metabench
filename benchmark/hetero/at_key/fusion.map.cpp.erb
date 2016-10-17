@@ -18,8 +18,10 @@ int main() {
         <%= ((k*n+1)..(k*n+n)).map { |i| "undefined{}" }.join(', ') %>
     );
 
-#if defined(METABENCH)
-    /*constexpr*/ auto <%= "result#{k}" %> = fusion::at_key<mpl::int_<<%= (k*n+n) %>>>(<%= "xs#{k}" %>);
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+        /*constexpr*/ auto <%= "result#{p}#{k}" %> = fusion::at_key<mpl::int_<<%= k*n+p*100/env[:p]+1 %>>>(<%= "xs#{k}" %>);
+    #endif
+    <% end %>
 <% end %>
 }
