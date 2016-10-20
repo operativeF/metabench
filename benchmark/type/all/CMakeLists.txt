@@ -3,8 +3,8 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(datasets)
-add_dataset(datasets type all brigand list brigand.list.cpp.erb "(0..50).step(10).to_a + (100..500).step(100).to_a" ENV "{k: 15}")
-add_dataset(datasets type all metal   list metal.list.cpp.erb   "(0..50).step(10).to_a + (100..500).step(100).to_a" ENV "{k: 15}")
-# add_dataset(datasets type all meta    list meta.list.cpp.erb    "(0..50).step(10).to_a + (100..500).step(100).to_a" ENV "{k: 15}")
+add_dataset(datasets type all brigand list brigand.list.cpp.erb "(0..50).step(10).to_a + (100..500).step(50).to_a" ENV "{k: 15}")
+add_dataset(datasets type all metal   list metal.list.cpp.erb   "(0..50).step(10).to_a + (100..500).step(50).to_a" ENV "{k: 15}")
+# add_dataset(datasets type all meta    list meta.list.cpp.erb    "(0..50).step(10).to_a + (100..500).step(50).to_a" ENV "{k: 15}")
 
 add_chart(type all DATASETS ${datasets})

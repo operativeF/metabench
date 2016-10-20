@@ -3,9 +3,9 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(datasets)
-add_dataset(datasets type erase brigand list   brigand.list.cpp.erb "[1] + (10..50).step(10).to_a + (100..500).step(100).to_a" ENV "{k: 20}")
-add_dataset(datasets type erase metal   list   metal.list.cpp.erb   "[1] + (10..50).step(10).to_a + (100..500).step(100).to_a" ENV "{k: 20}")
-add_dataset(datasets type erase mpl     list   mpl.list.cpp.erb     "[1] + (10..50).step(10).to_a" ENV "{k: 20}")
-add_dataset(datasets type erase mpl     vector mpl.vector.cpp.erb   "[1] + (10..50).step(10).to_a" ENV "{k: 20}")
+add_dataset(datasets type erase brigand list   brigand.list.cpp.erb "[1] + (10..50).step(10).to_a + (100..500).step(50).to_a" ENV "{k: 20}")
+add_dataset(datasets type erase metal   list   metal.list.cpp.erb   "[1] + (10..50).step(10).to_a + (100..500).step(50).to_a" ENV "{k: 20}")
+add_dataset(datasets type erase mpl     list   mpl.list.cpp.erb     "[1] + (10..50).step(10).to_a"                            ENV "{k: 20}")
+add_dataset(datasets type erase mpl     vector mpl.vector.cpp.erb   "[1] + (10..50).step(10).to_a"                            ENV "{k: 20}")
 
 add_chart(type erase DATASETS ${datasets})

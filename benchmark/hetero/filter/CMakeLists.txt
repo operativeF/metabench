@@ -3,8 +3,8 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 set(datasets)
-add_dataset(datasets hetero filter fusion list   fusion.list.cpp.erb   "(0..50).step(10)"                        ENV "{k: 2}")
-add_dataset(datasets hetero filter fusion vector fusion.vector.cpp.erb "(0..50).step(10)"                        ENV "{k: 2}")
-add_dataset(datasets hetero filter hana   tuple  hana.tuple.cpp.erb    "(0..50).step(10).to_a + [100, 200, 300]" ENV "{k: 2}")
+add_dataset(datasets hetero filter fusion list   fusion.list.cpp.erb   "(0..50).step(10)"                                 ENV "{k: 2}")
+add_dataset(datasets hetero filter fusion vector fusion.vector.cpp.erb "(0..50).step(10)"                                 ENV "{k: 2}")
+add_dataset(datasets hetero filter hana   tuple  hana.tuple.cpp.erb    "(0..50).step(10).to_a + (100..300).step(50).to_a" ENV "{k: 2}")
 
 add_chart(hetero filter DATASETS ${datasets})
