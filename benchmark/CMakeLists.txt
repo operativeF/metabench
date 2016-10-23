@@ -18,11 +18,19 @@ include(benchmark/dependencies/metal)
 include(benchmark/dependencies/mpl)
 include(benchmark/dependencies/std)
 
-macro(add_dataset datasets category case lib datatype path_to_template range)
+macro(add_dataset datasets category case lib datatype path_to_template k range)
+    set(env "{k: ${k}")
+    foreach(pair ${ARGN})
+        list(GET pair 0 key)
+        list(GET pair 1 val)
+        set(env "${env}, ${key}: ${val}")
+    endforeach()
+    set(env "${env}}")
+
     set(name "${lib}.${datatype}")
     set(dataset "dataset.${category}.${case}.${name}")
     set(args ${dataset} ${datatype} ${path_to_template} ${range}
-        NAME ${name} OUTPUT ${name}.json ${ARGN}
+        NAME ${name} OUTPUT ${name}.json SCALE "1.0/(${k})" ENV ${env}
     )
 
     if("${lib}" STREQUAL "brigand")

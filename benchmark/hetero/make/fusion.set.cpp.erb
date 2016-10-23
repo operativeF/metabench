@@ -5,14 +5,14 @@
 #include <boost/fusion/include/make_set.hpp>
 namespace fusion = boost::fusion;
 
-
-template <int i>
-struct x { };
+template<int> struct x {};
 
 int main() {
+<% env[:k].times do |k| %>
 #if defined(METABENCH)
-    auto set = fusion::make_set(<%=
-        (1..n).map { |i| "x<#{i}>{}" }.join(', ')
+    /*constexpr*/ auto <%= "xs#{k}" %> = fusion::make_set(<%=
+        ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>{}" }.join(', ')
     %>);
 #endif
+<% end %>
 }

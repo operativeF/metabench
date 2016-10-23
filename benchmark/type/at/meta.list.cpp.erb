@@ -6,12 +6,17 @@
 
 template<int> struct x;
 
-using list = meta::list<
-    <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+
+using <%= "xs#{k}" %> = meta::list<
+    <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
 >;
 
-#if defined(METABENCH)
-using result = meta::at_c<list, <%= n - 1 %>>;
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+    using <%= "result#{p}#{k}" %> = meta::at_c<<%= "xs#{k}" %>, <%= p*100/env[:p] %>>;
+    #endif
+    <% end %>
+<% end %>
 
-int main() { }
+int main() {}

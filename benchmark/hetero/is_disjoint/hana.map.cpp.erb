@@ -8,20 +8,21 @@
 #include <boost/hana/pair.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto even = hana::make_map(
-        <%= (1..n).map { |i|
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_map(
+        <%= ((k*n+1)..(k*n+n)).map { |i|
             "hana::make_pair(hana::int_<#{i*2}>{}, hana::int_<#{i*2}>{})"
         }.join(', ') %>
     );
-    constexpr auto odd = hana::make_map(
-        <%= (1..n).map { |i|
+    constexpr auto <%= "ys#{k}" %> = hana::make_map(
+        <%= ((k*n+1)..(k*n+n)).map { |i|
             "hana::make_pair(hana::int_<#{i*2+1}>{}, hana::int_<#{i*2+1}>{})"
         }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::is_disjoint(even, odd);
+    constexpr auto <%= "result#{k}" %> = hana::is_disjoint(<%= "xs#{k}" %>, <%= "ys#{k}" %>);
 #endif
+<% end %>
 }

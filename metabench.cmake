@@ -103,6 +103,10 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #       A string specifying the color used to display the dataset on the chart
 #       in any valid CSS format.
 #
+#   [SCALE factor]:
+#       A constant multiplicative factor that may be used to scale results.
+#       Defaults to `1.0`.
+#
 #   [MEDIAN_OF n]:
 #       The number of times to build and run the ERB template when gathering
 #       timing information. The timings are taken `n` times, and the median of
@@ -118,7 +122,7 @@ set(METABENCH_DIR ${CMAKE_CURRENT_BINARY_DIR}/_metabench)
 #       binary directory.
 function(metabench_add_dataset target path_to_template range)
     set(options)
-    set(one_value_args NAME ENV COLOR MEDIAN_OF OUTPUT)
+    set(one_value_args NAME ENV COLOR SCALE MEDIAN_OF OUTPUT)
     set(multi_value_args)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -139,6 +143,10 @@ function(metabench_add_dataset target path_to_template range)
 
     if (NOT ARGS_COLOR)
         set(ARGS_COLOR "")
+    endif()
+
+    if (NOT ARGS_SCALE)
+        set(ARGS_SCALE 1.0)
     endif()
 
     if (NOT ARGS_MEDIAN_OF)
@@ -182,7 +190,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "data = {}"
             -e "data['key'] = '${ARGS_NAME}'"
             -e "data['color'] = '${ARGS_COLOR}'"
-            -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})"
+            -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_SCALE}, ${ARGS_MEDIAN_OF})"
             -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
             -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
         DEPENDS ${path_to_template}
@@ -198,7 +206,7 @@ function(metabench_add_dataset target path_to_template range)
             -e "range = (${range}).to_a"
             -e "range = [range[0], range[-1]] if range.length >= 2"
             -e "env = (${ARGS_ENV})"
-            -e "data = measure('${target}', '${path_to_template}', range, env, 1)"
+            -e "data = measure('${target}', '${path_to_template}', range, env, 1.0, 1)"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 endfunction()
@@ -412,7 +420,7 @@ file(WRITE ${METABENCH_RB_PATH}
 "# template for the values of `n` in the specified `range`. The exact format                              \n"
 "# of the measurements returned by this function is that of `values` explained                            \n"
 "# in the JavaScript code that loads it below.                                                            \n"
-"def measure(target, erb_template, range, env, repetitions)                                               \n"
+"def measure(target, erb_template, range, env, scale, repetitions)                                        \n"
 "  erb_template = Pathname.new(erb_template)                                                              \n"
 "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                           \n"
 "  data = []                                                                                              \n"
@@ -426,10 +434,10 @@ file(WRITE ${METABENCH_RB_PATH}
 "      IO.write(cpp_file, code)                                                                           \n"
 "      results = repetitions.times.map { build(target) }                                                  \n"
 "      datum = {}                                                                                         \n"
-"      datum['compilation_times'] = results.map { |r| r['compilation_time'] }                             \n"
-"      datum['link_times']        = results.map { |r| r['link_time'] }                                    \n"
-"      datum['executable_size']   = results.map { |r| r['executable_size'] }.first                        \n"
-"      datum['execution_times']   = results.map { |r| r['execution_time'] }                               \n"
+"      datum['compilation_times'] = results.map { |r| (scale)*r['compilation_time'] }                     \n"
+"      datum['link_times']        = results.map { |r| (scale)*r['link_time'] }                            \n"
+"      datum['executable_size']   = results.map { |r| (scale)*r['executable_size'] }.first                \n"
+"      datum['execution_times']   = results.map { |r| (scale)*r['execution_time'] }                       \n"
 "      return datum                                                                                       \n"
 "    }                                                                                                    \n"
 "    code = render(erb_template, n, env)                                                                  \n"

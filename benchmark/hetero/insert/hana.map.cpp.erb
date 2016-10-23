@@ -8,17 +8,18 @@
 #include <boost/hana/pair.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto map = hana::make_map(
-        <%= (1..n).map { |i|
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_map(
+        <%= ((k*n+1)..(k*n+n)).map { |i|
             "hana::make_pair(hana::int_c<#{i}>, hana::int_c<#{i}>)"
         }.join(', ') %>
     );
-    constexpr auto next = hana::int_c< <%= n + 1 %> >;
-    constexpr auto pair = hana::make_pair(next, next);
+    constexpr auto <%= "next#{k}" %> = hana::int_c< <%= n + 1 %> >;
+    constexpr auto <%= "pair#{k}" %> = hana::make_pair(<%= "next#{k}" %>, <%= "next#{k}" %>);
 
 #if defined(METABENCH)
-    constexpr auto result = hana::insert(map, pair);
+    constexpr auto <%= "result#{k}" %> = hana::insert(<%= "xs#{k}" %>, <%= "pair#{k}" %>);
 #endif
+<% end %>
 }

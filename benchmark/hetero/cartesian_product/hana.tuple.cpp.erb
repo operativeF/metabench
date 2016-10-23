@@ -6,20 +6,21 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
-template <int> struct x { };
+template<int> struct x {};
 
 int main() {
-    constexpr auto tuple = hana::make_tuple(
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
         hana::make_tuple(
-            <%= (1..n).map{ |i| "x<1#{i}>{}" }.join(', ') %>
+            <%= ((k*n+1)..(k*n+n)).map{ |i| "x<#{i}>{}" }.join(', ') %>
         ),
         hana::make_tuple(
-            <%= (1..n).map{ |i| "x<2#{i}>{}" }.join(', ') %>
+            <%= ((k*n+1)..(k*n+n)).map{ |i| "x<-#{i}>{}" }.join(', ') %>
         )
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::cartesian_product(tuple);
+    constexpr auto <%= "result#{k}" %> = hana::cartesian_product(<%= "xs#{k}" %>);
 #endif
+<% end %>
 }

@@ -4,14 +4,14 @@
 
 #include <array>
 
-
-template <int i>
-struct x { };
+template<int> struct x {};
 
 int main() {
+<% env[:k].times do |k| %>
 #if defined(METABENCH)
-    constexpr std::array<int, <%= n %>> xs = {{
-        <%= (1..n).to_a.join(', ') %>
+    constexpr std::array<int, <%= n %>> <%= "xs#{k}" %> = {{
+        <%= ((k*n+1)..(k*n+n)).to_a.join(', ') %>
     }};
 #endif
+<% end %>
 }

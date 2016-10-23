@@ -7,18 +7,18 @@
 #include <boost/hana/set.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    <% half = n / 2 %>
-    constexpr auto xs = hana::make_set(
-        <%= (1..half).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_set(
+        <%= ((k*n+1)..(k*n+n/2)).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
     );
 
-    constexpr auto ys = hana::make_set(
-        <%= (half..n).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
+    constexpr auto <%= "ys#{k}" %> = hana::make_set(
+        <%= ((k*n+n/2)..(k*n+n)).map { |i| "hana::int_<#{i}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::intersection(xs, ys);
+    constexpr auto <%= "result#{k}" %> = hana::intersection(<%= "xs#{k}" %>, <%= "ys#{k}" %>);
 #endif
+<% end %>
 }

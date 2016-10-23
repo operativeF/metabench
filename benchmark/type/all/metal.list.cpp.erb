@@ -7,12 +7,16 @@
 template<typename N>
 using is_positive = metal::number<(N::type::value > 0)>;
 
-using list = metal::list<
-    <%= (1..n).map { |i| "metal::number<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+
+using <%= "xs#{k}" %> = metal::list<
+    <%= ((k*n+1)..(k*n+n)).map { |i| "metal::number<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = metal::all<list, metal::lambda<is_positive>>;
+using <%= "result#{k}" %> = metal::all<<%= "xs#{k}" %>, metal::lambda<is_positive>>;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}

@@ -6,16 +6,17 @@
 #include <boost/hana/tuple.hpp>
 namespace hana = boost::hana;
 
-
 int main() {
-    constexpr auto xs = hana::make_tuple(
-        <%= (1..n).map { |i| i.to_s }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |i| i.to_s }.join(', ') %>
     );
-    constexpr auto ys = hana::make_tuple(
-        <%= (1..n).map { |i| (i == n ? i + 1 : i).to_s }.join(', ') %>
+    constexpr auto <%= "ys#{k}" %> = hana::make_tuple(
+        <%= ((k*n+1)..(k*n+n)).map { |i| (i == (k*n+n) ? i + 1 : i).to_s }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::lexicographical_compare(xs, ys);
+    constexpr auto <%= "result#{k}" %> = hana::lexicographical_compare(<%= "xs#{k}" %>, <%= "ys#{k}" %>);
 #endif
+<% end %>
 }

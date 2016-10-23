@@ -8,9 +8,8 @@
 #include <type_traits>
 namespace hana = boost::hana;
 
-
 struct is_last {
-    template <typename N>
+    template<typename N>
     constexpr std::integral_constant<bool, N::value == <%= n %>>
     operator()(N const&) const;
 };
@@ -18,13 +17,15 @@ struct is_last {
 struct undefined {};
 
 int main() {
-    constexpr auto map = hana::make_map(
-        <%= (1..n).map { |i|
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::make_map(
+        <%= ((k*n+1)..(k*n+n)).map { |i|
             "hana::make_pair(std::integral_constant<int, #{i}>{}, undefined{})"
         }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    constexpr auto result = hana::find_if(map, is_last{});
+    constexpr auto <%= "result#{k}" %> = hana::find_if(<%= "xs#{k}" %>, is_last{});
 #endif
+<% end %>
 }

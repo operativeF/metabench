@@ -14,11 +14,13 @@ struct is_even {
 };
 
 int main() {
-    auto types = hana::experimental::types<
-        <%= (1..n).map { |i| "hana::int_<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::experimental::types<
+        <%= ((k*n+1)..(k*n+n)).map { |i| "hana::int_<#{i}>" }.join(', ') %>
     >{};
 
 #if defined(METABENCH)
-    auto result = hana::replace_if(types, is_even{}, hana::type<void>{});
+    constexpr auto <%= "result#{k}" %> = hana::replace_if(<%= "xs#{k}" %>, is_even{}, hana::type<void>{});
 #endif
+<% end %>
 }

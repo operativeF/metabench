@@ -9,11 +9,15 @@ namespace hana = boost::hana;
 template<int> struct x;
 
 int main() {
-    constexpr auto xs = hana::experimental::types<
-        <%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+    constexpr auto <%= "xs#{k}" %> = hana::experimental::types<
+        <%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>
     >{};
 
-#if defined(METABENCH)
-    constexpr auto result = hana::at_c<<%= n - 1 %>>(xs);
-#endif
+    <% (env[:p]*n/100).times do |p| %>
+    #if defined(METABENCH)
+        constexpr auto <%= "result#{p}#{k}" %> = hana::at_c<<%= p*100/env[:p] %>>(<%= "xs#{k}" %>);
+    #endif
+    <% end %>
+<% end %>
 }

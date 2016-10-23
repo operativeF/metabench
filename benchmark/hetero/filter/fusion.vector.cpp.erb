@@ -2,10 +2,6 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-<% if n > 10 %>
-    #define FUSION_MAX_VECTOR_SIZE <%= ((n + 9) / 10) * 10 %>
-<% end %>
-
 #include <boost/fusion/include/as_vector.hpp>
 #include <boost/fusion/include/filter_if.hpp>
 #include <boost/fusion/include/make_vector.hpp>
@@ -13,18 +9,19 @@
 #include <type_traits>
 namespace fusion = boost::fusion;
 
-
 struct is_even {
-    template <typename N>
+    template<typename N>
     using apply = std::integral_constant<bool, N::value % 2 == 0>;
 };
 
 int main() {
-    auto xs = fusion::make_vector(
-        <%= (1..n).map { |i| "std::integral_constant<int, #{i}>{}" }.join(', ') %>
+<% env[:k].times do |k| %>
+    /*constexpr*/ auto <%= "xs#{k}" %> = fusion::make_vector(
+        <%= ((k*n+1)..(k*n+n)).map { |i| "std::integral_constant<int, #{i}>{}" }.join(', ') %>
     );
 
 #if defined(METABENCH)
-    auto result = fusion::as_vector(fusion::filter_if<is_even>(xs));
+    /*constexpr*/ auto <%= "result#{k}" %> = fusion::as_vector(fusion::filter_if<is_even>(<%= "xs#{k}" %>));
 #endif
+<% end %>
 }

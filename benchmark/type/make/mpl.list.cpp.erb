@@ -12,8 +12,12 @@ namespace mpl = boost::mpl;
 
 template<int> struct x;
 
+<% env[:k].times do |k| %>
+
 #if defined(METABENCH)
-using list = mpl::list<<%= (1..n).map { |i| "x<#{i}>" }.join(', ') %>>;
+using <%= "xs#{k}" %> = mpl::list<<%= ((k*n+1)..(k*n+n)).map { |i| "x<#{i}>" }.join(', ') %>>;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}

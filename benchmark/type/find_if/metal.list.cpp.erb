@@ -7,12 +7,16 @@
 template<typename N>
 using is_last = metal::number<N::type::value == <%= n %>>;
 
-using list = metal::list<
-    <%= (1..n).map { |i| "metal::number<#{i}>" }.join(', ') %>
+<% env[:k].times do |k| %>
+
+using <%= "xs#{k}" %> = metal::list<
+    <%= ((k*n+1)..(k*n+n)).map { |i| "metal::number<#{i}>" }.join(', ') %>
 >;
 
 #if defined(METABENCH)
-using result = metal::find_if<list, metal::lambda<is_last>>;
+using <%= "result#{k}" %> = metal::find_if<<%= "xs#{k}" %>, metal::lambda<is_last>>;
 #endif
 
-int main() { }
+<% end %>
+
+int main() {}
