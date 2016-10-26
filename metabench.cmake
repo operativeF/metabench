@@ -216,7 +216,6 @@ endfunction()
 #                     [TITLE title]
 #                     [SUBTITLE subtitle]
 #                     [XLABEL label] [YLABEL label]
-#                     [INTERPOLATE]
 #                     DATASETS dataset1 [dataset2 [dataset3 [...]]]
 #                     [OUTPUT path/to/file])
 #
@@ -260,10 +259,6 @@ endfunction()
 #   [YLABEL label]:
 #       The label to use for the Y axis.
 #
-#   [INTERPOLATE]:
-#       If `INTERPOLATE` is provided, the datasets will be interpolated into
-#       seemingly continuous smooth lines.
-#
 #   DATASETS dataset1 [dataset2 [dataset3 [...]]]:
 #       A list of datasets from which the benchmark is generated.
 #
@@ -274,19 +269,13 @@ endfunction()
 #       so that the output file will be `target.html` in the current CMake
 #       binary directory.
 function(metabench_add_chart target)
-    set(options ALL INTERPOLATE)
+    set(options ALL)
     set(one_value_args OUTPUT ASPECT TITLE SUBTITLE XLABEL YLABEL)
     set(multi_value_args DATASETS)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if (NOT ARGS_ASPECT)
         set(ARGS_ASPECT "COMPILATION_TIME")
-    endif()
-
-    if (${ARGS_INTERPOLATE})
-        set(ARGS_INTERPOLATE true)
-    else()
-        set(ARGS_INTERPOLATE false)
     endif()
 
     if(NOT ARGS_DATASETS)
@@ -315,7 +304,6 @@ function(metabench_add_chart target)
             -e "options['SUBTITLE'] = '${ARGS_SUBTITLE}'"
             -e "options['XLABEL'] = '${ARGS_XLABEL}'"
             -e "options['YLABEL'] = '${ARGS_YLABEL}'"
-            -e "options['INTERPOLATE'] = ${ARGS_INTERPOLATE}"
             -e "aspect = '${ARGS_ASPECT}'"
             -e "data = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
             -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
