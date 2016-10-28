@@ -6,7 +6,7 @@
 Metabench is a single, self-contained CMake module making it easy to create
 compile-time microbenchmarks. Compile-time benchmarks measure the performance
 of compiling a piece of code instead of measuring the performance of running
-it, as regular benchmarks do. The __micro__ part in __micro__benchmark means
+it, as regular benchmarks do. The __micro__ part in **micro**benchmark means
 that Metabench can be used to benchmark precise parts of a C++ file, such as
 the instantiation of a single function. Writing benchmarks of this kind is
 very useful for C++ programmers writing metaprogramming-heavy libraries, which
