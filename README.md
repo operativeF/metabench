@@ -15,8 +15,9 @@ simple to use, while still allowing fairly complex benchmarks to be written.
 
 Metabench is also a collection of compile-time microbenchmarks written using
 the `metabench.cmake` module. The benchmarks measure the compile-time performance
-of various algorithms provided by different metaprogramming libraries, and the
-results are gathered into pretty charts at http://ldionne.github.io/metabench.
+of various algorithms provided by different metaprogramming libraries. The
+benchmarks are updated nightly with the latest version of each library, and
+the results are published at http://metaben.ch.
 
 ### Requirements
 Metabench requires [CMake][] 3.1 or higher and [Ruby][] 2.1 or higher.
