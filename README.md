@@ -8,5 +8,5 @@ These benchmarks are updated automatically through a CI script run periodically.
 This is a Jekyll static website. To see it locally, use
 
 ```bash
-jekyll serve --baseurl ""
+jekyll serve
 ```
