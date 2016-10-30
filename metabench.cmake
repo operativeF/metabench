@@ -580,7 +580,7 @@ file(WRITE ${CHART_HTML_ERB_PATH}
 "           });                                                                                                             \n"
 "                                                                                                                           \n"
 "      if (aspect == 'COMPILATION_TIME') {                                                                                  \n"
-"        chart.y(function(datum){ return median(datum.total.compilation_times) - median(datum.base.compilation_times); })   \n"
+"        chart.y(function(d){ return Math.max(0, median(d.total.compilation_times) - median(d.base.compilation_times)); })  \n"
 "             .yAxis.options({                                                                                              \n"
 "               axisLabel: customSettings.YLABEL || 'Compilation time',                                                     \n"
 "               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                            \n"

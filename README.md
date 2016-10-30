@@ -139,25 +139,7 @@ What Metabench will actually do is compile the file once with the macro defined
 (and hence with the content of the block), and once without it. It will then
 subtract the time for compiling the file without the content of the block to
 the time for compiling the whole file, which should represent a good
-approximation of the time for compiling what's inside the block. When
-the code inside the measured block is very fast to compile, the uncertainty
-on its timing can lead to a negative duration being registered by Metabench.
-When this happens, a good way of reducing the relative uncertainty is to
-increase the total compilation time of the measured block by repeating the
-same thing (or a similar one) multiple times:
-
-```c++
-#include <tuple>
-
-int main() {
-#if defined(METABENCH)
-    auto tuple1 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
-    auto tuple2 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
-    auto tuple3 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
-    auto tuple4 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
-#endif
-}
-```
+approximation of the time for compiling what's inside the block.
 
 On the C++ side of things, the `.cpp` file will be compiled (to benchmark it)
 as if it were located in the directory containing the `.cpp.erb` file, so that
@@ -174,6 +156,30 @@ involved example, you can take a look at the benchmark suite in the `benchmark/`
 directory. Note that only the most basic usage of Metabench was covered here.
 To know all the features provided by the module, you should read the reference
 documentation provided as comments inside the CMake module.
+
+#### A note on benchmark resolution
+Like any measurement tool, Metabench has a limited resolution. For example, when
+the code being measured (inside the `#ifdef METABENCH`/`#endif` pair) takes only
+a few milliseconds to compile, the timings reported by Metabench may be completely
+inside the noise. Typically, the resolution of timings taken by Metabench is
+similar to that of the `time` command. A good technique to make sure the results
+of a benchmark are not inside the noise is to reduce the _relative_ uncertainty
+of the measurement. This can be done by increasing the total compilation time
+of the measured block, by repeating the same thing (or a similar one) multiple
+times:
+
+```c++
+#include <tuple>
+
+int main() {
+#if defined(METABENCH)
+    auto tuple1 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+    auto tuple2 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+    auto tuple3 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+    auto tuple4 = std::make_tuple(<%= (1..n).to_a.join(', ') %>);
+#endif
+}
+```
 
 ### History
 Metabench was initially developed inside the [Boost.Hana][] library as a
