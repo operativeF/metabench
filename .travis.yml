@@ -96,6 +96,7 @@ install:
 before_script:
   # Set the git identity (for pushing the benchmarks)
   - git config --global user.name "Travis bot"
+  - git config --global user.email "ldionne.2@gmail.com"
 
   - cd ${TRAVIS_BUILD_DIR}
   - (mkdir build && cd build && cmake .. -DBOOST_ROOT=${DEPS_DIR}/boost)
