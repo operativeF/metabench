@@ -106,7 +106,7 @@ script:
 
   - |
     if [[ "${TRAVIS_EVENT_TYPE}" != "cron" ]]; then
-      (cd build && ctest --output-on-failure)
+      (cd build && ctest --output-on-failure -j3)
     fi
 
   # During nightly builds, we generate the benchmarks and update the gh-pages
