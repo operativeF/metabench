@@ -93,7 +93,7 @@ install:
     fi
 
   # Install Boost headers
-  - BOOST_URL="https://sourceforge.net/projects/boost/files/latest/download"
+  - BOOST_URL="https://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.bz2/download"
   - mkdir boost && travis_retry wget --no-check-certificate --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xj -C boost
   - (cd boost && ./bootstrap.sh && ./b2 headers)
 
