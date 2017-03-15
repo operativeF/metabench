@@ -21,7 +21,7 @@ if (METABENCH_KVASIR
             UPDATE_COMMAND ""    # Disable source work-tree update
         )
         ExternalProject_Get_Property(Kvasir SOURCE_DIR)
-        set(Kvasir_INCLUDE_DIR ${SOURCE_DIR}/src/kvasir/mpl)
+        set(Kvasir_INCLUDE_DIR ${SOURCE_DIR}/src)
 
     function(Kvasir_add_dataset dataset datatype)
         set(color "hsl(0, 0%, 0%)") 

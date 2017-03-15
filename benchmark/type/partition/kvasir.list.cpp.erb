@@ -2,10 +2,10 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-#include <mpl.hpp>
+#include <kvasir/mpl/mpl.hpp>
+namespace mpl = kvasir::mpl;
 
-using namespace kvasir;
-template<typename N> 
+template<typename N>
 using is_even = mpl::int_<N::value % 2 == 0>;
 
 <% env[:k].times do |k| %>
