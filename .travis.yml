@@ -172,16 +172,26 @@ script:
         category="$(echo ${benchmark} | cut -d '.' -f 2)"
         name="$(echo ${benchmark} | cut -d '.' -f 3)"
         source="build/benchmark/${category}/${name}"
-        destination="tmp/_${category}/${compiler}/${name}"
+        destination="tmp/_${category}/${COMPILER}/${name}"
 
         rm -rf ${destination} &&
         mkdir -p ${destination} &&
-        mv ${source}/*.{html,json} ${destination}/ &&
 
         # Add a YAML front matter to every chart and every JSON file (for Jekyll).
-        sed -i -e "1i---" -e "1itimestamp: $(date '+%a, %-d %b %Y')" -e "1icompiler: ${COMPILER}" -e "1i---" ${destination}/*.html &&
-        for dataset in ${destination}/*.json; do
-          sed -i -e "1i---" -e "1i---" ${dataset}
+        {
+          echo "---"
+          echo "timestamp: $(date '+%a, %-d %b %Y')"
+          echo "compiler: ${COMPILER}"
+          echo "---"
+          cat ${source}/index.html
+        } > ${destination}/index.html
+
+        for dataset in ${source}/*.json; do
+          {
+            echo "---"
+            echo "---"
+            cat ${dataset}
+          } > ${destination}/$(basename ${dataset})
         done
       done &&
 
