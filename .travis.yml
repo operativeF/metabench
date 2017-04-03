@@ -41,7 +41,7 @@ env:
   global:
     # Number of parts in which we split the generation of benchmarks to avoid
     # timeouts on Travis. Keep this in sync with the `PART=X` variables below.
-    - PARTS=3
+    - PARTS=4
 
     # GitHub token for pushing the benchmarks. The token is stored in the
     # ${GITHUB_TOKEN} environment variable.
@@ -51,34 +51,42 @@ env:
     - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     - COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=1
     - COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=2
     - COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=4
 
     # Also test on ninja
     - COMPILER=clang++-3.9 CMAKE_GENERATOR="Ninja"
