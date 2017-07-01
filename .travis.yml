@@ -15,7 +15,7 @@ branches:
 
 cache:
   directories:
-    - ${TRAVIS_BUILD_DIR}/deps/boost-1.63.0 # Keep this in sync with BOOST_VERSION
+    - ${TRAVIS_BUILD_DIR}/deps/boost-1.64.0 # Keep this in sync with BOOST_VERSION
 
 env:
   global:
@@ -190,7 +190,7 @@ install:
     fi
 
   # Install Boost headers
-  - BOOST_VERSION=1.63.0
+  - BOOST_VERSION=1.64.0
   - BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION}
   - |
     if [[ -z "$(ls -A ${BOOST_DIR})" ]]; then
