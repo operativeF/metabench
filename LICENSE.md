@@ -1,6 +1,6 @@
 ## Metabench License
 
-Copyright 2016 Louis Dionne and Bruno Dutra
+Copyright 2017 Louis Dionne and Bruno Dutra
 
 Boost Software License - Version 1.0 - August 17th, 2003
 
