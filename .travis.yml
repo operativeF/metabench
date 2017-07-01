@@ -3,7 +3,7 @@
 # (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
 language: cpp
-os: linux # Use Linux under specified otherwise
+os: linux # Use Linux unless specified otherwise
 dist: precise # Use precise unless specified otherwise
 sudo: false
 
