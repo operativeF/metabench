@@ -137,7 +137,7 @@ matrix:
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
 
-    # Test on using the Ninja generator
+    # Test using the Ninja generator
     - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Ninja"
       addons: { apt: { packages: ["clang-3.9", "ninja-build"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"] } }
 
