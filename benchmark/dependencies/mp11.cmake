@@ -27,7 +27,7 @@ if (METABENCH_MP11
         ExternalProject_Get_Property(mp11 SOURCE_DIR)
         set(MP11_INCLUDE_DIR ${SOURCE_DIR}/include)
 
-        function(mp11_add_dataset dataset datatype)
+        function(Mp11_add_dataset dataset datatype)
             set(color "hsl(54, 42%, 41%)")
             metabench_add_dataset(${dataset} ${ARGN} COLOR ${color})
             target_include_directories(${dataset} PUBLIC ${MP11_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
@@ -36,7 +36,9 @@ if (METABENCH_MP11
     else()
         message(STATUS "No local Boost installation found - mp11 will be unavailable.")
     endif()
-else()
-    function(mp11_add_dataset)
+endif()
+
+if (NOT COMMAND Mp11_add_dataset)
+    function(Mp11_add_dataset)
     endfunction()
 endif()
