@@ -66,11 +66,6 @@ set(METABENCH_DIR "${CMAKE_CURRENT_BINARY_DIR}/_metabench")
 #         compilation time.
 #       - Executable size in KB. This is the size of the executable created
 #         from the `.cpp` file.
-#       - Execution time in seconds. This is the time required to execute the
-#         built program. This can be used to get rough runtime performance
-#         measurements, but Metabench's resolution is too low for precision
-#         benchmarking. To measure this, Metabench runs the built executable
-#         with no arguments, so the program should support being run this way.
 #       - Peak memory usage of the compiler in KB. This is the approximate peak
 #         size of the RSS (Resident Set Size) used by the compiler (not the
 #         linker) when compiling the `.cpp` file.
@@ -215,7 +210,7 @@ function(metabench_add_dataset target path_to_template range)
 endfunction()
 
 # metabench_add_chart(target [ALL]
-#                     [ASPECT COMPILATION_TIME|LINK_TIME|EXECUTION_TIME|EXECUTABLE_SIZE|PEAK_MEMORY]
+#                     [ASPECT COMPILATION_TIME|LINK_TIME|EXECUTABLE_SIZE|PEAK_MEMORY]
 #                     [TITLE title]
 #                     [SUBTITLE subtitle]
 #                     [XLABEL label] [YLABEL label]
@@ -239,7 +234,7 @@ endfunction()
 #       This is the same behaviour as `add_custom_target` used with the `ALL`
 #       keyword.
 #
-#   [ASPECT COMPILATION_TIME|LINK_TIME|EXECUTION_TIME|EXECUTABLE_SIZE|PEAK_MEMORY]:
+#   [ASPECT COMPILATION_TIME|LINK_TIME|EXECUTABLE_SIZE|PEAK_MEMORY]:
 #       The aspect of the datasets to display on the chart. When this argument
 #       is provided, the chart will adopt reasonable default values for the
 #       axis labels and other similar settings. However, any setting set
@@ -393,15 +388,6 @@ file(WRITE "${METABENCH_RB_PATH}"
 "  # Size of the generated executable in KB                                                               \n"
 "  result['executable_size'] = File.size(exe_file).to_f / 1000                                            \n"
 "                                                                                                         \n"
-"  # Execution time of the generated executable in seconds                                                \n"
-"  result['execution_time'] = Benchmark.realtime {                                                        \n"
-"    stdout, stderr, status = Open3.capture3('\"' + exe_file + '\"')                                      \n"
-"  }                                                                                                      \n"
-"                                                                                                         \n"
-"  if not status.success?                                                                                 \n"
-"    report_error(exe_file, stdout, stderr, IO.read(cpp_file))                                            \n"
-"  end                                                                                                    \n"
-"                                                                                                         \n"
 "  return result                                                                                          \n"
 "end                                                                                                      \n"
 "                                                                                                         \n"
@@ -438,7 +424,6 @@ file(WRITE "${METABENCH_RB_PATH}"
 "      datum['compilation_times'] = results.map { |r| (scale)*r['compilation_time'] }                     \n"
 "      datum['link_times']        = results.map { |r| (scale)*r['link_time'] }                            \n"
 "      datum['executable_size']   = results.map { |r| (scale)*r['executable_size'] }.first                \n"
-"      datum['execution_times']   = results.map { |r| (scale)*r['execution_time'] }                       \n"
 "      datum['memory_peaks']      = results.map { |r| (scale)*r['memory_peak'] }                          \n"
 "      return datum                                                                                       \n"
 "    }                                                                                                    \n"
@@ -624,7 +609,6 @@ file(WRITE "${CHART_HTML_ERB_PATH}"
 "      //           compilation_times: [<compilation times in seconds>],                                                    \n"
 "      //           link_times:        [<link times in seconds>],                                                           \n"
 "      //           executable_size:   <executable size in KB>,                                                             \n"
-"      //           execution_times:   [<execution times in seconds>]                                                       \n"
 "      //           memory_peaks:      [<peak memory usage measurements in KB>]                                             \n"
 "      //       },                                                                                                          \n"
 "      //       total: <same as base, but with METABENCH defined>                                                           \n"
@@ -665,13 +649,6 @@ file(WRITE "${CHART_HTML_ERB_PATH}"
 "             .yAxis.options({                                                                                              \n"
 "               axisLabel: customSettings.YLABEL || 'Executable size',                                                      \n"
 "               tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                           \n"
-"             });                                                                                                           \n"
-"      }                                                                                                                    \n"
-"      else if (aspect == 'EXECUTION_TIME') {                                                                               \n"
-"        chart.y(function(datum){ return median(datum.total.execution_times); })                                            \n"
-"             .yAxis.options({                                                                                              \n"
-"               axisLabel: customSettings.YLABEL || 'Execution time',                                                       \n"
-"               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                            \n"
 "             });                                                                                                           \n"
 "      }                                                                                                                    \n"
 "      else if (aspect == 'LINK_TIME') {                                                                                    \n"
