@@ -1,5 +1,5 @@
 ---
-timestamp: Sat, 29 Jul 2017
+timestamp: Sat, 5 Aug 2017
 compiler: clang++-4.0
 ---
 <!DOCTYPE html>                                                                                                            
@@ -47,25 +47,7 @@ compiler: clang++-4.0
   <body>                                                                                                                   
     <svg id='chart'></svg>                                                                                                 
     <script type='text/javascript'>                                                                                        
-      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                                         
-      var aspect = 'COMPILATION_TIME';                                                                                        
-      // 'data' is an array of datasets (i.e. curves), each of which is an object of the form                              
-      // {                                                                                                                 
-      //   key: <name of the curve>,                                                                                       
-      //   color: <optional color of the curve>,                                                                           
-      //   values: [{                                                                                                      
-      //       n: <value of n for that run>,                                                                               
-      //       base: {                                                                                                     
-      //           compilation_times: [<compilation times in seconds>],                                                    
-      //           link_times:        [<link times in seconds>],                                                           
-      //           executable_size:   <executable size in KB>,                                                             
-      //           execution_times:   [<execution times in seconds>]                                                       
-      //       },                                                                                                          
-      //       total: <same as base, but with METABENCH defined>                                                           
-      //   }]                                                                                                              
-      // }                                                                                                                 
-      var data = [{"key":"fusion.list","color":"hsl(292, 35%, 47%)","values":[{"n":0,"base":{"compilation_times":[0.29500000000000004],"link_times":[0.02],"executable_size":4.375,"execution_times":[0.0016788835]},"total":{"compilation_times":[0.29000000000000004],"link_times":[0.02],"executable_size":11.1015,"execution_times":[0.0016760245]}},{"n":10,"base":{"compilation_times":[0.33],"link_times":[0.025],"executable_size":22.8535,"execution_times":[0.0016676535]},"total":{"compilation_times":[0.43500000000000005],"link_times":[0.03],"executable_size":149.6315,"execution_times":[0.001653161]}},{"n":20,"base":{"compilation_times":[0.37],"link_times":[0.025],"executable_size":55.2525,"execution_times":[0.0016990085]},"total":{"compilation_times":[0.6],"link_times":[0.04],"executable_size":372.6115,"execution_times":[0.001741746]}},{"n":30,"base":{"compilation_times":[0.42500000000000004],"link_times":[0.03],"executable_size":103.7035,"execution_times":[0.0016713045]},"total":{"compilation_times":[0.75],"link_times":[0.055],"executable_size":677.5785,"execution_times":[0.0018061475]}},{"n":40,"base":{"compilation_times":[0.48],"link_times":[0.025],"executable_size":170.2945,"execution_times":[0.0018242115]},"total":{"compilation_times":[0.94],"link_times":[0.075],"executable_size":1066.5665,"execution_times":[0.0018085575]}},{"n":50,"base":{"compilation_times":[0.545],"link_times":[0.03],"executable_size":255.1515,"execution_times":[0.001721595]},"total":{"compilation_times":[1.1199999999999999],"link_times":[0.09999999999999999],"executable_size":1540.02,"execution_times":[0.0017075065]}}]},{"key":"fusion.vector","color":"hsl(292, 35%, 59%)","values":[{"n":0,"base":{"compilation_times":[0.315],"link_times":[0.02],"executable_size":4.409,"execution_times":[0.0016783945]},"total":{"compilation_times":[0.31],"link_times":[0.02],"executable_size":7.91,"execution_times":[0.001647882]}},{"n":10,"base":{"compilation_times":[0.32499999999999996],"link_times":[0.02],"executable_size":10.3605,"execution_times":[0.0016546855]},"total":{"compilation_times":[0.44],"link_times":[0.025],"executable_size":126.2455,"execution_times":[0.0016527965]}},{"n":20,"base":{"compilation_times":[0.35],"link_times":[0.02],"executable_size":16.1165,"execution_times":[0.001633621]},"total":{"compilation_times":[0.5900000000000001],"link_times":[0.04],"executable_size":351.835,"execution_times":[0.001727849]}},{"n":30,"base":{"compilation_times":[0.38],"link_times":[0.02],"executable_size":23.9235,"execution_times":[0.0015051065]},"total":{"compilation_times":[0.755],"link_times":[0.060000000000000005],"executable_size":705.101,"execution_times":[0.0016037485]}},{"n":40,"base":{"compilation_times":[0.395],"link_times":[0.02],"executable_size":29.6975,"execution_times":[0.0017225655]},"total":{"compilation_times":[0.9450000000000001],"link_times":[0.07500000000000001],"executable_size":1197.9395,"execution_times":[0.001750521]}},{"n":50,"base":{"compilation_times":[0.42000000000000004],"link_times":[0.02],"executable_size":37.5235,"execution_times":[0.0016729895]},"total":{"compilation_times":[1.205],"link_times":[0.11499999999999999],"executable_size":1859.7375,"execution_times":[0.0016876775]}}]},{"key":"hana.tuple","color":"hsl(30, 100%, 50%)","values":[{"n":0,"base":{"compilation_times":[0.09],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.001610722]},"total":{"compilation_times":[0.09],"link_times":[0.025],"executable_size":4.352,"execution_times":[0.0017449155]}},{"n":10,"base":{"compilation_times":[0.1],"link_times":[0.025],"executable_size":4.31,"execution_times":[0.0016491985]},"total":{"compilation_times":[0.135],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001744115]}},{"n":20,"base":{"compilation_times":[0.115],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.001777632]},"total":{"compilation_times":[0.15000000000000002],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001727261]}},{"n":30,"base":{"compilation_times":[0.11499999999999999],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.001689092]},"total":{"compilation_times":[0.16499999999999998],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001711718]}},{"n":40,"base":{"compilation_times":[0.13],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.00165936]},"total":{"compilation_times":[0.19],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001733117]}},{"n":50,"base":{"compilation_times":[0.13],"link_times":[0.015],"executable_size":4.31,"execution_times":[0.0015824825]},"total":{"compilation_times":[0.21000000000000002],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001587419]}},{"n":100,"base":{"compilation_times":[0.17500000000000002],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.0015658715]},"total":{"compilation_times":[0.355],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001669384]}},{"n":150,"base":{"compilation_times":[0.21500000000000002],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.0017040125]},"total":{"compilation_times":[0.495],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001582838]}},{"n":200,"base":{"compilation_times":[0.245],"link_times":[0.015],"executable_size":4.31,"execution_times":[0.001755918]},"total":{"compilation_times":[0.68],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.001723126]}},{"n":250,"base":{"compilation_times":[0.29500000000000004],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.001627941]},"total":{"compilation_times":[0.865],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.0016291105]}},{"n":300,"base":{"compilation_times":[0.345],"link_times":[0.02],"executable_size":4.31,"execution_times":[0.0016451145]},"total":{"compilation_times":[1.105],"link_times":[0.02],"executable_size":4.352,"execution_times":[0.0015896965]}}]}];                                                                                      
-                                                                                                                           
+      // Simple helper to compute the median of a sequence of values                                                       
       var median = function(values) {                                                                                      
         values.sort(function(a, b) { return a - b; });                                                                     
         var half = Math.floor(values.length / 2);                                                                          
@@ -75,7 +57,59 @@ compiler: clang++-4.0
           return (values[half - 1] + values[half]) / 2.0;                                                                  
       };                                                                                                                   
                                                                                                                            
-      /* setup the chart and its options */                                                                                
+      var customSettings = {"TITLE":"","SUBTITLE":"","XLABEL":"","YLABEL":""};                                                                         
+      var aspect = 'COMPILATION_TIME';                                                                                        
+      // 'data' is an array of datasets (i.e. curves), each of which is an object of the form                              
+      // {                                                                                                                 
+      //   key: <name of the curve>,                                                                                       
+      //   color: <COLOR argument for that dataset (optional, may be the empty string)>,                                   
+      //   scale: <SCALE argument for that dataset>,                                                                       
+      //   values: [{                                                                                                      
+      //       n: <value of n for that run>,                                                                               
+      //       base: [{ // an array of samples for the same 'n'                                                            
+      //           COMPILATION_TIME: <compilation time in seconds>,                                                        
+      //           LINK_TIME:        <link time in seconds>,                                                               
+      //           EXECUTABLE_SIZE:  <executable size in KB>,                                                              
+      //           PEAK_MEMORY:      <peak memory usage in KB>                                                             
+      //       }],                                                                                                         
+      //       total: <same as 'base', but with METABENCH defined>                                                         
+      //   }]                                                                                                              
+      // }                                                                                                                 
+      var data = [{"key":"fusion.list","scale":0.5,"color":"hsl(292, 35%, 47%)","values":[{"n":0,"base":[{"COMPILATION_TIME":1.29,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.75}],"total":[{"COMPILATION_TIME":1.27,"LINK_TIME":0.11,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":22.203}]},{"n":10,"base":[{"COMPILATION_TIME":1.34,"LINK_TIME":0.11,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":45.707}],"total":[{"COMPILATION_TIME":1.8099999999999998,"LINK_TIME":0.13,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":299.263}]},{"n":20,"base":[{"COMPILATION_TIME":1.8499999999999999,"LINK_TIME":0.11,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":110.505}],"total":[{"COMPILATION_TIME":2.49,"LINK_TIME":0.17,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":745.223}]},{"n":30,"base":[{"COMPILATION_TIME":2.08,"LINK_TIME":0.12,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":207.407}],"total":[{"COMPILATION_TIME":3.2199999999999998,"LINK_TIME":0.26,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":1355.157}]},{"n":40,"base":[{"COMPILATION_TIME":2.14,"LINK_TIME":0.12,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":340.589}],"total":[{"COMPILATION_TIME":4.26,"LINK_TIME":0.33,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":2133.133}]},{"n":50,"base":[{"COMPILATION_TIME":2.5,"LINK_TIME":0.15,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":510.303}],"total":[{"COMPILATION_TIME":4.569999999999999,"LINK_TIME":0.44,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":3080.04}]}]},{"key":"fusion.vector","scale":0.5,"color":"hsl(292, 35%, 59%)","values":[{"n":0,"base":[{"COMPILATION_TIME":1.4500000000000002,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.818}],"total":[{"COMPILATION_TIME":1.37,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":15.82}]},{"n":10,"base":[{"COMPILATION_TIME":1.5599999999999998,"LINK_TIME":0.09999999999999999,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":20.721}],"total":[{"COMPILATION_TIME":2.16,"LINK_TIME":0.13999999999999999,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":252.491}]},{"n":20,"base":[{"COMPILATION_TIME":1.55,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":32.233}],"total":[{"COMPILATION_TIME":2.35,"LINK_TIME":0.17,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":703.67}]},{"n":30,"base":[{"COMPILATION_TIME":1.77,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":47.847}],"total":[{"COMPILATION_TIME":3.28,"LINK_TIME":0.24000000000000002,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":1410.202}]},{"n":40,"base":[{"COMPILATION_TIME":2.04,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":59.395}],"total":[{"COMPILATION_TIME":4.1,"LINK_TIME":0.33999999999999997,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":2395.879}]},{"n":50,"base":[{"COMPILATION_TIME":1.7999999999999998,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":75.047}],"total":[{"COMPILATION_TIME":5.11,"LINK_TIME":0.45999999999999996,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":3719.475}]}]},{"key":"hana.tuple","scale":0.5,"color":"hsl(30, 100%, 50%)","values":[{"n":0,"base":[{"COMPILATION_TIME":0.45,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":0.43,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":10,"base":[{"COMPILATION_TIME":0.5,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":0.62,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":20,"base":[{"COMPILATION_TIME":0.5800000000000001,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":0.6799999999999999,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":30,"base":[{"COMPILATION_TIME":0.6,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":0.72,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":40,"base":[{"COMPILATION_TIME":0.5900000000000001,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":0.86,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":50,"base":[{"COMPILATION_TIME":0.62,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":0.98,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":100,"base":[{"COMPILATION_TIME":0.73,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":1.5499999999999998,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":150,"base":[{"COMPILATION_TIME":0.96,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":2.3400000000000003,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":200,"base":[{"COMPILATION_TIME":1.31,"LINK_TIME":0.1,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":3.4899999999999998,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":250,"base":[{"COMPILATION_TIME":1.37,"LINK_TIME":0.11000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":3.8,"LINK_TIME":0.09000000000000001,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]},{"n":300,"base":[{"COMPILATION_TIME":1.4500000000000002,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.62}],"total":[{"COMPILATION_TIME":4.6899999999999995,"LINK_TIME":0.09,"PEAK_MEMORY":13116.0,"EXECUTABLE_SIZE":8.704}]}]}];                                                                                      
+                                                                                                                           
+      // massage the measurements for ingestion by nvd3                                                                    
+      data.forEach(function(dataset) {                                                                                     
+        dataset.values = dataset.values.map(function(value) {                                                              
+          new_value = {'n': value['n'], 'base': {}, 'total': {}};                                                          
+          ['COMPILATION_TIME', 'LINK_TIME', 'EXECUTABLE_SIZE', 'PEAK_MEMORY'].forEach(function(aspect) {                   
+            new_value['base'][aspect] = value.base.map(function(v){ return dataset.scale * v[aspect]; });                  
+            new_value['total'][aspect] = value.total.map(function(v){ return dataset.scale * v[aspect]; });                
+          });                                                                                                              
+          return new_value;                                                                                                
+        });                                                                                                                
+      });                                                                                                                  
+                                                                                                                           
+      // setup per-aspect custom settings                                                                                  
+      var aspectDefaults = {                                                                                               
+        'COMPILATION_TIME': {                                                                                              
+          axisLabel: 'Compilation time',                                                                                   
+          tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                                 
+        },                                                                                                                 
+        'EXECUTABLE_SIZE': {                                                                                               
+          axisLabel: 'Executable size',                                                                                    
+          tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                                
+        },                                                                                                                 
+        'LINK_TIME': {                                                                                                     
+          axisLabel: 'Link time',                                                                                          
+          tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                                 
+        },                                                                                                                 
+        'PEAK_MEMORY': {                                                                                                   
+          axisLabel: 'Peak memory usage',                                                                                  
+          tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                                
+        }                                                                                                                  
+      };                                                                                                                   
+                                                                                                                           
+      // setup the chart and its options                                                                                   
       var chart = nv.models.lineChart()                                                                                    
                     .color(d3.scale.category10().range())                                                                  
                     .margin({left: 75, bottom: 50})                                                                        
@@ -87,52 +121,32 @@ compiler: clang++-4.0
              tickFormat: d3.format('.0f')                                                                                  
            });                                                                                                             
                                                                                                                            
-      if (aspect == 'COMPILATION_TIME') {                                                                                  
-        chart.y(function(d){ return Math.max(0, median(d.total.compilation_times) - median(d.base.compilation_times)); })  
-             .yAxis.options({                                                                                              
-               axisLabel: customSettings.YLABEL || 'Compilation time',                                                     
-               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                            
-             });                                                                                                           
-      }                                                                                                                    
-      else if (aspect == 'EXECUTABLE_SIZE') {                                                                              
-        chart.y(function(datum){ return datum.total.executable_size; })                                                    
-             .yAxis.options({                                                                                              
-               axisLabel: customSettings.YLABEL || 'Executable size',                                                      
-               tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                           
-             });                                                                                                           
-      }                                                                                                                    
-      else if (aspect == 'EXECUTION_TIME') {                                                                               
-        chart.y(function(datum){ return median(datum.total.execution_times); })                                            
-             .yAxis.options({                                                                                              
-               axisLabel: customSettings.YLABEL || 'Execution time',                                                       
-               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                            
-             });                                                                                                           
-      }                                                                                                                    
-      else if (aspect == 'LINK_TIME') {                                                                                    
-        chart.y(function(datum){ return median(datum.total.link_times); })                                                 
-             .yAxis.options({                                                                                              
-               axisLabel: customSettings.YLABEL || 'Link time',                                                            
-               tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                            
-             });                                                                                                           
-      }                                                                                                                    
+      var subtract_baseline = function(datum) {                                                                            
+        return Math.max(0, median(datum.total[aspect]) - median(datum.base[aspect]));                                      
+      };                                                                                                                   
+      chart.y(subtract_baseline)                                                                                           
+           .yAxis.options({                                                                                                
+             axisLabel: customSettings.YLABEL || aspectDefaults[aspect].axisLabel,                                         
+             tickFormat: aspectDefaults[aspect].tickFormat                                                                 
+           });                                                                                                             
                                                                                                                            
-      chart.interpolate('cardinal').useInteractiveGuideline(true);                                                            
+      chart.interpolate('cardinal').useInteractiveGuideline(true);                                                         
       d3.select('#chart').datum(data).call(chart);                                                                         
       var plot = d3.select('#chart > g');                                                                                  
                                                                                                                            
-      /* setup the title */                                                                                                
+      // setup the title                                                                                                   
       plot.append('text')                                                                                                  
           .style('font-size', '24px')                                                                                      
           .attr('text-anchor', 'middle').attr('x', '50%').attr('y', '20px')                                                
           .text(customSettings.TITLE || '');                                                                               
                                                                                                                            
-      /* setup the subtitle */                                                                                             
+      // setup the subtitle                                                                                                
       plot.append('text')                                                                                                  
           .style('font-size', '16px')                                                                                      
           .attr('text-anchor', 'middle').attr('x', '50%').attr('y', '40px')                                                
           .text(customSettings.SUBTITLE || '');                                                                            
                                                                                                                            
-      /* setup controls */                                                                                                 
+      // setup interpolation control                                                                                       
       var controls = plot.select('.nv-x.nv-axis').append('g').attr('transform', 'translate(24,30)');                       
       var interpolate = controls.append('g').attr('class', 'control interpolate').datum([chart.interpolate()]);            
       interpolate.append('circle')                                                                                         
@@ -149,25 +163,27 @@ compiler: clang++-4.0
         }                                                                                                                  
         chart.update();                                                                                                    
       });                                                                                                                  
-      if (aspect == 'COMPILATION_TIME') {                                                                                  
-        var debias = controls.append('g').attr('class', 'control debias').datum([chart.y()]);                              
-        debias.attr('transform', 'translate(80,0)').append('circle')                                                       
+                                                                                                                           
+      // setup baseline control                                                                                            
+      var baseline = controls.append('g').attr('class', 'control baseline').datum(true /* whether button is checked */);   
+      baseline.attr('transform', 'translate(80,0)').append('circle')                                                       
               .style('fill', '#333').style('stroke', '#333').style('stroke-width', '2').style('fill-opacity', 1)           
               .attr('cx', 0).attr('cy', 0).attr('r', 5);                                                                   
-        debias.append('text').attr('text-anchor', 'start').attr('dx', '8').attr('dy', '.32em').text('subtract baseline');  
-        debias.on('click', function() {                                                                                    
-          if (chart.y() === debias.datum()[0]) {                                                                           
-            debias.select('circle').style('fill-opacity', 0);                                                              
-            chart.y(function(datum){ return median(datum.total.compilation_times); });                                     
-          } else {                                                                                                         
-            d3.select(this).select('circle').style('fill-opacity', 1);                                                     
-            chart.y(debias.datum()[0]);                                                                                    
-          }                                                                                                                
-          chart.update();                                                                                                  
-        });                                                                                                                
-      }                                                                                                                    
+      baseline.append('text').attr('text-anchor', 'start').attr('dx', '8').attr('dy', '.32em').text('subtract baseline');  
+      baseline.on('click', function() {                                                                                    
+        // We subtract the baseline from the total if the button was just checked, otherwise we use the total unchanged.   
+        if (!baseline.datum()) {                                                                                           
+          d3.select(this).select('circle').style('fill-opacity', 1);                                                       
+          chart.y(subtract_baseline);                                                                                      
+        } else {                                                                                                           
+          baseline.select('circle').style('fill-opacity', 0);                                                              
+          chart.y(function(datum) { return median(datum.total[aspect]); });                                                
+        }                                                                                                                  
+        baseline.datum(!baseline.datum()); // toggle the radio button                                                      
+        chart.update();                                                                                                    
+      });                                                                                                                  
                                                                                                                            
-      /* ensure the chart is responsive */                                                                                 
+      // ensure the chart is responsive                                                                                    
       nv.utils.windowResize(chart.update);                                                                                 
     </script>                                                                                                              
   </body>                                                                                                                  
