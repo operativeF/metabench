@@ -120,16 +120,19 @@ matrix:
       addons: { apt: { packages: ["g++-6"], sources: ["ubuntu-toolchain-r-test"] } }
 
     # GCC 7
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="1/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="2/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="3/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="4/5"
+      addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
+      dist: trusty
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="5/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
 
