@@ -19,10 +19,6 @@ cache:
 
 env:
   global:
-    # Number of parts in which we split the generation of benchmarks to avoid
-    # timeouts on Travis. Keep this in sync with the `PART=X` variables below.
-    - PARTS=4
-
     # GitHub token for pushing the benchmarks. The token is stored in the
     # ${GITHUB_TOKEN} environment variable.
     - secure: "TY3VQ9eOoYxiBvP6kR+WyE0pgJ5vmxgXhCqjhGPWiieKn3H8hUhhbacSnmODXJQ89jbcIgLxUSPSWq3ZAJNDPem0nyEfoBklnJFq7IrZ1sXZ3ywBcHHEq/09+LTsjElg+9NU6HRMmzuT1WCG76/KmQHL7THSjQoPKHLAbHLuTzWeMVzC1qB0JC/SsfFXmuB0ZCNIQsu6P9ADLUpUgjm1mEXiUIDIXtfFPUvhC7UCC+kw5OR4rmwWM0adzFJglA2gom73fxkX9O/qPtZh6nroV7Vu6cUsbTjmW7YlV+0Us5YWgulC7dJqAO8GrHbfk35n3unMs2ScJ4nzWVEFCwCFiMOWb8VWIPRSQXDjuxkc1Cuf8A2M6FnFqZqhXE2JlsUfVAgI7zrG5LytYJkJxxphV4Hbkf0gTJ8VdA6dHV69AX8BIcszhCPo2PdMRvA+3iAL8FIMopVtDDcra8glO8JsFsR6C5ptdXMpDZ2/KMvoZta8Rpk38YEsiwf9mI7vBDV5okWM071U1jbVDGc8FIDfC14xIwFy7WFOWtZA4KYQTS5PxqEyPxtIRNNdWfCiNcNmm4eozw/kSmcYzMQxheWTx2Wv9V7EdKcx1r7mmv/MXzGnKLRW4j5I7VbG3pMXWr2KA5+qQdnYRjK/xa0j1aOD1OWwE4Fzt4ETkVGzZ8dvFm8="
@@ -30,110 +26,110 @@ env:
 matrix:
   include:
     # Clang 3.6
-    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["clang-3.6"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.6"] } }
-    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["clang-3.6"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.6"] } }
-    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["clang-3.6"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.6"] } }
-    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=clang++-3.6 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-3.6"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.6"] } }
 
     # Clang 3.7
-    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["clang-3.7"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.7"] } }
-    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["clang-3.7"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.7"] } }
-    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["clang-3.7"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.7"] } }
-    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=clang++-3.7 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-3.7"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.7"] } }
 
     # Clang 3.8
-    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["clang-3.8"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.8"] } }
-    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["clang-3.8"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.8"] } }
-    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["clang-3.8"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.8"] } }
-    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=clang++-3.8 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-3.8"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.8"] } }
 
     # Clang 3.9
-    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["clang-3.9"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"] } }
-    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["clang-3.9"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"] } }
-    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["clang-3.9"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"] } }
-    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-3.9"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"] } }
 
     # Clang 4.0
-    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
       dist: trusty
-    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
       dist: trusty
-    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
       dist: trusty
-    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
       dist: trusty
 
     # GCC 4.8
-    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["g++-4.8"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["g++-4.8"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["g++-4.8"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["g++-4.8"], sources: ["ubuntu-toolchain-r-test"] } }
 
     # GCC 4.9
-    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["g++-4.9"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["g++-4.9"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["g++-4.9"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=g++-4.9 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["g++-4.9"], sources: ["ubuntu-toolchain-r-test"] } }
 
     # GCC 5
-    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["g++-5"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["g++-5"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["g++-5"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=g++-5 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["g++-5"], sources: ["ubuntu-toolchain-r-test"] } }
 
     # GCC 6
-    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["g++-6"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["g++-6"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["g++-6"], sources: ["ubuntu-toolchain-r-test"] } }
-    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=g++-6 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["g++-6"], sources: ["ubuntu-toolchain-r-test"] } }
 
     # GCC 7
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART=1
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART=2
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART=3
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
-    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART=4
+    - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
       dist: trusty
 
@@ -142,9 +138,17 @@ matrix:
       addons: { apt: { packages: ["clang-3.9", "ninja-build"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"] } }
 
 before_install:
+  # Parse the partition information, if any
+  - |
+    if [[ -v PART ]]; then
+      THIS_PART="$(echo ${PART} | cut -d '/' -f 1)"
+      TOTAL_PARTS="$(echo ${PART} | cut -d '/' -f 2)"
+      echo "This is part ${THIS_PART}/${TOTAL_PARTS}"
+    fi
+
   # Except for CRON jobs, only run partitioned jobs once (early out if we're not the first job).
   - |
-    if [[ "${TRAVIS_EVENT_TYPE}" != "cron" && -v PART && "${PART}" != "1" ]]; then
+    if [[ "${TRAVIS_EVENT_TYPE}" != "cron" && -v PART && "${THIS_PART}" != "1" ]]; then
       exit 0
     fi
 
@@ -220,12 +224,13 @@ script:
     fi
 
   # During nightly builds, we generate the benchmarks and update the gh-pages
-  # branch with the data, but only for jobs that are partitioned.
+  # branch with the data, but only for jobs that are partitioned. We partition
+  # jobs to avoid timeouts on Travis.
   - |
     if [[ "${TRAVIS_EVENT_TYPE}" == "cron" && -v PART ]]; then
       ALL_BENCHMARKS=($(cmake --build build --target help | grep -E "benchmark\.\w+\." | cut -d " " -f 2 | sort))
-      SLICE_SIZE=$(expr ${#ALL_BENCHMARKS[@]} / ${PARTS} + ${#ALL_BENCHMARKS[@]} % ${PARTS})
-      SLICE_BEGIN=$(expr \( ${PART} - 1 \) \* ${SLICE_SIZE})
+      SLICE_SIZE=$(expr ${#ALL_BENCHMARKS[@]} / ${TOTAL_PARTS} + ${#ALL_BENCHMARKS[@]} % ${TOTAL_PARTS})
+      SLICE_BEGIN=$(expr \( ${THIS_PART} - 1 \) \* ${SLICE_SIZE})
       BENCHMARKS=(${ALL_BENCHMARKS[@]:${SLICE_BEGIN}:${SLICE_SIZE}})
       for benchmark in ${BENCHMARKS[@]}; do
         cmake --build build --target ${benchmark}
@@ -263,7 +268,7 @@ script:
 
       pushd tmp &&
       git add --all . &&
-      git commit -m "[${CXX}] Update benchmarks (${PART}/${PARTS})" &&
+      git commit -m "[${CXX}] Update benchmarks (${PART})" &&
       # Suppress output to avoid leaking the token
       travis_retry git push origin gh-pages &>/dev/null &&
       popd
