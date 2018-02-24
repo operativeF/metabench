@@ -4,7 +4,7 @@
 
 language: cpp
 os: linux # Use Linux unless specified otherwise
-dist: precise # Use precise unless specified otherwise
+dist: trusty # Use 'trusty' unless specified otherwise
 sudo: false
 
 # Do not build branches of the form "pr/*". By prefixing pull requests coming
@@ -68,16 +68,12 @@ matrix:
     # Clang 4.0
     - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
-      dist: trusty
     - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
-      dist: trusty
     - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
-      dist: trusty
     - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
-      dist: trusty
 
     # GCC 4.8
     - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
@@ -122,19 +118,14 @@ matrix:
     # GCC 7
     - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="1/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
-      dist: trusty
     - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="2/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
-      dist: trusty
     - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="3/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
-      dist: trusty
     - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="4/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
-      dist: trusty
     - env: COMPILER=g++-7 CMAKE_GENERATOR="Unix Makefiles" PART="5/5"
       addons: { apt: { packages: ["g++-7"], sources: ["ubuntu-toolchain-r-test"] } }
-      dist: trusty
 
     # Test using the Ninja generator
     - env: COMPILER=clang++-3.9 CMAKE_GENERATOR="Ninja"
