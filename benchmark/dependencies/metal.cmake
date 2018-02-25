@@ -13,10 +13,10 @@ if (METABENCH_METAL
         message(STATUS "Local Metal installation found - version ${Metal_VERSION}")
         get_target_property(Metal_INCLUDE_DIR Metal INTERFACE_INCLUDE_DIRECTORIES)
     else()
-        message(STATUS "No local Metal installation found - fetching branch develop")
+        message(STATUS "No local Metal installation found - fetching branch master")
         include(ExternalProject)
         ExternalProject_Add(Metal EXCLUDE_FROM_ALL 1
-            URL https://github.com/brunocodutra/metal/archive/develop.zip
+            URL https://github.com/brunocodutra/metal/archive/master.zip
             TIMEOUT 120
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dependencies/metal"
             CONFIGURE_COMMAND "" # Disable configure step
