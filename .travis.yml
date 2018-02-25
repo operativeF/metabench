@@ -13,10 +13,6 @@ sudo: false
 branches:
   except: /pr\/.*/
 
-cache:
-  directories:
-    - ${TRAVIS_BUILD_DIR}/deps/boost-1.65.0 # Keep this in sync with BOOST_VERSION
-
 env:
   global:
     # GitHub token for pushing the benchmarks. The token is stored in the
@@ -188,14 +184,12 @@ install:
     fi
 
   # Install Boost headers
-  - BOOST_VERSION=1.65.0
+  - BOOST_VERSION=1.66.0
   - BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION}
   - |
-    if [[ -z "$(ls -A ${BOOST_DIR})" ]]; then
-      BOOST_URL="http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//\./_}.tar.gz"
-      mkdir -p ${BOOST_DIR}
-      { travis_retry wget -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1
-    fi
+    BOOST_URL="https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION//\./_}.tar.gz"
+    mkdir -p ${BOOST_DIR}
+    { travis_retry wget -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1
 
   # Install and use a more recent Ruby
   - rvm use 2.1 --install --binary --fuzzy
