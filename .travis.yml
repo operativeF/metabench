@@ -71,6 +71,16 @@ matrix:
     - env: COMPILER=clang++-4.0 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
       addons: { apt: { packages: ["clang-4.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0"] } }
 
+    # Clang 5.0
+    - env: COMPILER=clang++-5.0 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
+      addons: { apt: { packages: ["clang-5.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-5.0"] } }
+    - env: COMPILER=clang++-5.0 CMAKE_GENERATOR="Unix Makefiles" PART="2/4"
+      addons: { apt: { packages: ["clang-5.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-5.0"] } }
+    - env: COMPILER=clang++-5.0 CMAKE_GENERATOR="Unix Makefiles" PART="3/4"
+      addons: { apt: { packages: ["clang-5.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-5.0"] } }
+    - env: COMPILER=clang++-5.0 CMAKE_GENERATOR="Unix Makefiles" PART="4/4"
+      addons: { apt: { packages: ["clang-5.0"], sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-trusty-5.0"] } }
+
     # GCC 4.8
     - env: COMPILER=g++-4.8 CMAKE_GENERATOR="Unix Makefiles" PART="1/4"
       addons: { apt: { packages: ["g++-4.8"], sources: ["ubuntu-toolchain-r-test"] } }
