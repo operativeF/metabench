@@ -13,5 +13,6 @@ add_dataset(datasets hetero make hana   set         hana.set.cpp.erb         2 "
 add_dataset(datasets hetero make hana   tuple       hana.tuple.cpp.erb       2 "(0..50).step(10).to_a + (100..300).step(50).to_a")
 add_dataset(datasets hetero make std    array       std.array.cpp.erb        2 "(0..50).step(10).to_a + (100..300).step(50).to_a")
 add_dataset(datasets hetero make std    tuple       std.tuple.cpp.erb        2 "(0..50).step(10).to_a + (100..100).step(50).to_a")
+add_dataset(datasets hetero make tmp    pack        tmp.pack.cpp.erb         2 "(0..50).step(10).to_a + (100..300).step(50).to_a")
 
 add_chart(hetero make DATASETS ${datasets})
