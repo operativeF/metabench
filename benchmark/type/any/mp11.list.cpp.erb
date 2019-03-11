@@ -18,7 +18,7 @@ struct equals_to {
 using <%= "xs#{k}" %> = mp_list<<%= ints.map { |i| "std::integral_constant<int,#{i}>" }.join(', ') %>>;
 
 #if defined(METABENCH)
-using <%= "result#{k}" %> = mp_all_of<<%= "xs#{k}" %>, equals_to<<%= ints.last || 0 %>>::apply>;
+using <%= "result#{k}" %> = mp_any_of<<%= "xs#{k}" %>, equals_to<<%= ints.last || 0 %>>::apply>;
 #endif
 
 <% end %>
