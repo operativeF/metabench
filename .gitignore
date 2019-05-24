@@ -1,2 +1,10 @@
-build/
+.vscode/
+_metabench/
 _site/
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+dependencies/
+*.make
+*.json
