@@ -13,7 +13,7 @@ if (METABENCH_TMP
     message(STATUS "No local TMP installation found - fetching branch development")
     include(ExternalProject)
     ExternalProject_Add(Tmp EXCLUDE_FROM_ALL 1
-            URL https://github.com/odinthenerd/tmp/archive/development.zip
+            URL https://github.com/operativeF/tmp/archive/operativef_dev.zip
             TIMEOUT 120
             PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dependencies/tmp"
             CONFIGURE_COMMAND "" # Disable configure step
